@@ -153,3 +153,58 @@ def _noisy():
     import io, os
     from PIL import Image
     b = io.BytesIO(); Image.frombytes("RGB", (60, 60), os.urandom(60 * 60 * 3)).save(b, "PNG"); return b.getvalue()
+
+
+def test_cache_write_failure_is_graceful(monkeypatch, tmp_path, caplog):
+    """Read-only / unwritable cache dir (e.g. HF Space container): result is still served, warning logged."""
+    ro = tmp_path / "ro"; ro.write_text("i am a file, so mkdir/write raises OSError")
+    monkeypatch.setattr(appmod, "CACHE", ro)
+    monkeypatch.setattr(llm, "check", lambda *a, **k: (dict(AI_GREEN, verdict="red", scam_type="s"), "gemini"))
+    r = c.post("/api/check", data={"text": "fresh text for ro cache", "lang": "en"})
+    assert r.status_code == 200 and r.json()["source"] == "gemini"
+    monkeypatch.setattr(llm, "draft_text", lambda p, v, **k: (v('{"subject":"s","body":"' + "b" * 100 + '"}'), "gemini"))
+    r = c.post("/api/complaint", json={"result": {"verdict": "red", "scam_type": "x"}, "lang": "en"})
+    assert r.status_code == 200 and r.json()["source"] == "gemini"
+    assert "cache write skipped" in caplog.text
+
+
+def test_starts_without_env_file_and_key_from_environment(monkeypatch, tmp_path):
+    monkeypatch.setenv("GEMINI_API_KEY", "AIzaSyFROMENV0123456789abcdefghijk")
+    appmod.load_dotenv(tmp_path / "does-not-exist.env")  # missing .env is fine
+    assert os.environ["GEMINI_API_KEY"].endswith("ghijk")
+    assert c.get("/api/health").json()["gemini_key"] is True
+
+
+NEW_FLAG_MESSAGES = {  # representative message per new checks.py flag
+    "digital_arrest": "This is CBI. A parcel in your name contains drugs. You are under digital arrest.",
+    "impersonation": "Police officer here. A case is registered against you.",
+    "coerce": "Police officer here. A case is registered against you. Do not disconnect the call, stay on video call.",
+    "secret": "Police officer here. A case is registered against you. Don't tell anyone.",
+    "safe_acct": "Transfer Rs 50,000 to the RBI safe account immediately.",
+    "verify_tx": "Send money for investigation to this account, it will be returned after the investigation.",
+    "card": "Please share your ATM PIN and CVV to verify your account.",
+}
+
+
+def test_new_flags_have_localized_reasons_code_only(monkeypatch):
+    monkeypatch.setattr(llm, "check", _down)
+    for key, msg in NEW_FLAG_MESSAGES.items():
+        flag_reasons = {}
+        for lang in ("en", "hi", "gu"):
+            r = c.post("/api/check", data={"text": msg, "lang": lang}).json()
+            assert r["ai_unavailable"] and r["verdict"] == ("amber" if key == "impersonation" else "red"), (key, lang, r["verdict"])
+            assert r["reasons"] and all(x.strip() for x in r["reasons"]), (key, lang)
+            assert appmod.R[key][lang] in r["reasons"], (key, lang)
+            flag_reasons[lang] = r["reasons"]
+        assert flag_reasons["hi"] != flag_reasons["en"] and flag_reasons["gu"] != flag_reasons["en"]
+
+
+def test_every_keys_category_has_all_languages_and_old_flags_unchanged():
+    for cat, d in appmod.R.items():
+        assert set(d) == {"en", "hi", "gu"} and all(d.values()), cat
+    assert all(cat in appmod.R for _, cat in appmod.KEYS)
+    # old flags still map to their old reasons even though the new keys come first
+    for flag, cat in [("Refund/cashback bait with a contact or link", "refund"), ("Asks you to share/enter OTP, PIN or password", "otp"),
+                      ("KYC update request", "kyc"), ("URL shortener hides the real link (bit.ly)", "shortener"),
+                      ("Courier/parcel fee scam pattern", "courier"), ("Fake prize / lottery pattern", "prize")]:
+        assert appmod.code_reasons([flag], "en") == [appmod.R[cat]["en"]], flag

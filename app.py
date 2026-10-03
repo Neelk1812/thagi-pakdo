@@ -19,7 +19,11 @@ _orig_factory = logging.getLogRecordFactory()
 def _scrubbing_factory(*args, **kw):  # every log line passes through llm.scrub: no API keys / bearer tokens / JWTs, ever
     rec = _orig_factory(*args, **kw)
     try:
-        rec.msg, rec.args = llm.scrub(rec.getMessage()), ()
+        if isinstance(rec.msg, str):
+            m = rec.getMessage()
+            s = llm.scrub(m)
+            if s != m:  # only touch records that actually contain a secret (leave e.g. uvicorn's structured args alone)
+                rec.msg, rec.args = s, ()
     except Exception:
         pass
     return rec
@@ -113,11 +117,35 @@ R = {  # category -> {lang: reason}
     "refund": {"en": "Refund/cashback bait with a link or contact to lure you.",
                "hi": "रिफंड/कैशबैक का लालच, साथ में लिंक या संपर्क।",
                "gu": "રિફંડ/કેશબેકનું લાલચ, સાથે લિંક કે સંપર્ક."},
+    "digital_arrest": {"en": "'Digital arrest' is a scam - no police, CBI, customs or court ever arrests anyone over a call or video call.",
+                       "hi": "'डिजिटल अरेस्ट' ठगी है - पुलिस, CBI, कस्टम या कोर्ट कभी फ़ोन या वीडियो कॉल पर गिरफ्तार नहीं करते।",
+                       "gu": "'ડિજિટલ અરેસ્ટ' છેતરપિંડી છે - પોલીસ, CBI, કસ્ટમ કે કોર્ટ ક્યારેય ફોન કે વીડિયો કૉલ પર ધરપકડ કરતા નથી."},
+    "impersonation": {"en": "Someone claims to be police/CBI/customs/court and threatens arrest or a case to scare you.",
+                      "hi": "कोई खुद को पुलिस/CBI/कस्टम/कोर्ट बताकर गिरफ्तारी या केस की धमकी देकर डरा रहा है।",
+                      "gu": "કોઈ પોતાને પોલીસ/CBI/કસ્ટમ/કોર્ટ ગણાવી ધરપકડ કે કેસની ધમકી આપીને ડરાવે છે."},
+    "coerce": {"en": "They want you to stay on a call or video call so you cannot think or ask anyone.",
+               "hi": "वे आपको कॉल या वीडियो कॉल पर बनाए रखना चाहते हैं ताकि आप सोच न सकें या किसी से पूछ न सकें।",
+               "gu": "તેઓ તમને કૉલ કે વીડિયો કૉલ પર રાખવા માંગે છે જેથી તમે વિચારી ન શકો કે કોઈને પૂછી ન શકો."},
+    "secret": {"en": "They tell you to keep it secret - scammers do this so family cannot warn you.",
+               "hi": "वे इसे गुप्त रखने को कहते हैं - ठग ऐसा इसलिए करते हैं कि घरवाले आपको रोक न सकें।",
+               "gu": "તેઓ આ વાત ગુપ્ત રાખવા કહે છે - ઠગ એટલા માટે કે ઘરના લોકો તમને રોકી ન શકે."},
+    "safe_acct": {"en": "No bank, RBI or police ever asks you to move money to a 'safe account'. This is a scam.",
+                  "hi": "कोई बैंक, RBI या पुलिस कभी 'सुरक्षित खाते' में पैसे ट्रांसफर करने को नहीं कहती। यह ठगी है।",
+                  "gu": "કોઈ બેંક, RBI કે પોલીસ ક્યારેય 'સુરક્ષિત ખાતા'માં પૈસા ટ્રાન્સફર કરવા કહેતી નથી. આ છેતરપિંડી છે."},
+    "verify_tx": {"en": "Asking you to send money 'for verification' or 'investigation' with a promise to refund it is a scam.",
+                  "hi": "'सत्यापन' या 'जांच' के नाम पर पैसे भेजने और वापस करने का वादा ठगी है।",
+                  "gu": "'ચકાસણી' કે 'તપાસ' નામે પૈસા મોકલવા અને પાછા આપવાનું વચન એ છેતરપિંડી છે."},
+    "card": {"en": "It asks for your ATM PIN, CVV or card details - a real bank never does.",
+             "hi": "यह आपका ATM पिन, CVV या कार्ड की जानकारी मांगता है - असली बैंक कभी नहीं मांगता।",
+             "gu": "તે તમારો ATM પિન, CVV કે કાર્ડની વિગતો માંગે છે - અસલી બેંક ક્યારેય માંગતી નથી."},
     "upi_pay": {"en": "It asks you to pay money to a personal UPI ID.",
                 "hi": "यह किसी निजी UPI ID पर पैसे भेजने को कहता है।",
                 "gu": "તે કોઈ અંગત UPI ID પર પૈસા મોકલવા કહે છે."},
 }
-KEYS = [("shortener", "shortener"), ("Punycode", "lookalike"), ("Lookalike", "lookalike"), ("Suspicious domain", "tld"),
+KEYS = [("digital arrest", "digital_arrest"), ("threatens arrest", "impersonation"), ("stay on a", "coerce"),
+        ("keep it secret", "secret"), ("safe'/RBI", "safe_acct"), ("for verification/investigation", "verify_tx"),
+        ("ATM PIN, CVV", "card"),  # new flags first: their labels also contain old keys (e.g. "Refund", "OTP")
+        ("shortener", "shortener"), ("Punycode", "lookalike"), ("Lookalike", "lookalike"), ("Suspicious domain", "tld"),
         ("not secure", "http"), ("APK", "apk"), ("Urgency", "urgency"), ("KYC", "kyc"), ("OTP", "otp"),
         ("collect", "collect"), ("prize", "prize"), ("Courier", "courier"), ("advance", "fee"),
         ("remote", "remote"), ("Refund", "refund"), ("personal UPI", "upi_pay")]
@@ -300,10 +328,10 @@ def check(request: Request, image: UploadFile | None = File(None), text: str = F
     out.update(lang=lang, ai_unavailable=ai_unavailable, source=source, code_flags=ca["flags"], code_score=ca["score"])
     if not ai_unavailable:
         try:
-            CACHE.mkdir(exist_ok=True)
+            CACHE.mkdir(parents=True, exist_ok=True)
             cp.write_text(json.dumps(out, ensure_ascii=False))
-        except OSError:
-            pass
+        except OSError as e:  # read-only / unwritable filesystem (e.g. container): serve the result, just don't cache it
+            log.warning("cache write skipped (%s)", type(e).__name__)
     return out
 
 
@@ -338,8 +366,8 @@ def complaint_endpoint(req: ComplaintReq, request: Request):
         try:
             cdir.mkdir(parents=True, exist_ok=True)
             cp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
-        except OSError:
-            pass
+        except OSError as e:
+            log.warning("complaint cache write skipped (%s)", type(e).__name__)
     return out
 
 
