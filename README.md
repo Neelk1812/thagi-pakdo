@@ -5,32 +5,24 @@
 
 **Paste a suspicious SMS, WhatsApp or UPI message, or upload a screenshot, and get a plain verdict (red / amber / green), the reasons, what to do next, and a ready-to-file cybercrime complaint, in Gujarati, Hindi or English.** Built for Hack Day Surat with Gemma 4.
 
-**Live demo: https://thagi-pakdo.vercel.app** (shared free-tier Gemini key; see [Limits](#honest-limits))
+## Live demo: https://thagi-pakdo.vercel.app
 
-<p align="center"><img src="docs/screens/v2/f7b_scam_light_390.png" alt="Red verdict: This looks like a scam. Do not pay or click." width="300"></p>
-
-| Gujarati result | Complaint draft | Dark mode |
-|---|---|---|
-| <img src="docs/screens/v2/scam_gu_390.png" alt="Scam verdict in Gujarati" width="230"> | <img src="docs/screens/v2/complaint_390.png" alt="Complaint draft form" width="230"> | <img src="docs/screens/v2/f7b_scam_dark_390.png" alt="Scam verdict in dark mode" width="230"> |
+Open it on a phone or laptop; there is nothing to install. It runs on a shared free-tier Gemini key, so see [Limits](#honest-limits) first.
 
 ## Try it in 60 seconds
 
-1. Open the live demo (or run it locally, below).
+1. Open the live demo.
 2. Tap **Fake KYC SMS**: you get a red card, three reasons and numbered steps. The five sample buttons are fake messages and answer instantly from a committed cache.
 3. Paste your own made-up scam text (for example "Your bank account will be blocked today, update KYC at http://bit.ly/x") and tap **Check**. This is a live Gemma call (about 2 to 5 s).
 4. Tap **ગુજરાતી** or **हिन्दी** to see the same answer in that language, then **Read aloud**.
 5. Tap **Draft a complaint** to get a formal complaint for [cybercrime.gov.in](https://cybercrime.gov.in). Anything you don't fill in stays a visible `[placeholder]`; nothing is invented.
 6. Tap **Safe bank OTP**: a genuine OTP alert with no link and no ask is green ("This looks safe, but stay alert.").
 
-## Quick start
+<p align="center"><img src="docs/screens/v2/f7b_scam_light_390.png" alt="Red verdict: This looks like a scam. Do not pay or click." width="300"></p>
 
-```bash
-git clone https://github.com/Neelk1812/thagi-pakdo && cd thagi-pakdo
-pip install -r requirements.txt
-cp .env.example .env   # add GEMINI_API_KEY, then: uvicorn app:app
-```
-
-Open http://127.0.0.1:8000. Python 3.13 is what we developed on; CI also runs 3.12. Without a key the sample buttons still work from cache and other inputs fall back to rules-only. To try it from a phone on the same Wi-Fi, use `uvicorn app:app --host 0.0.0.0` and open `http://<computer-ip>:8000` (plain HTTP on your LAN; not tested on a real phone).
+| Gujarati result | Complaint draft | Dark mode |
+|---|---|---|
+| <img src="docs/screens/v2/scam_gu_390.png" alt="Scam verdict in Gujarati" width="230"> | <img src="docs/screens/v2/complaint_390.png" alt="Complaint draft form" width="230"> | <img src="docs/screens/v2/f7b_scam_dark_390.png" alt="Scam verdict in dark mode" width="230"> |
 
 ## How Gemma is used
 
@@ -72,9 +64,20 @@ flowchart LR
 
 ## Tests and CI
 
-`pytest` runs 196 tests with a mocked model, a temporary cache and no API key (verified with the key unset). GitHub Actions runs them on push for Python 3.12 and 3.13 (`.github/workflows/test.yml`).
+`pytest` runs 196 tests with a mocked model, a temporary cache and no API key (verified with the key unset). GitHub Actions runs them on every push (`.github/workflows/test.yml`).
 
 ## Reference
+
+<details><summary>Run it yourself (optional)</summary>
+
+```bash
+git clone https://github.com/Neelk1812/thagi-pakdo && cd thagi-pakdo
+pip install -r requirements.txt
+cp .env.example .env   # add GEMINI_API_KEY, then: uvicorn app:app
+```
+
+Open http://127.0.0.1:8000. Without a key the sample buttons still work from cache and other inputs fall back to rules-only.
+</details>
 
 <details><summary>Configuration (environment variables / <code>.env</code>)</summary>
 
