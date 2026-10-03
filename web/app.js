@@ -8,23 +8,23 @@ let last = null;
 const T = {
   en: {tag:'Check any suspicious message before you pay or click.',drop:'<strong>Drop a screenshot here</strong>, click to choose, or paste (Ctrl+V)',
     textLbl:'Or paste the SMS / WhatsApp / UPI message',ph:'Paste the message here...',check:'Check now',clear:'Clear',remove:'Remove',
-    samples:'Try a sample (fake):',privacy:'Privacy: with the free Gemini tier, inputs may be used by Google to improve its products. Use only fake samples in the demo; run with --local for real messages.',
+    samples:'Try a sample (fake):',privacy:'Privacy: with the free Gemini tier, inputs may be used by Google to improve its products. Use only fake samples in the demo. For real messages, run locally with LLM_BACKEND=local (nothing leaves your computer).',
     red:'SCAM - DANGER',amber:'SUSPICIOUS - BE CAREFUL',green:'LOOKS SAFE',why:'Why',todo:'What to do',found:'Found in the message',
-    speak:'Read aloud',stop:'Stop',loading:'Checking...',empty:'Please add a screenshot or paste a message first.',
+    speak:'Read aloud',stop:'Stop',loading:'Checking...',slow:'Gemma is reading the screenshot... this can take up to a minute',slowTxt:'Gemma is reading the message... this can take up to a minute',empty:'Please add a screenshot or paste a message first.',
     err:'Could not check right now. Please try again.',ai:'AI is unavailable - this result is from rule-based checks only.',
     src_gemini:'AI (Gemma)',src_local:'Offline AI',src_cache:'Cached',src_code:'Rules only',greenNote:'This still isn\'t a guarantee. If anything feels off, don\'t pay or click, and ask someone you trust.',urls:'Links',phones:'Phones',upi_ids:'UPI IDs',amounts:'Amounts',foot:'Report cyber fraud: call <b>1930</b> or visit <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>'},
   hi: {tag:'पैसे देने या क्लिक करने से पहले संदिग्ध मैसेज जाँचें।',drop:'<strong>स्क्रीनशॉट यहाँ छोड़ें</strong>, क्लिक करके चुनें, या पेस्ट करें (Ctrl+V)',
     textLbl:'या SMS / WhatsApp / UPI मैसेज पेस्ट करें',ph:'मैसेज यहाँ पेस्ट करें...',check:'जाँचें',clear:'साफ़ करें',remove:'हटाएँ',
-    samples:'नमूना आज़माएँ (नकली):',privacy:'गोपनीयता: मुफ़्त Gemini टियर में आपका इनपुट Google अपने उत्पाद सुधारने में इस्तेमाल कर सकता है। डेमो में सिर्फ़ नकली नमूने इस्तेमाल करें; असली मैसेज के लिए --local मोड चलाएँ।',
+    samples:'नमूना आज़माएँ (नकली):',privacy:'गोपनीयता: मुफ़्त Gemini टियर में आपका इनपुट Google अपने उत्पाद सुधारने में इस्तेमाल कर सकता है। डेमो में सिर्फ़ नकली नमूने इस्तेमाल करें। असली मैसेज के लिए LLM_BACKEND=local के साथ अपने कंप्यूटर पर चलाएँ (कुछ भी आपके कंप्यूटर से बाहर नहीं जाता)।',
     red:'स्कैम - ख़तरा',amber:'संदिग्ध - सावधान रहें',green:'सुरक्षित लगता है',why:'क्यों',todo:'क्या करें',found:'मैसेज में मिला',
-    speak:'सुनें',stop:'रोकें',loading:'जाँच हो रही है...',empty:'कृपया पहले स्क्रीनशॉट जोड़ें या मैसेज पेस्ट करें।',
+    speak:'सुनें',stop:'रोकें',loading:'जाँच हो रही है...',slow:'Gemma स्क्रीनशॉट पढ़ रहा है... इसमें एक मिनट तक लग सकता है',slowTxt:'Gemma मैसेज पढ़ रहा है... इसमें एक मिनट तक लग सकता है',empty:'कृपया पहले स्क्रीनशॉट जोड़ें या मैसेज पेस्ट करें।',
     err:'अभी जाँच नहीं हो सकी। कृपया दोबारा कोशिश करें।',ai:'AI उपलब्ध नहीं है - यह नतीजा सिर्फ़ नियम-आधारित जाँच से है।',
     src_gemini:'AI (Gemma)',src_local:'ऑफ़लाइन AI',src_cache:'सेव किया गया',src_code:'सिर्फ़ नियम',greenNote:'यह गारंटी नहीं है। कुछ भी गड़बड़ लगे तो पैसे न दें, लिंक न खोलें, और किसी भरोसेमंद से पूछें।',urls:'लिंक',phones:'फ़ोन',upi_ids:'UPI आईडी',amounts:'रकम',foot:'साइबर ठगी की शिकायत: <b>1930</b> पर कॉल करें या <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> पर जाएँ'},
   gu: {tag:'પૈસા ચૂકવતા કે ક્લિક કરતા પહેલાં શંકાસ્પદ મેસેજ તપાસો.',drop:'<strong>સ્ક્રીનશૉટ અહીં મૂકો</strong>, ક્લિક કરીને પસંદ કરો, અથવા પેસ્ટ કરો (Ctrl+V)',
     textLbl:'અથવા SMS / WhatsApp / UPI મેસેજ પેસ્ટ કરો',ph:'મેસેજ અહીં પેસ્ટ કરો...',check:'તપાસો',clear:'સાફ કરો',remove:'કાઢી નાખો',
-    samples:'નમૂનો અજમાવો (નકલી):',privacy:'ગોપનીયતા: મફત Gemini ટિયરમાં તમારું ઇનપુટ Google પોતાના ઉત્પાદનો સુધારવા વાપરી શકે છે. ડેમોમાં ફક્ત નકલી નમૂના વાપરો; અસલી મેસેજ માટે --local મોડ ચલાવો.',
+    samples:'નમૂનો અજમાવો (નકલી):',privacy:'ગોપનીયતા: મફત Gemini ટિયરમાં તમારું ઇનપુટ Google પોતાના ઉત્પાદનો સુધારવા વાપરી શકે છે. ડેમોમાં ફક્ત નકલી નમૂના વાપરો. અસલી મેસેજ માટે LLM_BACKEND=local સાથે તમારા કમ્પ્યુટર પર ચલાવો (કંઈ પણ તમારા કમ્પ્યુટરની બહાર જતું નથી).',
     red:'સ્કેમ - જોખમ',amber:'શંકાસ્પદ - સાવચેત રહો',green:'સુરક્ષિત લાગે છે',why:'શા માટે',todo:'શું કરવું',found:'મેસેજમાં મળ્યું',
-    speak:'સાંભળો',stop:'બંધ કરો',loading:'તપાસ ચાલુ છે...',empty:'કૃપા કરીને પહેલાં સ્ક્રીનશૉટ ઉમેરો અથવા મેસેજ પેસ્ટ કરો.',
+    speak:'સાંભળો',stop:'બંધ કરો',loading:'તપાસ ચાલુ છે...',slow:'Gemma સ્ક્રીનશૉટ વાંચી રહ્યું છે... એક મિનિટ સુધી લાગી શકે',slowTxt:'Gemma મેસેજ વાંચી રહ્યું છે... એક મિનિટ સુધી લાગી શકે',empty:'કૃપા કરીને પહેલાં સ્ક્રીનશૉટ ઉમેરો અથવા મેસેજ પેસ્ટ કરો.',
     err:'હમણાં તપાસ થઈ શકી નહીં. ફરી પ્રયત્ન કરો.',ai:'AI ઉપલબ્ધ નથી - આ પરિણામ ફક્ત નિયમ-આધારિત તપાસનું છે.',
     src_gemini:'AI (Gemma)',src_local:'ઑફલાઇન AI',src_cache:'સેવ કરેલ',src_code:'ફક્ત નિયમો',greenNote:'આ ગેરંટી નથી. કંઈ પણ શંકાસ્પદ લાગે તો પૈસા ન ચૂકવો, લિંક ન ખોલો, અને કોઈ વિશ્વાસુને પૂછો.',urls:'લિંક',phones:'ફોન',upi_ids:'UPI આઈડી',amounts:'રકમ',foot:'સાયબર છેતરપિંડીની ફરિયાદ: <b>1930</b> પર કૉલ કરો અથવા <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> પર જાઓ'}
 };
@@ -122,6 +122,9 @@ async function check(){
   const text = $('text').value.trim();
   if(!imageFile && !text){ showError(T[lang].empty); return; }
   hideAll(); $('loading').hidden = false; $('check').disabled = true; stopSpeak();
+  const t0 = Date.now(); $('loadTxt').textContent = T[lang].loading;
+  const tick = setInterval(() => { const s = Math.round((Date.now()-t0)/1000); if(s >= 8) $('loadTxt').textContent = (imageFile ? T[lang].slow : T[lang].slowTxt) + ' (' + s + 's)'; }, 1000);
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 120000);
   try{
     let data;
     if(MOCK){ await new Promise(r=>setTimeout(r,500)); data = MOCKS[lang]; }
@@ -130,13 +133,13 @@ async function check(){
       if(imageFile) fd.append('image', imageFile);
       if(text) fd.append('text', text);
       fd.append('lang', lang);
-      const r = await fetch('/api/check', {method:'POST', body: fd});
+      const r = await fetch('/api/check', {method:'POST', body: fd, signal: ctl.signal});
       if(!r.ok) throw new Error('HTTP '+r.status);
       data = await r.json();
     }
     render(data);
   }catch(err){ console.error(err); showError(T[lang].err); }
-  finally{ $('loading').hidden = true; $('check').disabled = false; }
+  finally{ clearInterval(tick); clearTimeout(to); $('loading').hidden = true; $('check').disabled = false; }
 }
 
 function showError(m){ $('error').textContent = m; $('error').hidden = false; $('result').hidden = true; }
