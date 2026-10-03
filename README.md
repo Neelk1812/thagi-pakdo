@@ -1,17 +1,32 @@
 # Thagi Pakdo (ઠગી પકડો) - Scam Checker
 
-Paste a suspicious SMS / WhatsApp / UPI message, or upload a screenshot of it, and get a big **RED / AMBER / GREEN** verdict, 2 to 4 plain-language reasons, and "what to do" steps (don't pay, don't click, block, report to **1930** / [cybercrime.gov.in](https://cybercrime.gov.in)). Works in **Gujarati, Hindi and English**, with a **Read-aloud** button for people who find reading hard.
+Paste a suspicious SMS / WhatsApp / UPI message, or upload a screenshot of it, and get a big **RED / AMBER / GREEN** verdict, 2 to 4 plain-language reasons, and "what to do" steps (don't pay, don't click, block, report to **1930** / [cybercrime.gov.in](https://cybercrime.gov.in)). It works in **Gujarati, Hindi and English**, can **read the answer aloud**, and can **draft the cybercrime-portal complaint** for you.
 
 Built for Hack Day Surat. "Thagi Pakdo" means "catch the con".
 
-> Status: draft written during the event. Items marked **[unverified]** have not yet been tested end to end.
+| Home | Scam result (Gujarati) | Complaint draft | Safe message |
+|---|---|---|---|
+| ![Home screen on a phone](docs/screens/mobile_home.png) | ![Red scam verdict in Gujarati](docs/screens/mobile_scam_gu.png) | ![Complaint drafting form](docs/screens/mobile_complaint_draft_real_en.png) | ![Green safe verdict](docs/screens/mobile_safe_en.png) |
+
+More screenshots (phone, tablet, laptop) are in [`docs/screens/`](docs/screens/).
+
+## Features
+
+- **Three languages**: Gujarati, Hindi, English, switchable at any time; the AI answer is written in the chosen language.
+- **Screenshot or text**: camera, gallery, drag-drop, paste, or type. Five fake one-tap samples (four scams, one safe).
+- **Rules plus AI**: plain-code checks (shortened/lookalike links, bad domain endings, urgency, fake KYC, OTP/PIN asks, UPI collect requests, fake prizes, courier fees) combined with a Gemma verdict. The final verdict is the more severe of the two, so the AI can never talk a strong rule hit down to green.
+- **Read-aloud** using the browser's speech voices; the button is hidden if the device has no voice for the language.
+- **Complaint drafting**: turns a result into a formal complaint for [cybercrime.gov.in](https://cybercrime.gov.in). Everything about you is optional; anything you don't give stays a visible `[placeholder]` and is never invented. Details you type are not cached or logged.
+- **Offline / rules fallback**: if Gemini is unreachable or rate-limited it fails over to a local Gemma server; if that is also down you still get a rules-only verdict marked "AI unavailable". Already-checked inputs are served from `sample_cache/`.
+- **Mobile-first** layout (checked at 390 px wide) with an installable web-app manifest.
+- **Optional Google sign-in with bring-your-own Gemini key** for hosts who don't want to pay for everyone's calls. **Off by default**; see [AUTH.md](AUTH.md).
 
 ## How it works
 
-1. **Plain-code checks (`checks.py`)** - no AI. Regex extraction of URLs, UPI IDs, phone numbers and amounts, plus flags for URL shorteners, lookalike/punycode domains, `http://`, suspicious TLDs (.xyz, .top, .click ...), urgency words, fake KYC, OTP/PIN requests, UPI collect requests, fake prizes and courier fees.
+1. **Plain-code checks (`checks.py`)** - no AI. Extracts URLs, UPI IDs, phone numbers and amounts and scores the warning signs.
 2. **Gemma (`llm.py`)** - reads the message or screenshot and returns strict JSON (verdict, scam type, reasons, advice) in the chosen language.
-3. **Combine** - the final verdict is the more severe of the code score and the Gemma verdict, so strong code flags can never be turned into green by the AI.
-4. **Fallbacks** - if Gemini fails (rate limit / network), it fails over to a local Gemma server; if both fail, you get a code-only verdict marked "AI unavailable". Results are cached in `sample_cache/` so the demo works offline or when rate-limited.
+3. **Combine (`app.py`)** - final verdict = the more severe of the rules and Gemma.
+4. **Complaint (`complaint.py`)** - AI draft with a deterministic offline template as fallback.
 
 ## Run it
 
@@ -25,9 +40,15 @@ cp .env.example .env                # then put your GEMINI_API_KEY in .env
 uvicorn app:app
 ```
 
-Without a key the app still runs: cached samples are served from `sample_cache/`, and anything else falls back to a local Gemma server (if configured) or to the rules-only verdict marked "AI unavailable".
+Open http://127.0.0.1:8000.
 
-Open http://127.0.0.1:8000. Check http://127.0.0.1:8000/api/health to see which backend is configured.
+**On your phone (same Wi-Fi):** start the server with `uvicorn app:app --host 0.0.0.0`, find your computer's local IP address, and open `http://<that-ip>:8000` on the phone. This serves plain HTTP on your LAN, so only use it on a network you trust; some phone features (such as the camera or install-as-app) may be restricted on non-HTTPS pages **[not tested on a real phone]**.
+
+Without a Gemini key the app still runs: cached samples are served from `sample_cache/`, and anything else falls back to a local Gemma server (if configured) or to the rules-only verdict marked "AI unavailable".
+
+### Live demo
+
+If the team shares a hosted link, it is **temporary** and may be offline or rate-limited. The repo is meant to be run locally, and the committed sample cache makes the five sample buttons work even with no key or internet.
 
 ### Configuration (environment variables / `.env`)
 
@@ -39,9 +60,11 @@ Copy `.env.example` to `.env` and fill it in (`.env` is git-ignored; never commi
 | `GEMINI_MODEL` | `gemma-4-26b-a4b-it` | Hosted model name |
 | `LLM_BACKEND` | `gemini` | `gemini` = Gemini first, fail over to local; `local` = local only |
 | `LOCAL_BASE_URL` | `http://localhost:11434/v1` | OpenAI-compatible endpoint (Ollama or llama.cpp server) |
-| `LOCAL_MODEL` | `gemma4:e4b` | Model name served locally |
+| `LOCAL_MODEL` | `gemma4:e4b` | Model name served locally (leave unset to use the default) |
 | `LOCAL_API_KEY` | `local` | Bearer token sent to the local server (usually ignored) |
 | `GEMINI_TIMEOUT_MS` / `LOCAL_TIMEOUT` | `30000` / `120` | Timeouts |
+| `GOOGLE_CLIENT_ID` | unset | Setting this turns on Google sign-in + bring-your-own-key (see below) |
+| `CACHE_DIR` | `sample_cache/` | Where cached results are stored |
 
 ### Local mode (real messages stay on your machine)
 
@@ -57,27 +80,45 @@ LLM_BACKEND=local LOCAL_BASE_URL=http://localhost:11434/v1 LOCAL_MODEL=gemma4:e4
 
 Local mode is selected with `LLM_BACKEND=local`. It has **not been tested with a real Gemma 4 E4B model [unverified]**; the local code path was only checked against a stub OpenAI-compatible server and unit tests.
 
+### Optional: Google sign-in and your own Gemini key
+
+Off by default. If you set `GOOGLE_CLIENT_ID` (a Google OAuth *web* client ID), then any request that needs a **new** Gemini call (a cache miss) must carry a Google ID token (`Authorization: Bearer ...`) and the user's own key (`X-Gemini-Key`). Cached results and the sample buttons stay open. The server's own key is not used in this mode. Full details and error codes are in [AUTH.md](AUTH.md).
+
+> **Sign-in & your own Gemini key (optional).** When the host enables Google sign-in, new (uncached) checks need you to sign in with Google and paste your own free Gemini API key from aistudio.google.com/apikey. Your key is sent with each request, used only for that request, and is never stored, cached or logged by this server. Your Google ID token is only used to confirm who you are. The sample buttons always work without signing in.
+
+## API
+
+| Endpoint | What it does |
+|---|---|
+| `POST /api/check` | multipart form: optional `image`, optional `text`, `lang=gu\|hi\|en`; returns the verdict JSON |
+| `POST /api/complaint` | JSON `{result, lang, details?}` where `result` is an `/api/check` response; returns `{subject, body, portal_url, helpline, missing_fields, source}` |
+| `GET /api/config` | `{auth_required, google_client_id}` |
+| `GET /api/health` | which backend and model are configured, and whether a key is present |
+| `GET /` | the web app (`web/`); `/samples/*` serves the fake samples |
+
 ## Speed and test status
 
-Measured on 3 Oct 2026 from a clean clone (server and client on the same machine, hosted Gemma over the internet):
+Re-measured on 3 Oct 2026 from a clean clone of this repo (server and client on the same machine; hosted Gemma over the internet):
 
 | Case | Time |
 |---|---|
-| Cached result (same image + text + language) | about 2 ms |
-| Live Gemma call, text only | about 2.4 to 5 s |
-| Live Gemma call, screenshot (with or without text) | about 4.5 to 5 s |
-| Gemini unreachable/bad key, rules-only answer | under 0.5 s |
+| Cached result (same image/text + language) | about 10 ms (roughly 4 to 30 ms) |
+| Live Gemma call, text only | about 2 to 4 s |
+| Live Gemma call, screenshot | about 3.8 to 5.3 s |
+| Live complaint draft | about 7.5 to 9 s |
+| Cached complaint draft | about 13 ms |
+| Gemini unreachable or bad key, rules-only answer | under 0.5 s |
 
-The cache key is the exact image bytes + text + language, so a different screenshot or even edited text is a live call. The committed `sample_cache/` covers the 5 fake samples sent as screenshot + text in en, hi and gu.
+The cache key is the exact input (image bytes and/or text) plus the language, so edited text or a different screenshot is a live call. The committed cache covers the five fake samples in en, hi and gu.
 
-Verified: all 5 samples (4 scams red, the safe OTP green) in en, hi and gu; image upload; a bad Gemini key falls back to the rules-only verdict ("AI unavailable"); failover to a local OpenAI-compatible endpoint works (tested against a stub server). **Not verified:** a real Gemma 4 E4B local model, and read-aloud voices on other machines. Run `pytest` for the unit tests.
+Verified from a clean clone: the 83 unit tests pass; all 5 samples give the right verdict (4 scams red, the safe OTP green) in en, hi and gu; image upload; live checks in all three languages; complaint drafting (live and offline template); a bad Gemini key and a dead local server both fall back to the rules-only verdict; failover to a local OpenAI-compatible endpoint (stub server); sign-in is off by default and returns clean 401 errors when switched on; the page has no horizontal scroll at 390 px wide. **Not verified:** a real Gemma 4 E4B local model, the Google sign-in flow with a real Google account, running on a real phone, and read-aloud voices on other devices.
 
 ## Privacy
 
 - With the **free Gemini tier, Google may use inputs to improve its products.** Do not paste real personal messages while using the hosted model.
 - The demo uses **only fake samples** (`samples/`).
 - For real messages, run locally with `LLM_BACKEND=local` so nothing leaves your machine.
-- The app itself stores nothing except cached results for already-checked inputs in `sample_cache/`. The cache committed in this repo was generated from the fake samples only; your own checks will add files there, so don't commit them.
+- The app stores nothing except cached results for already-checked inputs in `sample_cache/`. Complaint details you type (name, phone, amounts) are not cached or logged. The cache committed in this repo was generated from the fake samples only; your own checks will add files there, so don't commit them.
 
 ## Agent Skill
 
@@ -97,13 +138,17 @@ It prints JSON (`verdict`, `score`, `reasons`, `extracted`, `advice`) and exits 
 ## Project layout
 
 ```
-app.py            FastAPI app: POST /api/check, GET /api/health, serves web/ and /samples
+app.py            FastAPI app: /api/check, /api/complaint, /api/config, /api/health, serves web/ and /samples
 checks.py         Plain-code scam checks and severity scoring (no AI)
 llm.py            Gemini / local Gemma backends, JSON parsing, failover
-web/              Static front end (index.html, app.js, style.css), no build step
+complaint.py      Complaint drafting (AI draft + offline template)
+auth.py           Optional Google sign-in and bring-your-own-key checks
+AUTH.md           How the optional sign-in works
+web/              Static front end (index.html, app.js, style.css, manifest, icons), no build step
 samples/          Fake sample messages (.txt) and screenshots (.png)
 scripts/prewarm.py  Fills sample_cache/ by running every sample (en/hi/gu) through /api/check
 sample_cache/     Cached results keyed by input hash (fake samples only are committed)
+docs/screens/     UI screenshots used in this README
 .env.example      Template for configuration (copy to .env)
 skills/scam-check/  Agent Skill (SKILL.md + scripts/check.py)
 tests/            pytest tests
@@ -114,9 +159,9 @@ Run the tests with `pytest`.
 
 ## What's original
 
-All code, the UI, the samples and the Agent Skill in this repo were written during the event. That includes the rule-based scam checks tuned to Indian fraud patterns (KYC links, UPI collect requests, courier/India Post fees, KBC-style prizes), the "code can raise but AI can't lower" verdict combination, the Gemini-to-local failover with a code-only last resort, the cache, the Gujarati / Hindi / English front end with read-aloud, and the fake sample messages and screenshots.
+All code, the UI, the samples and the Agent Skill in this repo were written during the event. That includes the rule-based scam checks tuned to Indian fraud patterns (KYC links, UPI collect requests, courier/India Post fees, KBC-style prizes), the "code can raise but AI can't lower" verdict combination, the Gemini-to-local failover with a code-only last resort, the cache, the complaint drafting, the optional sign-in layer, the Gujarati / Hindi / English mobile-first front end with read-aloud, and the fake sample messages and screenshots.
 
-Third-party pieces we use (not written by us): FastAPI, uvicorn, python-multipart, httpx and the google-genai SDK at run time, and pytest for tests (see `requirements.txt`). At run time the app calls **Gemma 4 (`gemma-4-26b-a4b-it`) via Google AI Studio**, or Gemma 4 E4B locally, under Google's terms for those models.
+Third-party pieces we use (not written by us): FastAPI, uvicorn, python-multipart, httpx, Pillow, requests, google-auth and the google-genai SDK at run time, and pytest for tests (see `requirements.txt`). The optional sign-in page loads Google Identity Services from Google. At run time the app calls **Gemma 4 (`gemma-4-26b-a4b-it`) via Google AI Studio**, or Gemma 4 E4B locally, under Google's terms for those models.
 
 ## AI assistants used
 
@@ -124,7 +169,7 @@ Built with AI coding agents (Grok Bot agents) during the event, which helped pla
 
 ## Limits
 
-This is a helper, not a guarantee. A GREEN result means no known warning signs were found. If money is lost, call **1930** immediately and report at [cybercrime.gov.in](https://cybercrime.gov.in).
+This is a helper, not a guarantee. A GREEN result means no known warning signs were found. The complaint text is a draft: read and correct it before submitting it yourself on the official portal. If money is lost, call **1930** immediately and report at [cybercrime.gov.in](https://cybercrime.gov.in).
 
 ## License
 
