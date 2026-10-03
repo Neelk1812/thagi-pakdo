@@ -1,5 +1,5 @@
 """LLM backends: Gemini (google-genai) with failover to a local OpenAI-compatible server."""
-import base64, io, json, logging, os, re, threading, time
+import base64, io, json, logging, os, random, re, threading, time
 
 log = logging.getLogger("thagi.llm")
 
@@ -198,6 +198,10 @@ def scrub(s):
     """Redact API keys / bearer tokens / JWTs from any string before it is logged."""
     for rx, rep in _SECRET:
         s = rx.sub(rep, s)
+    for env in ("GEMINI_API_KEY", "GEMINI_API_KEY_2", "GOOGLE_API_KEY"):  # literal server keys, whatever their format
+        v = os.environ.get(env, "")
+        if len(v) >= 8:
+            s = s.replace(v, "<key>")
     return s
 
 
@@ -232,31 +236,61 @@ def _describe(e):
     return f"{type(e).__name__}: {scrub(str(e)).replace(chr(10), ' ')[:200]}"
 
 
+def _plan(api_key):
+    """Gemini attempt plan [(key|None, label)]. BYO key (auth mode): the caller's key twice, nothing else.
+    Server path: primary key twice (one retry), then the OPTIONAL failover key GEMINI_API_KEY_2 once. None = primary env key."""
+    if api_key is not None:
+        return [(api_key, "user"), (api_key, "user")]
+    primary = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    key2 = os.environ.get("GEMINI_API_KEY_2")
+    if primary:
+        return [(None, "primary"), (None, "primary")] + ([(key2, "key2")] if key2 else [])
+    return [(key2, "key2"), (key2, "key2")] if key2 else [(None, "primary"), (None, "primary")]
+
+
+def _may_continue(plan, i, prev, deadline):
+    """Decide (and wait) before attempt i. prev = (label, kind) of the previous failure. Same key: retry once after ~0.8-1.4s
+    jitter on a transient error (429/503/timeout) or at once on a parse error; failover key: only after a transient error.
+    Never starts a retry that cannot finish inside the budget."""
+    if prev is None:
+        return True
+    plabel, pkind = prev
+    if plan[i][1] == plabel:
+        if pkind == "transient":
+            pause = random.uniform(0.8, 1.4)
+            if deadline - time.time() - pause < 4:
+                return False
+            time.sleep(pause)
+        return pkind in ("transient", "parse")
+    return pkind == "transient"
+
+
 def _gemini_with_retry(text, image, mime, lang, deadline, api_key=None):
-    """Gemini call + parse; ONE quick retry (<=1s pause) on parse failure or transient error, inside the deadline."""
-    last = None
-    for attempt in (1, 2):
-        left = deadline - time.time()
-        if left < 4:
+    """Gemini call + parse. Server key: primary, one retry on the primary (jittered ~1s on 429/503/timeout), then GEMINI_API_KEY_2 once
+    (optional), all inside the deadline. BYO key: only the caller's key (retry once), invalid key => KEY_ERR, never a fallback."""
+    last, prev, plan = None, None, _plan(api_key)
+    for attempt, (key, label) in enumerate(plan, 1):
+        if deadline - time.time() < 4 or not _may_continue(plan, attempt - 1, prev, deadline):
             break
+        left = deadline - time.time()
         t0 = time.time()
         try:
             with _SEM:
                 t_s = min(float(os.environ.get("GEMINI_TIMEOUT_MS", "15000")) / 1000, left)
-                raw = BACKENDS["gemini"](text, image, mime, lang, t_s) if api_key is None else \
-                    BACKENDS["gemini"](text, image, mime, lang, t_s, api_key=api_key)
+                raw = BACKENDS["gemini"](text, image, mime, lang, t_s) if key is None else \
+                    BACKENDS["gemini"](text, image, mime, lang, t_s, api_key=key)
             res = parse_json(raw)
-            log.info("gemini ok attempt=%d %.1fs lang=%s", attempt, time.time() - t0, lang)
+            log.info("gemini ok attempt=%d key=%s %.1fs lang=%s", attempt, label, time.time() - t0, lang)
             return res
         except Exception as e:
             last = e
             if api_key is not None and _user_error(e) is KEY_ERR:
                 raise KEY_ERR
             kind = "parse" if isinstance(e, ValueError) else ("transient" if _is_transient(e) else "error")
-            log.warning("gemini fail attempt=%d %.1fs lang=%s kind=%s %s", attempt, time.time() - t0, lang, kind, _describe(e))
+            log.warning("gemini fail attempt=%d key=%s %.1fs lang=%s kind=%s %s", attempt, label, time.time() - t0, lang, kind, _describe(e))
             if kind == "error":
                 break
-            time.sleep(0.5 if kind == "transient" else 0)
+            prev = (label, kind)
     if api_key is not None and last is not None and _user_error(last) is RATE_ERR:
         raise RATE_ERR
     raise last or RuntimeError("no time left for gemini")
@@ -291,14 +325,16 @@ def draft_text(prompt, validate, max_tokens=2000, api_key=None):
         order = ["gemini"]
     deadline, errors, last = time.time() + TOTAL_BUDGET, [], None
     for name in order:
-        for attempt in (1, 2):
-            left = deadline - time.time()
-            if left < 4:
+        plan = _plan(api_key) if name == "gemini" else [(None, "local")]
+        prev = None
+        for attempt, (key, label) in enumerate(plan, 1):
+            if deadline - time.time() < 4 or not _may_continue(plan, attempt - 1, prev, deadline):
                 break
+            left = deadline - time.time()
             try:
                 fn = _gemini if name == "gemini" else _local
                 with _SEM:
-                    kw = {"api_key": api_key} if api_key is not None else {}
+                    kw = {"api_key": key} if key is not None else {}
                     raw = fn("", None, "", "en", timeout_s=min(float(os.environ.get("GEMINI_TIMEOUT_MS", "15000")) / 1000, left),
                              prompt=prompt, max_tokens=max_tokens, **kw)
                 return validate(raw), name
@@ -308,10 +344,10 @@ def draft_text(prompt, validate, max_tokens=2000, api_key=None):
                     raise KEY_ERR
                 kind = "parse" if isinstance(e, ValueError) else ("transient" if _is_transient(e) else "error")
                 errors.append(f"{name}:{type(e).__name__}")
-                log.warning("draft_text %s attempt=%d failed kind=%s %s", name, attempt, kind, type(e).__name__)
+                log.warning("draft_text %s attempt=%d key=%s failed kind=%s %s", name, attempt, label, kind, type(e).__name__)
                 if kind == "error" or name == "local":
                     break
-                time.sleep(0.5 if kind == "transient" else 0)
+                prev = (label, kind)
     if api_key is not None and last is not None and _user_error(last) is RATE_ERR:
         raise RATE_ERR
     raise LLMUnavailable("; ".join(errors) or "no time left")
