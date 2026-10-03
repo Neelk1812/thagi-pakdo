@@ -1,7 +1,14 @@
 (() => {
 const $ = id => document.getElementById(id);
+const MEM = {};
+const area = sess => sess ? window.sessionStorage : window.localStorage; // may throw in cross-site iframes
+const store = {
+  get(k, sess){ try{ const v = area(sess).getItem(k); if(v !== null) return v; }catch(_){} return k in MEM ? MEM[k] : null; },
+  set(k, v, sess){ MEM[k] = String(v); try{ area(sess).setItem(k, v); }catch(_){} },
+  del(k, sess){ delete MEM[k]; try{ area(sess).removeItem(k); }catch(_){} }
+};
 const MOCK = new URLSearchParams(location.search).has('mock');
-let lang = localStorage.getItem('tp_lang') || 'en';
+let lang = store.get('tp_lang') || 'en';
 let imageFile = null;
 let last = null;
 
@@ -12,21 +19,21 @@ const T = {
     red:'SCAM - DANGER',amber:'SUSPICIOUS - BE CAREFUL',green:'LOOKS SAFE',why:'Why',todo:'What to do',found:'Found in the message',
     speak:'Read aloud',stop:'Stop',loading:'Checking...',slow:'Gemma is reading the screenshot... this can take up to a minute',slowTxt:'Gemma is reading the message... this can take up to a minute',empty:'Please add a screenshot or paste a message first.',
     err:'Could not check right now. Please try again.',ai:'AI is unavailable - this result is from rule-based checks only.',
-    src_gemini:'AI (Gemma)',src_local:'Offline AI',src_cache:'Cached',src_code:'Rules only',greenNote:'This still isn\'t a guarantee. If anything feels off, don\'t pay or click, and ask someone you trust.',camera:'Camera',gallery:'Gallery',pasteUp:'Paste / Upload',call:'Call 1930 (cyber helpline)',rep:'Report at cybercrime.gov.in',hint:'Take a photo, pick a screenshot, or drop / paste one here.',draft:'Draft complaint',dTitle:'Draft a complaint',dIntro:'All fields are optional. Skip anything you do not want to share.',fName:'Your name',fPhone:'Your phone',fAmount:'Amount lost (Rs)',fMethod:'Paid via',fWhat:'What happened',fDate:'Date & time',fTxn:'Transaction ID',more:'More details',mNone:'Select',mUpi:'UPI',mCard:'Card',mNet:'Net banking',mCash:'Cash',mOther:'Other',gen:'Generate',regen:'Generate again',gening:'Drafting...',subject:'Subject',body:'Complaint text (you can edit it)',copy:'Copy',copied:'Copied!',share:'Share',dl:'Download',openPortal:'Open cybercrime.gov.in',note:'Review before submitting. Do not include real Aadhaar, PIN or OTP.',missing:'Still to fill in:',cErr:'Could not draft the complaint. Please try again.',cTime:'Taking too long. Please try again.',aTitle:'Sign in to run live AI checks',aWhy:'Sample buttons work without signing in. Checking your own messages needs a Google sign-in and your own free Gemini key.',aOut:'Sign out',aKeyLbl:'Your Gemini API key',aShow:'Show',aHide:'Hide',aGet:'Get a free key',aRemove:'Remove key',aPriv:'Your key stays on this device and is sent only with your own checks.',eLogin:'Please sign in with Google to check your own messages. The sample buttons work without signing in.',eInvalid:'Your sign-in has expired. Please sign in with Google again.',eKey:'Please add your free Gemini API key below to check your own messages.',eKeyBad:'That Gemini API key was not accepted. Please check it or add a new one.',eRate:'Your Gemini key hit its usage limit. Please wait a minute and try again.',urls:'Links',phones:'Phones',upi_ids:'UPI IDs',amounts:'Amounts',foot:'Report cyber fraud: call <b>1930</b> or visit <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>'},
+    src_gemini:'AI (Gemma)',src_local:'Offline AI',src_cache:'Cached',src_code:'Rules only',greenNote:'This still isn\'t a guarantee. If anything feels off, don\'t pay or click, and ask someone you trust.',camera:'Camera',gallery:'Gallery',pasteUp:'Paste / Upload',call:'Call 1930 (cyber helpline)',rep:'Report at cybercrime.gov.in',hint:'Take a photo, pick a screenshot, or drop / paste one here.',draft:'Draft complaint',dTitle:'Draft a complaint',dIntro:'All fields are optional. Skip anything you do not want to share.',fName:'Your name',fPhone:'Your phone',fAmount:'Amount lost (Rs)',fMethod:'Paid via',fWhat:'What happened',fDate:'Date & time',fTxn:'Transaction ID',more:'More details',mNone:'Select',mUpi:'UPI',mCard:'Card',mNet:'Net banking',mCash:'Cash',mOther:'Other',gen:'Generate',regen:'Generate again',gening:'Drafting...',subject:'Subject',body:'Complaint text (you can edit it)',copy:'Copy',copied:'Copied!',share:'Share',dl:'Download',openPortal:'Open cybercrime.gov.in',note:'Review before submitting. Do not include real Aadhaar, PIN or OTP.',missing:'Still to fill in:',cErr:'Could not draft the complaint. Please try again.',cTime:'Taking too long. Please try again.',aTitle:'Sign in to run live AI checks',aWhy:'Sample buttons work without signing in. Checking your own messages needs a Google sign-in and your own free Gemini key.',aOut:'Sign out',aKeyLbl:'Your Gemini API key',aShow:'Show',aHide:'Hide',aGet:'Get a free key',aRemove:'Remove key',aPriv:'Your key stays on this device and is sent only with your own checks.',eLogin:'Please sign in with Google to check your own messages. The sample buttons work without signing in.',eInvalid:'Your sign-in has expired. Please sign in with Google again.',eKey:'Please add your free Gemini API key below to check your own messages.',eKeyBad:'That Gemini API key was not accepted. Please check it or add a new one.',eRate:'Your Gemini key hit its usage limit. Please wait a minute and try again.',e413:'Image too large. Please try a smaller screenshot.',urls:'Links',phones:'Phones',upi_ids:'UPI IDs',amounts:'Amounts',foot:'Report cyber fraud: call <b>1930</b> or visit <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>'},
   hi: {tag:'पैसे देने या क्लिक करने से पहले संदिग्ध मैसेज जाँचें।',drop:'<strong>स्क्रीनशॉट यहाँ छोड़ें</strong>, क्लिक करके चुनें, या पेस्ट करें (Ctrl+V)',
     textLbl:'या SMS / WhatsApp / UPI मैसेज पेस्ट करें',ph:'मैसेज यहाँ पेस्ट करें...',check:'जाँचें',clear:'साफ़ करें',remove:'हटाएँ',
     samples:'नमूना आज़माएँ (नकली):',privacy:'गोपनीयता: मुफ़्त Gemini टियर में आपका इनपुट Google अपने उत्पाद सुधारने में इस्तेमाल कर सकता है। डेमो में सिर्फ़ नकली नमूने इस्तेमाल करें। असली मैसेज के लिए LLM_BACKEND=local के साथ अपने कंप्यूटर पर चलाएँ (कुछ भी आपके कंप्यूटर से बाहर नहीं जाता)।',
     red:'स्कैम - ख़तरा',amber:'संदिग्ध - सावधान रहें',green:'सुरक्षित लगता है',why:'क्यों',todo:'क्या करें',found:'मैसेज में मिला',
     speak:'सुनें',stop:'रोकें',loading:'जाँच हो रही है...',slow:'Gemma स्क्रीनशॉट पढ़ रहा है... इसमें एक मिनट तक लग सकता है',slowTxt:'Gemma मैसेज पढ़ रहा है... इसमें एक मिनट तक लग सकता है',empty:'कृपया पहले स्क्रीनशॉट जोड़ें या मैसेज पेस्ट करें।',
     err:'अभी जाँच नहीं हो सकी। कृपया दोबारा कोशिश करें।',ai:'AI उपलब्ध नहीं है - यह नतीजा सिर्फ़ नियम-आधारित जाँच से है।',
-    src_gemini:'AI (Gemma)',src_local:'ऑफ़लाइन AI',src_cache:'सेव किया गया',src_code:'सिर्फ़ नियम',greenNote:'यह गारंटी नहीं है। कुछ भी गड़बड़ लगे तो पैसे न दें, लिंक न खोलें, और किसी भरोसेमंद से पूछें।',camera:'कैमरा',gallery:'गैलरी',pasteUp:'पेस्ट / अपलोड',call:'1930 पर कॉल करें (साइबर हेल्पलाइन)',rep:'cybercrime.gov.in पर शिकायत करें',hint:'फ़ोटो खींचें, स्क्रीनशॉट चुनें, या यहाँ छोड़ें / पेस्ट करें।',draft:'शिकायत का मसौदा बनाएँ',dTitle:'शिकायत का मसौदा',dIntro:'सभी जानकारी वैकल्पिक है। जो साझा नहीं करना चाहते उसे छोड़ दें।',fName:'आपका नाम',fPhone:'आपका फ़ोन',fAmount:'गँवाई रकम (रु)',fMethod:'भुगतान का तरीका',fWhat:'क्या हुआ',fDate:'तारीख़ और समय',fTxn:'ट्रांज़ैक्शन आईडी',more:'और जानकारी',mNone:'चुनें',mUpi:'UPI',mCard:'कार्ड',mNet:'नेट बैंकिंग',mCash:'नकद',mOther:'अन्य',gen:'बनाएँ',regen:'फिर से बनाएँ',gening:'बन रहा है...',subject:'विषय',body:'शिकायत का पाठ (आप बदल सकते हैं)',copy:'कॉपी',copied:'कॉपी हो गया!',share:'शेयर',dl:'डाउनलोड',openPortal:'cybercrime.gov.in खोलें',note:'जमा करने से पहले जाँच लें। असली आधार, PIN या OTP न लिखें।',missing:'अभी भरना बाकी:',cErr:'शिकायत का मसौदा नहीं बन सका। कृपया दोबारा कोशिश करें।',cTime:'बहुत देर लग रही है। कृपया दोबारा कोशिश करें।',aTitle:'लाइव AI जाँच के लिए साइन इन करें',aWhy:'सैंपल बटन बिना साइन इन के चलते हैं। अपने मैसेज जाँचने के लिए Google साइन-इन और आपकी अपनी मुफ़्त Gemini कुंजी चाहिए।',aOut:'साइन आउट',aKeyLbl:'आपकी Gemini API कुंजी',aShow:'दिखाएँ',aHide:'छिपाएँ',aGet:'मुफ़्त कुंजी पाएँ',aRemove:'कुंजी हटाएँ',aPriv:'आपकी कुंजी इसी डिवाइस पर रहती है और सिर्फ़ आपकी अपनी जाँच के साथ भेजी जाती है।',eLogin:'अपने मैसेज जाँचने के लिए कृपया Google से साइन इन करें। सैंपल बटन बिना साइन इन के चलते हैं।',eInvalid:'आपका साइन-इन समाप्त हो गया है। कृपया Google से दोबारा साइन इन करें।',eKey:'अपने मैसेज जाँचने के लिए कृपया नीचे अपनी मुफ़्त Gemini API कुंजी जोड़ें।',eKeyBad:'यह Gemini API कुंजी स्वीकार नहीं हुई। कृपया जाँचें या नई कुंजी जोड़ें।',eRate:'आपकी Gemini कुंजी की सीमा पूरी हो गई है। कृपया एक मिनट रुककर दोबारा कोशिश करें।',urls:'लिंक',phones:'फ़ोन',upi_ids:'UPI आईडी',amounts:'रकम',foot:'साइबर ठगी की शिकायत: <b>1930</b> पर कॉल करें या <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> पर जाएँ'},
+    src_gemini:'AI (Gemma)',src_local:'ऑफ़लाइन AI',src_cache:'सेव किया गया',src_code:'सिर्फ़ नियम',greenNote:'यह गारंटी नहीं है। कुछ भी गड़बड़ लगे तो पैसे न दें, लिंक न खोलें, और किसी भरोसेमंद से पूछें।',camera:'कैमरा',gallery:'गैलरी',pasteUp:'पेस्ट / अपलोड',call:'1930 पर कॉल करें (साइबर हेल्पलाइन)',rep:'cybercrime.gov.in पर शिकायत करें',hint:'फ़ोटो खींचें, स्क्रीनशॉट चुनें, या यहाँ छोड़ें / पेस्ट करें।',draft:'शिकायत का मसौदा बनाएँ',dTitle:'शिकायत का मसौदा',dIntro:'सभी जानकारी वैकल्पिक है। जो साझा नहीं करना चाहते उसे छोड़ दें।',fName:'आपका नाम',fPhone:'आपका फ़ोन',fAmount:'गँवाई रकम (रु)',fMethod:'भुगतान का तरीका',fWhat:'क्या हुआ',fDate:'तारीख़ और समय',fTxn:'ट्रांज़ैक्शन आईडी',more:'और जानकारी',mNone:'चुनें',mUpi:'UPI',mCard:'कार्ड',mNet:'नेट बैंकिंग',mCash:'नकद',mOther:'अन्य',gen:'बनाएँ',regen:'फिर से बनाएँ',gening:'बन रहा है...',subject:'विषय',body:'शिकायत का पाठ (आप बदल सकते हैं)',copy:'कॉपी',copied:'कॉपी हो गया!',share:'शेयर',dl:'डाउनलोड',openPortal:'cybercrime.gov.in खोलें',note:'जमा करने से पहले जाँच लें। असली आधार, PIN या OTP न लिखें।',missing:'अभी भरना बाकी:',cErr:'शिकायत का मसौदा नहीं बन सका। कृपया दोबारा कोशिश करें।',cTime:'बहुत देर लग रही है। कृपया दोबारा कोशिश करें।',aTitle:'लाइव AI जाँच के लिए साइन इन करें',aWhy:'सैंपल बटन बिना साइन इन के चलते हैं। अपने मैसेज जाँचने के लिए Google साइन-इन और आपकी अपनी मुफ़्त Gemini कुंजी चाहिए।',aOut:'साइन आउट',aKeyLbl:'आपकी Gemini API कुंजी',aShow:'दिखाएँ',aHide:'छिपाएँ',aGet:'मुफ़्त कुंजी पाएँ',aRemove:'कुंजी हटाएँ',aPriv:'आपकी कुंजी इसी डिवाइस पर रहती है और सिर्फ़ आपकी अपनी जाँच के साथ भेजी जाती है।',eLogin:'अपने मैसेज जाँचने के लिए कृपया Google से साइन इन करें। सैंपल बटन बिना साइन इन के चलते हैं।',eInvalid:'आपका साइन-इन समाप्त हो गया है। कृपया Google से दोबारा साइन इन करें।',eKey:'अपने मैसेज जाँचने के लिए कृपया नीचे अपनी मुफ़्त Gemini API कुंजी जोड़ें।',eKeyBad:'यह Gemini API कुंजी स्वीकार नहीं हुई। कृपया जाँचें या नई कुंजी जोड़ें।',eRate:'आपकी Gemini कुंजी की सीमा पूरी हो गई है। कृपया एक मिनट रुककर दोबारा कोशिश करें।',e413:'तस्वीर बहुत बड़ी है। कृपया छोटा स्क्रीनशॉट आज़माएँ।',urls:'लिंक',phones:'फ़ोन',upi_ids:'UPI आईडी',amounts:'रकम',foot:'साइबर ठगी की शिकायत: <b>1930</b> पर कॉल करें या <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> पर जाएँ'},
   gu: {tag:'પૈસા ચૂકવતા કે ક્લિક કરતા પહેલાં શંકાસ્પદ મેસેજ તપાસો.',drop:'<strong>સ્ક્રીનશૉટ અહીં મૂકો</strong>, ક્લિક કરીને પસંદ કરો, અથવા પેસ્ટ કરો (Ctrl+V)',
     textLbl:'અથવા SMS / WhatsApp / UPI મેસેજ પેસ્ટ કરો',ph:'મેસેજ અહીં પેસ્ટ કરો...',check:'તપાસો',clear:'સાફ કરો',remove:'કાઢી નાખો',
     samples:'નમૂનો અજમાવો (નકલી):',privacy:'ગોપનીયતા: મફત Gemini ટિયરમાં તમારું ઇનપુટ Google પોતાના ઉત્પાદનો સુધારવા વાપરી શકે છે. ડેમોમાં ફક્ત નકલી નમૂના વાપરો. અસલી મેસેજ માટે LLM_BACKEND=local સાથે તમારા કમ્પ્યુટર પર ચલાવો (કંઈ પણ તમારા કમ્પ્યુટરની બહાર જતું નથી).',
     red:'સ્કેમ - જોખમ',amber:'શંકાસ્પદ - સાવચેત રહો',green:'સુરક્ષિત લાગે છે',why:'શા માટે',todo:'શું કરવું',found:'મેસેજમાં મળ્યું',
     speak:'સાંભળો',stop:'બંધ કરો',loading:'તપાસ ચાલુ છે...',slow:'Gemma સ્ક્રીનશૉટ વાંચી રહ્યું છે... એક મિનિટ સુધી લાગી શકે',slowTxt:'Gemma મેસેજ વાંચી રહ્યું છે... એક મિનિટ સુધી લાગી શકે',empty:'કૃપા કરીને પહેલાં સ્ક્રીનશૉટ ઉમેરો અથવા મેસેજ પેસ્ટ કરો.',
     err:'હમણાં તપાસ થઈ શકી નહીં. ફરી પ્રયત્ન કરો.',ai:'AI ઉપલબ્ધ નથી - આ પરિણામ ફક્ત નિયમ-આધારિત તપાસનું છે.',
-    src_gemini:'AI (Gemma)',src_local:'ઑફલાઇન AI',src_cache:'સેવ કરેલ',src_code:'ફક્ત નિયમો',greenNote:'આ ગેરંટી નથી. કંઈ પણ શંકાસ્પદ લાગે તો પૈસા ન ચૂકવો, લિંક ન ખોલો, અને કોઈ વિશ્વાસુને પૂછો.',camera:'કૅમેરા',gallery:'ગેલેરી',pasteUp:'પેસ્ટ / અપલોડ',call:'1930 પર કૉલ કરો (સાયબર હેલ્પલાઇન)',rep:'cybercrime.gov.in પર ફરિયાદ કરો',hint:'ફોટો લો, સ્ક્રીનશૉટ પસંદ કરો, અથવા અહીં મૂકો / પેસ્ટ કરો.',draft:'ફરિયાદનો ડ્રાફ્ટ બનાવો',dTitle:'ફરિયાદનો ડ્રાફ્ટ',dIntro:'બધી માહિતી વૈકલ્પિક છે. જે શેર ન કરવી હોય તે છોડી દો.',fName:'તમારું નામ',fPhone:'તમારો ફોન',fAmount:'ગુમાવેલી રકમ (રૂ)',fMethod:'ચુકવણીની રીત',fWhat:'શું થયું',fDate:'તારીખ અને સમય',fTxn:'ટ્રાન્ઝેક્શન આઈડી',more:'વધુ માહિતી',mNone:'પસંદ કરો',mUpi:'UPI',mCard:'કાર્ડ',mNet:'નેટ બેંકિંગ',mCash:'રોકડ',mOther:'અન્ય',gen:'બનાવો',regen:'ફરી બનાવો',gening:'બની રહ્યું છે...',subject:'વિષય',body:'ફરિયાદનો લખાણ (તમે ફેરફાર કરી શકો)',copy:'કૉપી',copied:'કૉપી થયું!',share:'શેર',dl:'ડાઉનલોડ',openPortal:'cybercrime.gov.in ખોલો',note:'સબમિટ કરતા પહેલાં તપાસી લો. અસલી આધાર, PIN કે OTP ન લખો.',missing:'હજી ભરવાનું બાકી:',cErr:'ફરિયાદનો ડ્રાફ્ટ બની શક્યો નહીં. ફરી પ્રયત્ન કરો.',cTime:'ખૂબ વાર લાગે છે. ફરી પ્રયત્ન કરો.',aTitle:'લાઇવ AI તપાસ માટે સાઇન ઇન કરો',aWhy:'સેમ્પલ બટન સાઇન ઇન વગર ચાલે છે. તમારા પોતાના મેસેજ તપાસવા Google સાઇન-ઇન અને તમારી પોતાની મફત Gemini કી જોઈએ.',aOut:'સાઇન આઉટ',aKeyLbl:'તમારી Gemini API કી',aShow:'બતાવો',aHide:'છુપાવો',aGet:'મફત કી મેળવો',aRemove:'કી કાઢી નાખો',aPriv:'તમારી કી આ ડિવાઇસ પર જ રહે છે અને ફક્ત તમારી પોતાની તપાસ સાથે મોકલાય છે.',eLogin:'તમારા મેસેજ તપાસવા કૃપા કરીને Google થી સાઇન ઇન કરો. સેમ્પલ બટન સાઇન ઇન વગર ચાલે છે.',eInvalid:'તમારું સાઇન-ઇન પૂરું થઈ ગયું છે. કૃપા કરીને Google થી ફરી સાઇન ઇન કરો.',eKey:'તમારા મેસેજ તપાસવા કૃપા કરીને નીચે તમારી મફત Gemini API કી ઉમેરો.',eKeyBad:'આ Gemini API કી સ્વીકારાઈ નથી. કૃપા કરીને તપાસો અથવા નવી કી ઉમેરો.',eRate:'તમારી Gemini કીની મર્યાદા પૂરી થઈ ગઈ છે. એક મિનિટ રાહ જોઈને ફરી પ્રયત્ન કરો.',urls:'લિંક',phones:'ફોન',upi_ids:'UPI આઈડી',amounts:'રકમ',foot:'સાયબર છેતરપિંડીની ફરિયાદ: <b>1930</b> પર કૉલ કરો અથવા <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> પર જાઓ'}
+    src_gemini:'AI (Gemma)',src_local:'ઑફલાઇન AI',src_cache:'સેવ કરેલ',src_code:'ફક્ત નિયમો',greenNote:'આ ગેરંટી નથી. કંઈ પણ શંકાસ્પદ લાગે તો પૈસા ન ચૂકવો, લિંક ન ખોલો, અને કોઈ વિશ્વાસુને પૂછો.',camera:'કૅમેરા',gallery:'ગેલેરી',pasteUp:'પેસ્ટ / અપલોડ',call:'1930 પર કૉલ કરો (સાયબર હેલ્પલાઇન)',rep:'cybercrime.gov.in પર ફરિયાદ કરો',hint:'ફોટો લો, સ્ક્રીનશૉટ પસંદ કરો, અથવા અહીં મૂકો / પેસ્ટ કરો.',draft:'ફરિયાદનો ડ્રાફ્ટ બનાવો',dTitle:'ફરિયાદનો ડ્રાફ્ટ',dIntro:'બધી માહિતી વૈકલ્પિક છે. જે શેર ન કરવી હોય તે છોડી દો.',fName:'તમારું નામ',fPhone:'તમારો ફોન',fAmount:'ગુમાવેલી રકમ (રૂ)',fMethod:'ચુકવણીની રીત',fWhat:'શું થયું',fDate:'તારીખ અને સમય',fTxn:'ટ્રાન્ઝેક્શન આઈડી',more:'વધુ માહિતી',mNone:'પસંદ કરો',mUpi:'UPI',mCard:'કાર્ડ',mNet:'નેટ બેંકિંગ',mCash:'રોકડ',mOther:'અન્ય',gen:'બનાવો',regen:'ફરી બનાવો',gening:'બની રહ્યું છે...',subject:'વિષય',body:'ફરિયાદનો લખાણ (તમે ફેરફાર કરી શકો)',copy:'કૉપી',copied:'કૉપી થયું!',share:'શેર',dl:'ડાઉનલોડ',openPortal:'cybercrime.gov.in ખોલો',note:'સબમિટ કરતા પહેલાં તપાસી લો. અસલી આધાર, PIN કે OTP ન લખો.',missing:'હજી ભરવાનું બાકી:',cErr:'ફરિયાદનો ડ્રાફ્ટ બની શક્યો નહીં. ફરી પ્રયત્ન કરો.',cTime:'ખૂબ વાર લાગે છે. ફરી પ્રયત્ન કરો.',aTitle:'લાઇવ AI તપાસ માટે સાઇન ઇન કરો',aWhy:'સેમ્પલ બટન સાઇન ઇન વગર ચાલે છે. તમારા પોતાના મેસેજ તપાસવા Google સાઇન-ઇન અને તમારી પોતાની મફત Gemini કી જોઈએ.',aOut:'સાઇન આઉટ',aKeyLbl:'તમારી Gemini API કી',aShow:'બતાવો',aHide:'છુપાવો',aGet:'મફત કી મેળવો',aRemove:'કી કાઢી નાખો',aPriv:'તમારી કી આ ડિવાઇસ પર જ રહે છે અને ફક્ત તમારી પોતાની તપાસ સાથે મોકલાય છે.',eLogin:'તમારા મેસેજ તપાસવા કૃપા કરીને Google થી સાઇન ઇન કરો. સેમ્પલ બટન સાઇન ઇન વગર ચાલે છે.',eInvalid:'તમારું સાઇન-ઇન પૂરું થઈ ગયું છે. કૃપા કરીને Google થી ફરી સાઇન ઇન કરો.',eKey:'તમારા મેસેજ તપાસવા કૃપા કરીને નીચે તમારી મફત Gemini API કી ઉમેરો.',eKeyBad:'આ Gemini API કી સ્વીકારાઈ નથી. કૃપા કરીને તપાસો અથવા નવી કી ઉમેરો.',eRate:'તમારી Gemini કીની મર્યાદા પૂરી થઈ ગઈ છે. એક મિનિટ રાહ જોઈને ફરી પ્રયત્ન કરો.',e413:'ફોટો બહુ મોટો છે. કૃપા કરીને નાનો સ્ક્રીનશૉટ અજમાવો.',urls:'લિંક',phones:'ફોન',upi_ids:'UPI આઈડી',amounts:'રકમ',foot:'સાયબર છેતરપિંડીની ફરિયાદ: <b>1930</b> પર કૉલ કરો અથવા <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> પર જાઓ'}
 };
 const SPEECH = {en:'en-IN',hi:'hi-IN',gu:'gu-IN'};
 const ICON = {
@@ -125,7 +132,7 @@ $('pasteUp').onclick = async () => {
   $('file').click(); // clipboard empty or blocked: open the gallery picker
 };
 document.querySelectorAll('.lang').forEach(b => b.onclick = () => {
-  lang = b.dataset.lang; localStorage.setItem('tp_lang', lang); stopSpeak(); applyLang();
+  lang = b.dataset.lang; store.set('tp_lang', lang); stopSpeak(); applyLang();
   if(last && (imageFile || $('text').value.trim())) check(); // re-run so the result comes back in the new language
 });
 
@@ -137,10 +144,32 @@ async function runSample(s){
     fetch('/samples/'+s.id+'.png').then(r => r.ok ? r.blob() : null).catch(() => null),
     fetch('/samples/'+s.id+'.txt').then(r => r.ok ? r.text() : null).catch(() => null)
   ]);
-  if(img && img.type.startsWith('image/')) setImage(new File([img], s.id+'.png', {type:img.type}));
+  if(img && img.type.startsWith('image/')){ const sf = new File([img], s.id+'.png', {type:img.type}); sf._sample = true; setImage(sf); }
   // send image + text together (identical inputs keep the cache warm); fall back to embedded text
   $('text').value = (txt && txt.trim()) || s.text;
   check();
+}
+
+
+// Downscale big camera photos before upload (hosting limits request size). Falls back to the original on any failure.
+const SHRINK_OVER = 1.5*1024*1024, SHRINK_SIDE = 1600;
+const shrinkCache = new WeakMap();
+async function shrinkImage(f){
+  if(!f || f._sample || f.size <= SHRINK_OVER || !/^image\//.test(f.type)) return f;
+  if(shrinkCache.has(f)) return shrinkCache.get(f);
+  let out = f;
+  try{
+    let src, w, h;
+    if(window.createImageBitmap){ src = await createImageBitmap(f); w = src.width; h = src.height; }
+    else{ src = await new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = URL.createObjectURL(f); }); w = src.naturalWidth; h = src.naturalHeight; }
+    const k = Math.min(1, SHRINK_SIDE / Math.max(w, h));
+    const cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(w*k)); cv.height = Math.max(1, Math.round(h*k));
+    const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(src, 0, 0, cv.width, cv.height);
+    if(src.close) src.close();
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.85));
+    if(blob && blob.size && blob.size < f.size) out = new File([blob], (f.name||'photo').replace(/\.[^.]+$/, '') + '.jpg', {type:'image/jpeg'});
+  }catch(_){ out = f; }
+  shrinkCache.set(f, out); return out;
 }
 
 async function check(){
@@ -155,7 +184,7 @@ async function check(){
     if(MOCK){ await new Promise(r=>setTimeout(r,500)); data = MOCKS[lang]; }
     else{
       const fd = new FormData();
-      if(imageFile) fd.append('image', imageFile);
+      if(imageFile) fd.append('image', await shrinkImage(imageFile));
       if(text) fd.append('text', text);
       fd.append('lang', lang);
       const r = await fetch('/api/check', {method:'POST', body: fd, headers: authHeaders(), signal: ctl.signal});
@@ -164,7 +193,7 @@ async function check(){
     }
     clearInterval(tick); $('loading').hidden = true;
     render(data);
-  }catch(err){ console.error(err); const m = authMsg(err); showError(m || T[lang].err); if(m) authFocus(err); }
+  }catch(err){ console.error(err); const m = authMsg(err) || (err && err.status === 413 ? T[lang].e413 : ''); showError(m || T[lang].err); if(m) authFocus(err); }
   finally{ clearInterval(tick); clearTimeout(to); $('loading').hidden = true; $('check').disabled = false; }
 }
 
@@ -216,7 +245,7 @@ let cfg = {auth_required:false, google_client_id:null}, idToken = null, profile 
 const KEY_STORE = 'tp_gemini_key', TOK_STORE = 'tp_id_token';
 function jwt(t){ try{ return JSON.parse(decodeURIComponent(escape(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))))); }catch(_){ return null; } }
 function tokenValid(){ if(!idToken) return false; const p = jwt(idToken); return !!(p && p.exp && p.exp*1000 > Date.now()+30000); }
-function getKey(){ try{ return (localStorage.getItem(KEY_STORE) || '').trim(); }catch(_){ return ''; } }
+function getKey(){ return (store.get(KEY_STORE) || '').trim(); }
 function authHeaders(){
   const h = {}; if(!cfg.auth_required) return h;
   if(tokenValid()) h['Authorization'] = 'Bearer ' + idToken;
@@ -239,7 +268,7 @@ function authMsg(err){
   return '';
 }
 function authFocus(err){
-  const c = err.code;
+  const c = err.code; if(!c) return;
   if(c === 'login_required' || c === 'invalid_token'){
     if(c === 'invalid_token') signOut(true);
     $('acct').scrollIntoView({behavior:'smooth', block:'center'});
@@ -263,25 +292,25 @@ function drawGsi(){
 }
 function onCredential(resp){
   idToken = resp.credential; profile = jwt(idToken);
-  try{ sessionStorage.setItem(TOK_STORE, idToken); }catch(_){}
+  store.set(TOK_STORE, idToken, true);
   $('error').hidden = true; renderAcct();
 }
 function signOut(silent){
-  idToken = null; profile = null; try{ sessionStorage.removeItem(TOK_STORE); }catch(_){}
+  idToken = null; profile = null; store.del(TOK_STORE, true);
   try{ if(!silent && window.google) google.accounts.id.disableAutoSelect(); }catch(_){}
   renderAcct();
 }
 $('signOut').onclick = () => signOut();
-$('gkey').addEventListener('input', () => { try{ const v = $('gkey').value.trim(); v ? localStorage.setItem(KEY_STORE, v) : localStorage.removeItem(KEY_STORE); }catch(_){} renderAcct(); });
+$('gkey').addEventListener('input', () => { const v = $('gkey').value.trim(); v ? store.set(KEY_STORE, v) : store.del(KEY_STORE); renderAcct(); });
 $('keyToggle').onclick = () => { $('gkey').type = $('gkey').type === 'password' ? 'text' : 'password'; renderAcct(); };
-$('keyRemove').onclick = () => { try{ localStorage.removeItem(KEY_STORE); }catch(_){} $('gkey').value = ''; $('gkey').type = 'password'; renderAcct(); };
+$('keyRemove').onclick = () => { store.del(KEY_STORE); $('gkey').value = ''; $('gkey').type = 'password'; renderAcct(); };
 async function initAuth(){
   try{
     const r = await fetch('/api/config'); if(!r.ok) return;
     const c = await r.json(); if(!c || c.auth_required !== true) return;
     cfg = {auth_required:true, google_client_id: c.google_client_id || null};
   }catch(_){ return; } // no config endpoint or offline: behave exactly as before
-  try{ idToken = sessionStorage.getItem(TOK_STORE); if(!tokenValid()) idToken = null; else profile = jwt(idToken); }catch(_){}
+  try{ idToken = store.get(TOK_STORE, true); if(!tokenValid()) idToken = null; else profile = jwt(idToken); }catch(_){ idToken = null; }
   $('gkey').value = getKey();
   renderAcct();
   if(!cfg.google_client_id) return;
