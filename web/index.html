@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17191b" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,10 +18,7 @@
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand">
-      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient></defs><path d="M32 4 55 12v18c0 15-9.5 25.5-23 30C18.500 55.500 9 45 9 30V12z" fill="url(#lg)"/><path d="m22 32 7 7 14-15" fill="none" stroke="#4f46e5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><h1>Thagi Pakdo</h1><p id="tagline" class="sub"></p></div>
-    </div>
+    <div class="brand"><h1>Thagi Pakdo</h1><p class="sub" lang="gu">ઠગી પકડો</p></div>
     <div class="seg" role="group" aria-label="Language">
       <button class="lang" data-lang="gu" type="button">ગુજરાતી</button>
       <button class="lang" data-lang="hi" type="button">हिन्दी</button>
@@ -50,11 +47,12 @@
       </div>
     </div>
     <div class="card input">
+      <h2 id="tagline" class="ctitle"></h2>
       <div id="drop" class="drop" tabindex="0">
         <div id="dropEmpty">
           <div class="pick">
-            <label class="tile" for="fileCam"><svg viewBox="0 0 24 24"><path d="M9 4 7.500 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2.500L15 4zm3 4.500a4.500 4.500 0 1 1 0 9 4.500 4.500 0 0 1 0-9zm0 2a2.500 2.500 0 1 0 0 5 2.500 2.500 0 0 0 0-5z"/></svg><span data-i18n="camera">Camera</span></label>
-            <label class="tile" for="file"><svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.500 7.500a1.500 1.500 0 1 1 0 3 1.500 1.500 0 0 1 0-3zM5 18l4-5 3 3.500 2.500-3L19 18z"/></svg><span data-i18n="gallery">Gallery</span></label>
+            <label class="tile" for="fileCam"><span data-i18n="camera">Camera</span></label>
+            <label class="tile" for="file"><span data-i18n="gallery">Gallery</span></label>
           </div>
           <p id="dropText" class="hint"></p>
         </div>
@@ -66,11 +64,11 @@
       <textarea id="text" rows="4"></textarea>
       <div class="chips-wrap"><span id="samplesLabel" class="lbl"></span><div id="sampleBtns" class="chips-row"></div></div>
       <div class="bar" id="bar">
-        <button id="pasteUp" class="btn sec" type="button"><svg viewBox="0 0 24 24"><path d="M19 3h-4.200A3 3 0 0 0 12 1a3 3 0 0 0-2.800 2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><span id="pasteLbl"></span></button>
+        <button id="pasteUp" class="btn sec" type="button"><span id="pasteLbl"></span></button>
         <button id="check" class="btn pri" type="button"></button>
-        <button id="reset" class="btn ghost" type="button" aria-label="Clear">✕</button>
+        <button id="reset" class="btn ghost" type="button" aria-label="Clear">&times;</button>
       </div>
-      <p id="privacy" class="privacy"></p>
+      <details class="priv"><summary id="privSum"></summary><p id="privacy" class="privacy"></p></details>
     </div>
   </section>
 
@@ -79,22 +77,22 @@
     <div id="error" class="error" hidden></div>
     <div id="result" class="result" hidden aria-live="polite">
       <div id="verdict" class="verdict">
-        <div class="vcircle" id="vcircle"><span id="vicon"></span></div>
+        <div id="vkick" class="vkick"></div>
         <div id="vlabel" class="vlabel"></div>
         <div id="vtype" class="vtype"></div>
         <span id="srcBadge" class="badge" hidden></span>
       </div>
-      <div id="greenNote" class="greennote" hidden></div>
-      <div id="aiWarn" class="warn" hidden></div>
-      <button id="speak" class="btn speak" type="button" hidden>🔊 <span id="speakLbl"></span></button>
-      <div class="card"><h2 id="whyH"></h2><ul id="reasons"></ul></div>
-      <div class="card"><h2 id="doH"></h2><ol id="advice" class="steps"></ol></div>
-      <button id="draftBtn" class="btn draft" type="button" hidden>📝 <span data-i18n="draft"></span></button>
-      <div class="card" id="extractedCard" hidden><h2 id="foundH"></h2><div id="extracted" class="chips"></div></div>
       <div class="help">
-        <a id="call" class="btn call" href="tel:1930">📞 <span id="callLbl"></span></a>
+        <a id="call" class="btn call" href="tel:1930"><span id="callLbl"></span></a>
         <a id="report" class="btn rep" href="https://cybercrime.gov.in" target="_blank" rel="noopener"><span id="repLbl"></span></a>
       </div>
+      <div id="greenNote" class="greennote" hidden></div>
+      <div id="aiWarn" class="warn" hidden></div>
+      <button id="speak" class="btn speak" type="button" hidden><span id="speakLbl"></span></button>
+      <div class="card"><h2 id="whyH"></h2><ul id="reasons"></ul></div>
+      <div class="card"><h2 id="doH"></h2><ol id="advice" class="steps"></ol></div>
+      <div class="card" id="extractedCard" hidden><h2 id="foundH"></h2><div id="extracted" class="chips"></div></div>
+      <button id="draftBtn" class="btn draft" type="button" hidden><span data-i18n="draft"></span></button>
     </div>
   </section>
 </main>
@@ -102,7 +100,7 @@
 <div id="backdrop" class="backdrop" hidden></div>
 <aside id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
   <div class="grab" aria-hidden="true"></div>
-  <div class="sheet-h"><h2 id="sheetTitle" data-i18n="dTitle"></h2><button id="sheetClose" class="x" type="button" aria-label="Close">✕</button></div>
+  <div class="sheet-h"><h2 id="sheetTitle" data-i18n="dTitle"></h2><button id="sheetClose" class="x" type="button" aria-label="Close">&times;</button></div>
   <div class="sheet-b">
     <p class="note" data-i18n="note"></p>
     <form id="dform" class="dform" autocomplete="off">
@@ -129,12 +127,12 @@
       <div class="hl"><div id="c_mirror" class="mirror" aria-hidden="true"></div><textarea id="c_body" rows="12" spellcheck="false"></textarea></div>
       <div id="c_missing" class="missing" hidden></div>
       <div class="acts">
-        <button id="c_copy" class="btn sec" type="button">📋 <span id="c_copyLbl"></span></button>
-        <button id="c_share" class="btn sec" type="button">↗ <span data-i18n="share"></span></button>
-        <button id="c_dl" class="btn sec" type="button">⬇ <span data-i18n="dl"></span></button>
+        <button id="c_copy" class="btn sec" type="button"><span id="c_copyLbl"></span></button>
+        <button id="c_share" class="btn sec" type="button"><span data-i18n="share"></span></button>
+        <button id="c_dl" class="btn sec" type="button"><span data-i18n="dl"></span></button>
       </div>
-      <a class="btn rep wide" href="https://cybercrime.gov.in" target="_blank" rel="noopener">🌐 <span data-i18n="openPortal"></span></a>
-      <a class="btn call wide" href="tel:1930">📞 <span data-i18n="call"></span></a>
+      <a class="btn rep wide" href="https://cybercrime.gov.in" target="_blank" rel="noopener"><span data-i18n="openPortal"></span></a>
+      <a class="btn call wide" href="tel:1930"><span data-i18n="call"></span></a>
       <p class="note" data-i18n="note"></p>
     </div>
   </div>

@@ -1,6 +1,6 @@
 # Thagi Pakdo - 2-minute live demo script
 
-Everything uses **fake samples only**. Tested from a clean clone on 3 Oct 2026: all 5 samples give the right verdict in en/hi/gu, the complaint draft works, and the page fits a 390 px phone screen. Items marked **[unverified]** have not been tried.
+Everything uses **fake samples only**. Screenshots of the final look are in `docs/screens/v2/` (e.g. `f7b_scam_light_390.png`). Tested from a clean clone on 3 Oct 2026: all 5 samples give the right verdict in en/hi/gu, the complaint draft works, and the page fits a 390 px phone screen. Items marked **[unverified]** have not been tried.
 
 **Before going on stage (checklist)**
 - `uvicorn app:app` running; page open at http://127.0.0.1:8000 full screen, language = English. (Phone demo: `uvicorn app:app --host 0.0.0.0` and open `http://<laptop-ip>:8000` on the same Wi-Fi **[unverified on the demo network]**.)
@@ -14,12 +14,12 @@ Everything uses **fake samples only**. Tested from a clean clone on 3 Oct 2026: 
 | Time | What you do | What you say |
 |---|---|---|
 | 0:00-0:15 | Page open on the home screen. | "Every week people in Gujarat lose money to a fake KYC SMS, a UPI 'refund' or a 'parcel fee' message, and many find English hard. Thagi Pakdo - catch the con - tells you in your language if a message is a scam." |
-| 0:15-0:35 | Tap **Fake KYC SMS**, then **Courier fee WhatsApp** (the sample buttons). Red cards appear instantly. | "One tap, no typing. This SBI KYC SMS is red: shortened link, urgency, banks never do KYC by SMS. The courier one is a WhatsApp *screenshot* - Gemma reads the image - fake India Post fee, fake .xyz link." |
-| 0:35-1:00 | Clear the form, **paste your fresh text** (or a new message from a judge, fake only), press **Check now**. Wait 2-4 s. | "Now a message the system has never seen. Plain-code rules and Gemma both check it live, and the stricter answer wins, so the AI can never lower a red flag." |
-| 1:00-1:30 | Tap **Draft complaint**, fill only the name and "what happened" (or leave blank), press Generate. Show the `[placeholders]`. | "One more step people struggle with: reporting. It drafts the cybercrime-portal complaint. It never invents facts: anything we don't know stays a visible placeholder. They copy it and file at cybercrime.gov.in or call 1930." (Live draft takes about 8 s; the sample's cached draft is instant.) |
+| 0:15-0:35 | Tap **Fake KYC SMS**, then **Courier fee WhatsApp** (the sample buttons). A red card appears instantly: a SCAM tag and the sentence "This looks like a scam. Do not pay or click." | "One tap, no typing. This SBI KYC SMS is red: shortened link, urgency, banks never do KYC by SMS. The courier one is a WhatsApp *screenshot* - Gemma reads the image - fake India Post fee, fake .xyz link." |
+| 0:35-1:00 | Clear the form, **paste your fresh text** (or a new message from a judge, fake only), press **Check**. Wait 2-4 s. | "Now a message the system has never seen. Plain-code rules and Gemma both check it live, and the stricter answer wins, so the AI can never lower a red flag." |
+| 1:00-1:30 | Tap **Draft a complaint**, fill only the name and "what happened" (or leave blank), press Generate. Show the `[placeholders]`. | "One more step people struggle with: reporting. It drafts the cybercrime-portal complaint. It never invents facts: anything we don't know stays a visible placeholder. They copy it and file at cybercrime.gov.in or call 1930." (Live draft takes about 8 s; the sample's cached draft is instant.) |
 | 1:30-1:45 | Press **ગુજરાતી**, then **हिन्दी**. The card re-renders. Press **Read aloud** for 5 s, then stop. | "Same answer in Gujarati and Hindi, and it can read it out loud for anyone who can't read well." (If the card is slow after a switch, wait a few seconds - non-sample text is a new live call. If no voice is installed, skip read-aloud.) |
-| 1:45-1:55 | Tap **Safe bank OTP**. Green card. | "It isn't paranoid: a genuine OTP alert with no link and no ask is green." |
-| 1:55-2:00 | Wrap-up, show the repo / privacy note. | "If Gemini is rate-limited or offline it falls back to a local Gemma, then to plain rules, so real messages can stay on your own machine. Open source, Apache-2.0, with an Agent Skill. Thagi Pakdo - thank you." |
+| 1:45-1:55 | Tap **Safe bank OTP**. Green card: "This looks safe, but stay alert." | "It isn't paranoid: a genuine OTP alert with no link and no ask is green." |
+| 1:55-2:00 | Wrap-up, show the repo and the **Privacy** link at the top of the page. | "If Gemini is rate-limited or offline it falls back to a local Gemma, then to plain rules, so real messages can stay on your own machine. Open source, Apache-2.0, with an Agent Skill. Thagi Pakdo - thank you." |
 
 **Backup moves**
 - Network or Gemini fails: sample buttons still work from cache; a new paste shows a "Rules only" / "AI unavailable" note with a red/amber/green from the rules. Say: "That is the failover - it still protects you."
