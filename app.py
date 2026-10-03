@@ -426,7 +426,7 @@ def check(request: Request, image: UploadFile | None = File(None), text: str = F
         if ca["severity"] == "green":  # AI did not run AND the code rules found nothing: fail open to AMBER, never "looks safe"
             out.update(verdict="amber", scam_type=TYPE["amber"][lang], reasons=[UNCHECKED[lang]], advice=ADV["unchecked"][lang])
     else:
-        final = checks.combine(ca["severity"], res["verdict"])
+        final = checks.combine(ca["severity"], res["verdict"], ca.get("weak_only", False))
         out = dict(res)
         out["verdict"] = final
         out["extracted"] = {k: _merge(res["extracted"].get(k), ca["extracted"].get(k)) for k in ("urls", "phones", "upi_ids", "amounts")}

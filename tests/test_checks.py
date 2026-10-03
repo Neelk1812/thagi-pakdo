@@ -270,3 +270,45 @@ def test_f8_samples_unchanged():
     for f in glob.glob(os.path.join(os.path.dirname(__file__), "..", "samples", "*.txt")):
         name = os.path.basename(f)[:-4]
         assert sev(open(f, encoding="utf-8").read()) == expect[name], name
+
+
+# ---------------- F9: recharge/telco/bank false positives + OTP-ask misses ----------------
+import checks, pytest
+sys.path.insert(0, os.path.dirname(__file__))
+from corpus_f9 import CORPUS as F9_CORPUS
+
+
+def test_f9_corpus_size():
+    assert len(F9_CORPUS) >= 40 and {e for _, _, e in F9_CORPUS} == {"green", "red"}
+
+
+@pytest.mark.parametrize("cid,text,exp", F9_CORPUS, ids=[c[0] for c in F9_CORPUS])
+def test_f9_corpus_rules_only(cid, text, exp):
+    r = checks.analyze(text)
+    assert r["severity"] == ("red" if exp == "red" else "green"), (cid, r["severity"], r["flags"])
+
+
+def test_f9_official_domain_is_not_a_free_pass():
+    A = checks.analyze
+    assert A("Visit https://www.sbi.co.in and share your OTP with our executive")["severity"] == "red"
+    assert A("Recharge now at https://www.jio-recharge.xyz, plan expires today")["severity"] == "red"
+    assert A("Update your SBI KYC at https://sbi-kyc.top")["severity"] == "red"
+    assert A("Pack expires today, recharge at http://www.jio.com")["severity"] == "green"
+
+
+def test_f9_negation_handling():
+    A = checks.analyze
+    assert A("Never share your OTP with anyone, including bank staff.")["severity"] == "green"
+    assert A("Share the OTP with our executive to avoid block.")["severity"] == "red"
+    assert A("To avoid fraud, do not share your OTP with the executive.")["severity"] == "green"
+
+
+def test_f9_combine_weak_signal_allows_ai_green_but_never_strong():
+    combine = checks.combine
+    assert combine("amber", "green", weak_only=True) == "green"
+    assert combine("amber", "green", weak_only=False) == "amber"
+    assert combine("red", "green", weak_only=True) == "red"
+    assert combine("green", "red", weak_only=True) == "red" and combine("amber", "amber", weak_only=True) == "amber"
+    a = checks.analyze("Pack expires today, recharge now")
+    assert a["severity"] == "amber" and a["weak_only"] is True
+    assert checks.analyze("Your KYC is pending, update now")["weak_only"] is False

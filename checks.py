@@ -11,7 +11,9 @@ BRANDS = ["sbi", "hdfc", "icici", "axis", "kotak", "paytm", "phonepe", "npci", "
 LEGIT = ["sbi.co.in", "onlinesbi.sbi", "sbi.bank.in", "hdfcbank.com", "icicibank.com", "axisbank.com", "kotak.com",
          "pnbindia.in", "paytm.com", "phonepe.com", "npci.org.in", "irctc.co.in", "amazon.in", "amazon.com",
          "flipkart.com", "indiapost.gov.in", "airtel.in", "jio.com", "uidai.gov.in", "incometax.gov.in",
-         "epfindia.gov.in", "pay.google.com", "bhimupi.org.in", "wa.me"]
+         "epfindia.gov.in", "pay.google.com", "bhimupi.org.in", "wa.me",
+         "myvi.in", "bsnl.in", "airtel.com", "vodafoneidea.com", "jiomart.com", "jio.in", "bankofbaroda.in", "pnb.co.in", "canarabank.com",
+         "unionbankofindia.co.in", "idfcfirstbank.com", "indusind.com", "yesbank.in", "delhivery.com", "bluedart.com", "dtdc.in", "uber.com"]
 
 TLD = r"com|in|net|org|co|xyz|top|click|cc|icu|online|site|ly|me|gl|is|link|info|biz|app|live|shop|vip|club|buzz|work|cfd|sbs|gov|bank|sbi|cc"
 URL_RE = re.compile(r"(?:https?://|www\.)[^\s<>\"'()]+|(?<![@\w.\-])(?:[a-z0-9][a-z0-9\-]*\.)+(?:%s)\b(?:/[^\s<>\"'()]*)?" % TLD, re.I)
@@ -254,11 +256,39 @@ def extract(text):
     return {"urls": urls, "phones": phones, "upi_ids": upis, "amounts": amounts}
 
 
+_AVOID = re.compile(r"\bavoid\b(?!\s+(?:shar|disclos|giv|tell|reveal))", re.I)  # "share OTP to avoid block" is an ask; "avoid sharing OTP" is a warning
+_DELIVERY_OK = re.compile(r"(?:deliver\w*|doorstep).{0,60}\b(?:only|at the time|on delivery|upon delivery|when)\b|\bonly\b.{0,50}(?:deliver\w*|doorstep)|"
+                          r"at the time of delivery", re.I)  # genuine e-commerce: "share OTP with the delivery partner ONLY on delivery"
+_PERSON = (r"(?:executive|officer|agent|caller|representative|customer\s*(?:care|support|service)|manager|employee|staff|official|"
+           r"advisor|banker|person|someone|sir|madam|अधिकारी|एग्ज़ीक्यूटिव|એક્ઝિક્યુટિવ|અધિકારી)")
+PERSON_ASK = re.compile(r"\b(?:share|tell|give|send|read\s*out|provide|forward|disclose|reveal)\b.{0,50}\b(?:with|to)\s+(?:our|the|a|an|my|this|that|bank)?\s*(?:\w+\s+){0,2}" + _PERSON, re.I)
+OTP_ASK2 = re.compile(r"\bbata\s*(?:do|dijiye|dijiye|dena|de|iye|iyega)\b|\bbataiye\b|\bbatayiye\b|\bbhej\s*(?:do|dijiye|na)\b|\bshare\s+k\w+|\bde\s*do\b|\bdijiye\b|\bbolo\b", re.I)
+NEG_HINGLISH = re.compile(r"\bna\s+(?:kar\w*|bata\w*|de\b|do\b|bhej\w*|share)|\bnahi\b|\bnahin\b|\bmat\b|\bnot\s+(?:to\s+)?(?:share|tell|give)", re.I)
+
+
 def _otp_request(text):
-    for sent in re.split(r"[.!?\n।]+", text):
-        if OTP_WORD.search(sent) and OTP_ASK.search(sent) and not NEGATION.search(sent):
+    for sent in _SENT.split(text):
+        if not OTP_WORD.search(sent):
+            continue
+        s = re.sub(r"\bnahi\s*to(?:h)?\b|\bnahin\s*to\b", "", _AVOID.sub("", sent), flags=re.I)  # "nahi to" = "otherwise", not a negation
+        if _DELIVERY_OK.search(s) and not ASK_OVER_PHONE.search(s):
+            continue
+        ask = OTP_ASK.search(s) or OTP_ASK2.search(s)
+        if not ask:
+            continue
+        neg = NEGATION.search(s) or NEG_HINGLISH.search(s)
+        if not neg:
             return True
+        # a negation does not clear an explicit "give it to a person" ask unless the negation comes first ("never share ... with staff")
+        pm = PERSON_ASK.search(s)
+        if pm:
+            before = s[:pm.start()]
+            if not (NEGATION.search(before) or NEG_HINGLISH.search(before) or NEG_EN_BEFORE.search(before)):
+                return True
     return False
+
+
+ASK_OVER_PHONE = re.compile(r"over\s+(?:the\s+)?(?:phone|call)\s*(?!.*\b(?:do not|don'?t|never)\b)|send\s+(?:it\s+)?to\s+\+?\d|whatsapp", re.I)
 
 
 def analyze(text):
@@ -364,15 +394,22 @@ def analyze(text):
         if l not in seen:
             seen.add(l)
             labels.append((w, l))
+    if labels and ex["urls"] and all(l.startswith(("Urgency / threat words", "Link is not secure")) for _, l in labels) and \
+            all(any(_host(u) == d or _host(u).endswith("." + d) for d in LEGIT) for u in ex["urls"]):
+        labels = []  # only weak signals, and every link is an official domain (telco/bank expiry reminders): not a flag
     total = sum(w for w, _ in labels)
     strong = any(w >= 3 for w, _ in labels)
     score = min(100, total * 20)
     sev = "red" if (strong or total >= 4) else "amber" if total >= 1 else "green"
-    return {"score": score, "severity": sev, "flags": [l for _, l in labels], "strong": strong, "extracted": ex}
+    weak_only = bool(labels) and all(l.startswith("Urgency / threat words") or l.startswith("Link is not secure") for _, l in labels)
+    return {"score": score, "severity": sev, "flags": [l for _, l in labels], "strong": strong, "weak_only": weak_only, "extracted": ex}
 
 
-def combine(code_severity, llm_verdict):
-    """Final severity = max(code, llm). Never lower than code severity."""
+def combine(code_severity, llm_verdict, weak_only=False):
+    """Final severity = max(code, llm). Never lower than code severity, EXCEPT: when the code found only weak signals
+    (urgency wording / http link) and the AI itself says green, trust the AI (strong flags are never overridden)."""
     a = code_severity if code_severity in SEV else "green"
     b = llm_verdict if llm_verdict in SEV else "green"
+    if weak_only and a == "amber" and b == "green":
+        return "green"
     return a if SEV[a] >= SEV[b] else b

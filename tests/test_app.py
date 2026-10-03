@@ -344,3 +344,21 @@ def test_normal_sized_requests_unaffected_by_size_limit(monkeypatch, tmp_path):
     monkeypatch.setattr(llm, "check", _down)
     assert appmod.MAX_BODY == appmod.MAX_IMG == 4 * 1024 * 1024
     assert c.post("/api/check", data={"text": "hi"}, files={"image": ("a.png", _png(40), "image/png")}).status_code == 200
+
+
+def test_f9_pipeline_combine_with_mocked_llm(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+
+    def ai(v):
+        return lambda *a, **k: ({**AI_GREEN, "verdict": v}, "gemini")
+    monkeypatch.setattr(llm, "check", ai("green"))  # weak signal only (urgency) + AI green -> green
+    assert c.post("/api/check", data={"text": "Your pack expires today, recharge now to continue", "lang": "en"}).json()["verdict"] == "green"
+    monkeypatch.setattr(llm, "check", ai("amber"))  # AI amber is kept
+    assert c.post("/api/check", data={"text": "Your pack expires today, recharge now to continue 2", "lang": "en"}).json()["verdict"] == "amber"
+    monkeypatch.setattr(llm, "check", ai("green"))  # strong OTP-ask flag is never lowered by an AI green (the reported miss)
+    r = c.post("/api/check", data={"text": "Your OTP is 123456, share it with our executive to cancel the transaction.", "lang": "en"}).json()
+    assert r["verdict"] == "red"
+    r = c.post("/api/check", data={"text": "123456 is your OTP. Do not share it with anyone.", "lang": "en"}).json()
+    assert r["verdict"] == "green"
+    monkeypatch.setattr(llm, "check", ai("red"))  # AI red is never lowered by the rules
+    assert c.post("/api/check", data={"text": "Recharge of Rs 299 successful. Validity 28 days.", "lang": "en"}).json()["verdict"] == "red"
