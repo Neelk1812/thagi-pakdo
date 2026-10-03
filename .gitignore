@@ -30,3 +30,7 @@ sample_cache/*
 !sample_cache/ef26920e8e4bf733083ac23b093f37e65cea6c966870a54a3792a650e3287e00.json
 !sample_cache/f490bf0bcf2e73399ad78116ddadf4cf3ffdf333d8163e8ff3d988ffbe1bfc04.json
 docs/screens/qa/
+
+# internal build notes (kept locally)
+SPEC.md
+STATUS.md
