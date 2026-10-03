@@ -1,0 +1,5356 @@
+{
+ "build": "baseline",
+ "url": "https://thagi-pakdo.vercel.app",
+ "viewports": {
+  "mobile390": {
+   "samples": {
+    "Fake KYC SMS": {
+     "verdict": "SCAM - DANGER",
+     "type": "Phishing/KYC Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Uses urgent/threatening language to induce panic",
+      "Uses a suspicious shortened bit.ly link instead of an official bank domain",
+      "Banks never ask for KYC updates via SMS links"
+     ],
+     "advice": [
+      "Do not click the link",
+      "Do not provide any personal or banking details",
+      "Report the scam on cybercrime.gov.in or call 1930"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": -0.0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_1_fake_kyc_sms_mobile390.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_1_full_mobile390.png"
+    },
+    "UPI refund request": {
+     "verdict": "SCAM - DANGER",
+     "type": "UPI Refund Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Legitimate refunds never require you to enter your UPI PIN or approve a 'collect request'.",
+      "Entering a PIN is only for sending money, never for receiving it.",
+      "The message uses artificial urgency to pressure the victim."
+     ],
+     "advice": [
+      "Do not approve any UPI collect requests or enter your PIN.",
+      "Block the sender immediately.",
+      "Report the incident on cybercrime.gov.in or call 1930."
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": -0.0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_2_upi_refund_request_mobile390.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_2_full_mobile390.png"
+    },
+    "Courier fee WhatsApp": {
+     "verdict": "SCAM - DANGER",
+     "type": "parcel delivery scam",
+     "badge": "Cached",
+     "reasons": [
+      "Uses a suspicious non-official URL (.xyz domain)",
+      "Creates false urgency with a 24-hour deadline",
+      "Asks for a small payment to steal banking credentials"
+     ],
+     "advice": [
+      "Do not click the link or pay any money",
+      "Block the sender immediately",
+      "Report the scam on cybercrime.gov.in or call 1930"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": -0.0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_3_courier_fee_whatsapp_mobile390.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_3_full_mobile390.png"
+    },
+    "Lottery / prize": {
+     "verdict": "SCAM - DANGER",
+     "type": "Lottery/Prize Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Request for upfront processing fee to claim a prize",
+      "Asking for sensitive Aadhaar number via WhatsApp",
+      "Use of high-pressure tactics like 'Offer expires today'"
+     ],
+     "advice": [
+      "Do not pay any money or share Aadhaar details",
+      "Block the sender immediately",
+      "Report the incident to 1930 or cybercrime.gov.in"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": -0.0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_4_lottery_prize_mobile390.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_4_full_mobile390.png"
+    },
+    "Safe bank OTP": {
+     "verdict": "LOOKS SAFE",
+     "type": "",
+     "badge": "Cached",
+     "reasons": [
+      "Standard security alert format",
+      "Includes explicit warning not to share OTP",
+      "No suspicious links or requests for action"
+     ],
+     "advice": [
+      "Do not share this code with anyone",
+      "If you did not request this, ignore it and check your bank account security"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(236, 253, 243), rgb(211, 245, 224))",
+     "resultTopY": -0.0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_5_safe_bank_otp_mobile390.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_5_full_mobile390.png"
+    }
+   },
+   "langs": {
+    "gu": {
+     "latinLeftovers": [
+      "BACKEND",
+      "English",
+      "LLM",
+      "bit",
+      "sbi-kyc-upd"
+     ],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_gu_result_mobile390.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nપૈસા ચૂકવતા કે ક્લિક કરતા પહેલાં શંકાસ્પદ મેસેજ તપાસો.\n\nગુજરાતી\nहिन्दी\nEnglish\nકાઢી નાખો\nઅથવા SMS / WhatsApp / UPI મેસેજ પેસ્ટ કરો\nનમૂનો અજમાવો (નકલી):\nનકલી KYC SMS\nUPI રિફંડ રિક્વેસ્ટ\nકુરિયર ફી WhatsApp\nલોટરી / ઇનામ\nસુરક્ષિત બેંક OTP\nપેસ્ટ / અપલોડ\nતપાસો\n✕\n\nગોપનીયતા: મફત Gemini ટિયરમાં તમારું ઇનપુટ Google પોતાના ઉત્પાદનો સુધારવા વાપરી શકે છે. ડેમોમાં ફક્ત નકલી નમૂના વાપરો. અસલી મેસેજ માટે LLM_BACKEND=local સાથે તમારા કમ્પ્યુટર પર ચલાવો (કંઈ પણ તમારા કમ્પ્યુટરની બહાર જતું નથી).\n\nસ્કે",
+     "metrics": {
+      "vw": 390,
+      "scrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "hScroll": false,
+      "tapOffenders": [
+       {
+        "el": "button#clearImg",
+        "w": 88,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"નકલી KYC SMS\"",
+        "w": 125,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+        "w": 127,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+        "w": 153,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"લોટરી / ઇનામ\"",
+        "w": 106,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+        "w": 124,
+        "h": 44
+       },
+       {
+        "el": "a \"cybercrime.gov.in\"",
+        "w": 116,
+        "h": 19
+       }
+      ],
+      "overflowEls": [
+       {
+        "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+        "left": 297,
+        "right": 450
+       },
+       {
+        "el": "button.sample \"લોટરી / ઇનામ\"",
+        "left": 458,
+        "right": 564
+       },
+       {
+        "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+        "left": 572,
+        "right": 696
+       }
+      ],
+      "contrastFails": [
+       {
+        "el": "h1 \"Thagi Pakdo\"",
+        "text": "Thagi Pakdo",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 24,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "p#tagline",
+        "text": "પૈસા ચૂકવતા કે ક્લિક કરતા પહેલ",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 13.5,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"हिन्दी\"",
+        "text": "हिन्दी",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"English\"",
+        "text": "English",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button#check",
+        "text": "તપાસો",
+        "ratio": 1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(255,255,255)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vlabel",
+        "text": "સ્કેમ - જોખમ",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 30,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vtype",
+        "text": "KYC ફ્રોડ",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#srcBadge",
+        "text": "સેવ કરેલ",
+        "ratio": 1.67,
+        "need": 4.5,
+        "fontPx": 12,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(199,200,206)",
+        "gradientBehind": true
+       },
+       {
+        "el": "a#call",
+        "text": "📞",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#callLbl",
+        "text": "1930 પર કૉલ કરો (સાયબર હેલ્પલા",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       }
+      ],
+      "tinyText": []
+     }
+    },
+    "hi": {
+     "latinLeftovers": [
+      "BACKEND",
+      "English",
+      "LLM",
+      "Phishing",
+      "bit",
+      "sbi-kyc-upd"
+     ],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_hi_result_mobile390.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nपैसे देने या क्लिक करने से पहले संदिग्ध मैसेज जाँचें।\n\nગુજરાતી\nहिन्दी\nEnglish\nहटाएँ\nया SMS / WhatsApp / UPI मैसेज पेस्ट करें\nनमूना आज़माएँ (नकली):\nनकली KYC SMS\nUPI रिफंड रिक्वेस्ट\nकूरियर फ़ीस WhatsApp\nलॉटरी / इनाम\nसुरक्षित बैंक OTP\nपेस्ट / अपलोड\nजाँचें\n✕\n\nगोपनीयता: मुफ़्त Gemini टियर में आपका इनपुट Google अपने उत्पाद सुधारने में इस्तेमाल कर सकता है। डेमो में सिर्फ़ नकली नमूने इस्तेमाल करें। असली मैसेज के लिए LLM_BACKEND=local के साथ अपने कंप्यूटर पर चलाएँ (कुछ भी आपके कंप्यूटर से बा",
+     "metrics": {
+      "vw": 390,
+      "scrollWidth": 390,
+      "bodyScrollWidth": 390,
+      "hScroll": false,
+      "tapOffenders": [
+       {
+        "el": "button#clearImg",
+        "w": 62,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"नकली KYC SMS\"",
+        "w": 129,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+        "w": 133,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+        "w": 171,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"लॉटरी / इनाम\"",
+        "w": 105,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"सुरक्षित बैंक OTP\"",
+        "w": 127,
+        "h": 44
+       },
+       {
+        "el": "a \"cybercrime.gov.in\"",
+        "w": 116,
+        "h": 19
+       }
+      ],
+      "overflowEls": [
+       {
+        "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+        "left": 308,
+        "right": 479
+       },
+       {
+        "el": "button.sample \"लॉटरी / इनाम\"",
+        "left": 487,
+        "right": 592
+       },
+       {
+        "el": "button.sample \"सुरक्षित बैंक OTP\"",
+        "left": 600,
+        "right": 727
+       }
+      ],
+      "contrastFails": [
+       {
+        "el": "h1 \"Thagi Pakdo\"",
+        "text": "Thagi Pakdo",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 24,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "p#tagline",
+        "text": "पैसे देने या क्लिक करने से पहल",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 13.5,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"ગુજરાતી\"",
+        "text": "ગુજરાતી",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"English\"",
+        "text": "English",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button#check",
+        "text": "जाँचें",
+        "ratio": 1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(255,255,255)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vlabel",
+        "text": "स्कैम - ख़तरा",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 30,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vtype",
+        "text": "KYC धोखाधड़ी (Phishing)",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#srcBadge",
+        "text": "सेव किया गया",
+        "ratio": 1.67,
+        "need": 4.5,
+        "fontPx": 12,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(199,200,206)",
+        "gradientBehind": true
+       },
+       {
+        "el": "a#call",
+        "text": "📞",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#callLbl",
+        "text": "1930 पर कॉल करें (साइबर हेल्पल",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       }
+      ],
+      "tinyText": []
+     }
+    },
+    "en": {
+     "latinLeftovers": [],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_en_result_mobile390.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nCheck any suspicious message before you pay or click.\n\nગુજરાતી\nहिन्दी\nEnglish\nRemove\nOr paste the SMS / WhatsApp / UPI message\nTry a sample (fake):\nFake KYC SMS\nUPI refund request\nCourier fee WhatsApp\nLottery / prize\nSafe bank OTP\nPaste / Upload\nCheck now\n✕\n\nPrivacy: with the free Gemini tier, inputs may be used by Google to improve its products. Use only fake samples in the demo. For real messages, run locally with LLM_BACKEND=local (nothing leaves your computer).\n\nSCAM - DANGER\nPh"
+    }
+   },
+   "readaloud": {
+    "en_label_after_click": "Read aloud",
+    "en": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      358,
+      56
+     ]
+    },
+    "hi_label_after_click": "सुनें",
+    "hi": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      358,
+      56
+     ]
+    },
+    "gu_label_after_click": "સાંભળો",
+    "gu": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      358,
+      56
+     ]
+    },
+    "novoice_apiPresent": true,
+    "novoice": {
+     "buttonVisible": false,
+     "jsErrors": []
+    },
+    "absent_apiPresent": false,
+    "absent": {
+     "buttonVisible": false,
+     "jsErrors": []
+    }
+   },
+   "complaint": {
+    "draftBtnSize": [
+     358,
+     56
+    ],
+    "sheetShot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_form_mobile390.png",
+    "formLabels": [
+     "Your name",
+     "Your phone",
+     "Amount lost (Rs)",
+     "Paid via",
+     "What happened",
+     "",
+     ""
+    ],
+    "formIntro": "Draft a complaint\n✕\n\nReview before submitting. Do not include real Aadhaar, PIN or OTP.\n\nAll fields are optional. Skip anything you do not want to share.\n\nYour name\nYour phone\nAmount lost (Rs)\nPaid via \nSelect\nUPI\nCard\nNet banking\nCash\nOther\nWhat happened\nMore details\nGenerate",
+    "focusInSheet": "d_name",
+    "generateSec": 8.86,
+    "subject": "Complaint regarding Phishing/KYC Scam via suspicious bit.ly link",
+    "bodyHead": "To,\nThe Cyber Cell,\nNational Cybercrime Reporting Portal,\n\nI am writing to report a Phishing/KYC Scam that occurred on [Date and time of incident].\n\nIncident Summary:\nI received a message regarding a KYC update. I clicked the link and entered my details. Following this, I suffered a financial loss.\n",
+    "missingNote": "Still to fill in: [Date and time of incident][Transaction ID / UTR, if any][Your phone number]",
+    "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_draft_mobile390.png",
+    "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_draft_full_mobile390.png",
+    "copyLabelAfter": "Copied!",
+    "clipboardLen": 1198,
+    "download": "cyber-crime-complaint.txt",
+    "shareCalled": true,
+    "sheetClosed": true
+   },
+   "upload": {
+    "previewVisible": true,
+    "previewShot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_upload_preview_mobile390.png",
+    "result": {
+     "ok": true,
+     "sec": 0.81,
+     "error": null
+    },
+    "verdict": "SCAM - DANGER",
+    "badge": "Cached",
+    "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_upload_result_mobile390.png"
+   },
+   "states": {
+    "api_500": {
+     "ok": false,
+     "sec": 0.05,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_500_mobile390.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "console.error: Error: HTTP 500 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "api_429": {
+     "ok": false,
+     "sec": 0.05,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_429_mobile390.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "console.error: Error: HTTP 429 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "api_abort": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_abort_mobile390.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: net::ERR_FAILED",
+      "console.error: TypeError: Failed to fetch\n    at check (https://thagi-pakdo.vercel.app/app.js:190:23)\n    at $.onclick (https://thagi-pakdo.vercel.app/app.js:119:28)"
+     ]
+    },
+    "api_html_502": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_html_502_mobile390.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 502 (Bad Gateway)",
+      "console.error: Error: HTTP 502 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "offline": {
+     "ok": false,
+     "sec": 0.07,
+     "error": "Could not check right now. Please try again.",
+     "errorText": "Could not check right now. Please try again.",
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_offline_mobile390.png"
+    },
+    "offline_sample": {
+     "errorVisible": true,
+     "text": "Could not check right now. Please try again.",
+     "resultVisible": false
+    },
+    "empty_submit": {
+     "errorVisible": true,
+     "text": "Please add a screenshot or paste a message first.",
+     "loading": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_empty_submit_mobile390.png"
+    },
+    "oversized_image": {
+     "previewVisible": true,
+     "errorVisible": false,
+     "errorText": "Image too large. Please try a smaller screenshot.",
+     "ok": false,
+     "sec": 3.48,
+     "error": "Image too large. Please try a smaller screenshot.",
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_oversized_image_mobile390.png"
+    },
+    "fake_image": {
+     "ok": false,
+     "sec": 0.55,
+     "error": "Could not check right now. Please try again.",
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_fake_image_mobile390.png",
+     "errorText": "Could not check right now. Please try again."
+    }
+   },
+   "keyboard": [
+    {
+     "el": "button \"ગુજરાતી\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"हिन्दी\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"English\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "rgba(0, 0, 0, 0.2) 0px 2px 8px 0px",
+     "onScreen": true
+    },
+    {
+     "el": "div#drop \"Camera\nGallery\n\nTake\"",
+     "outline": "none 3px rgb(18, 23, 43)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "textarea#text \"Paste the message he\"",
+     "outline": "solid 2px rgb(79, 70, 229)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Fake KYC SMS\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"UPI refund request\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Courier fee WhatsApp\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Lottery / prize\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Safe bank OTP\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button#pasteUp \"Paste / Upload\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button#check \"Check now\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "rgba(79, 70, 229, 0.45) 0px 6px 18px 0px",
+     "onScreen": true
+    },
+    {
+     "el": "button#reset \"✕\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    }
+   ],
+   "console": [
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'."
+   ],
+   "firstViewport": "/workspace/thagi-pakdo/docs/screens/qa/baseline/01_first_viewport_mobile390.png",
+   "firstViewportText": "Thagi Pakdo\n\nCheck any suspicious message before you pay or click.\n\nગુજરાતી\nहिन्दी\nEnglish\nCamera\nGallery\n\nTake a photo, pick a screenshot, or drop / paste one here.\n\nOr paste the SMS / WhatsApp / UPI message\nTry a sample (fake):\nFake KYC SMS\nUPI refund request\nCourier fee WhatsApp\nLottery / prize\nSafe bank OTP\nPaste / Upload\nCheck now\n✕\n\nPrivacy: with the free Gemini tier, inputs may be used by Google to improve its products. Use only fake samples in the demo. For real messages, run locally with LLM_BACKEND=local (nothing leaves your computer).\n\nReport cyber fraud: call 1930 or visit cybercri",
+   "metrics": {
+    "home": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_red": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 30,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_green": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "left": -410,
+       "right": -282
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "left": -274,
+       "right": -110
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": -102,
+       "right": 81
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_gu": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 88,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"નકલી KYC SMS\"",
+       "w": 125,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+       "w": 127,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+       "w": 153,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"લોટરી / ઇનામ\"",
+       "w": 106,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+       "w": 124,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+       "left": 297,
+       "right": 450
+      },
+      {
+       "el": "button.sample \"લોટરી / ઇનામ\"",
+       "left": 458,
+       "right": 564
+      },
+      {
+       "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+       "left": 572,
+       "right": 696
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "પૈસા ચૂકવતા કે ક્લિક કરતા પહેલ",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"English\"",
+       "text": "English",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "તપાસો",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "સ્કેમ - જોખમ",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 30,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "KYC ફ્રોડ",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "સેવ કરેલ",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "1930 પર કૉલ કરો (સાયબર હેલ્પલા",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_hi": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 62,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"नकली KYC SMS\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+       "w": 133,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+       "w": 171,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"लॉटरी / इनाम\"",
+       "w": 105,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"सुरक्षित बैंक OTP\"",
+       "w": 127,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+       "left": 308,
+       "right": 479
+      },
+      {
+       "el": "button.sample \"लॉटरी / इनाम\"",
+       "left": 487,
+       "right": 592
+      },
+      {
+       "el": "button.sample \"सुरक्षित बैंक OTP\"",
+       "left": 600,
+       "right": 727
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "पैसे देने या क्लिक करने से पहल",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"English\"",
+       "text": "English",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "जाँचें",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "स्कैम - ख़तरा",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 30,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "KYC धोखाधड़ी (Phishing)",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "सेव किया गया",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "1930 पर कॉल करें (साइबर हेल्पल",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "complaint_sheet": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      },
+      {
+       "el": "button#sheetClose",
+       "w": 44,
+       "h": 44
+      },
+      {
+       "el": "summary \"More details\"",
+       "w": 354,
+       "h": 44
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 30,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#genLbl",
+       "text": "Generate",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "complaint_draft": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      },
+      {
+       "el": "button#sheetClose",
+       "w": 44,
+       "h": 44
+      },
+      {
+       "el": "summary \"More details\"",
+       "w": 354,
+       "h": 44
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 30,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#genLbl",
+       "text": "Generate again",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#c_mirror",
+       "text": "To,\nThe Cyber Cell,\nNational C",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Date and time of \"",
+       "text": "[Date and time of incident]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Transaction ID / \"",
+       "text": "[Transaction ID / UTR, if any]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Your phone number\"",
+       "text": "[Your phone number]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a.btn.call \"📞\nCall 1930 (cybe\"",
+       "text": "📞",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span \"Call 1930 (cyber h\"",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "dark_home": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "span \"Camera\"",
+       "text": "Camera",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "span \"Gallery\"",
+       "text": "Gallery",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "span#pasteLbl",
+       "text": "Paste / Upload",
+       "ratio": 2.38,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(29,37,69)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "text": "cybercrime.gov.in",
+       "ratio": 3.01,
+       "need": 4.5,
+       "fontPx": 14,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": false
+      }
+     ],
+     "tinyText": []
+    },
+    "dark_result": {
+     "vw": 390,
+     "scrollWidth": 390,
+     "bodyScrollWidth": 390,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "left": 337,
+       "right": 520
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "left": 528,
+       "right": 657
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "left": 665,
+       "right": 798
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "span#pasteLbl",
+       "text": "Paste / Upload",
+       "ratio": 2.38,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(29,37,69)",
+       "gradientBehind": false
+      },
+      {
+       "el": "button#draftBtn",
+       "text": "📝",
+       "ratio": 1.07,
+       "need": 4.5,
+       "fontPx": 18,
+       "fg": "rgb(42, 19, 0)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span \"Draft complaint\"",
+       "text": "Draft complaint",
+       "ratio": 1.07,
+       "need": 4.5,
+       "fontPx": 18,
+       "fg": "rgb(42, 19, 0)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#repLbl",
+       "text": "Report at cybercrime.gov.in",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "text": "cybercrime.gov.in",
+       "ratio": 3.01,
+       "need": 4.5,
+       "fontPx": 14,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": false
+      }
+     ],
+     "tinyText": []
+    }
+   },
+   "title": "Thagi Pakdo - Scam Checker",
+   "htmlLang": "en",
+   "metaViewport": "width=device-width, initial-scale=1, viewport-fit=cover",
+   "sampleButtonCount": 5,
+   "keyboardNoIndicator": [
+    "div#drop \"Camera\nGallery\n\nTake\""
+   ],
+   "requestFailures": [],
+   "live": {
+    "scam": {
+     "ok": true,
+     "sec": 3.85,
+     "error": null,
+     "verdict": "SCAM - DANGER",
+     "type": "Phishing & Social Engineering",
+     "badge": "AI (Gemma)",
+     "reasons": [
+      "Urgency used to create panic",
+      "Malicious shortened URL",
+      "Request for OTP"
+     ],
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/03_live_scam_mobile390.png"
+    },
+    "safe": {
+     "ok": true,
+     "sec": 2.59,
+     "error": null,
+     "verdict": "LOOKS SAFE",
+     "type": "",
+     "badge": "AI (Gemma)",
+     "reasons": [
+      "Informational personal update",
+      "No suspicious links or requests",
+      "No financial solicitation"
+     ],
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/03_live_safe_mobile390.png"
+    }
+   }
+  },
+  "desktop1280": {
+   "samples": {
+    "Fake KYC SMS": {
+     "verdict": "SCAM - DANGER",
+     "type": "Phishing/KYC Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Uses urgent/threatening language to induce panic",
+      "Uses a suspicious shortened bit.ly link instead of an official bank domain",
+      "Banks never ask for KYC updates via SMS links"
+     ],
+     "advice": [
+      "Do not click the link",
+      "Do not provide any personal or banking details",
+      "Report the scam on cybercrime.gov.in or call 1930"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": 0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_1_fake_kyc_sms_desktop1280.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_1_full_desktop1280.png"
+    },
+    "UPI refund request": {
+     "verdict": "SCAM - DANGER",
+     "type": "UPI Refund Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Legitimate refunds never require you to enter your UPI PIN or approve a 'collect request'.",
+      "Entering a PIN is only for sending money, never for receiving it.",
+      "The message uses artificial urgency to pressure the victim."
+     ],
+     "advice": [
+      "Do not approve any UPI collect requests or enter your PIN.",
+      "Block the sender immediately.",
+      "Report the incident on cybercrime.gov.in or call 1930."
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": 0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_2_upi_refund_request_desktop1280.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_2_full_desktop1280.png"
+    },
+    "Courier fee WhatsApp": {
+     "verdict": "SCAM - DANGER",
+     "type": "parcel delivery scam",
+     "badge": "Cached",
+     "reasons": [
+      "Uses a suspicious non-official URL (.xyz domain)",
+      "Creates false urgency with a 24-hour deadline",
+      "Asks for a small payment to steal banking credentials"
+     ],
+     "advice": [
+      "Do not click the link or pay any money",
+      "Block the sender immediately",
+      "Report the scam on cybercrime.gov.in or call 1930"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": 0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_3_courier_fee_whatsapp_desktop1280.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_3_full_desktop1280.png"
+    },
+    "Lottery / prize": {
+     "verdict": "SCAM - DANGER",
+     "type": "Lottery/Prize Scam",
+     "badge": "Cached",
+     "reasons": [
+      "Request for upfront processing fee to claim a prize",
+      "Asking for sensitive Aadhaar number via WhatsApp",
+      "Use of high-pressure tactics like 'Offer expires today'"
+     ],
+     "advice": [
+      "Do not pay any money or share Aadhaar details",
+      "Block the sender immediately",
+      "Report the incident to 1930 or cybercrime.gov.in"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(190, 18, 60), rgb(225, 29, 72) 60%, rgb(251, 113, 13",
+     "resultTopY": 0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_4_lottery_prize_desktop1280.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_4_full_desktop1280.png"
+    },
+    "Safe bank OTP": {
+     "verdict": "LOOKS SAFE",
+     "type": "",
+     "badge": "Cached",
+     "reasons": [
+      "Standard security alert format",
+      "Includes explicit warning not to share OTP",
+      "No suspicious links or requests for action"
+     ],
+     "advice": [
+      "Do not share this code with anyone",
+      "If you did not request this, ignore it and check your bank account security"
+     ],
+     "verdictBg": "rgba(0, 0, 0, 0) | linear-gradient(160deg, rgb(236, 253, 243), rgb(211, 245, 224))",
+     "resultTopY": 0,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_5_safe_bank_otp_desktop1280.png",
+     "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/02_sample_5_full_desktop1280.png"
+    }
+   },
+   "langs": {
+    "gu": {
+     "latinLeftovers": [
+      "English",
+      "bit",
+      "sbi-kyc-upd"
+     ],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_gu_result_desktop1280.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nપૈસા ચૂકવતા કે ક્લિક કરતા પહેલાં શંકાસ્પદ મેસેજ તપાસો.\n\nગુજરાતી\nहिन्दी\nEnglish\nકાઢી નાખો\nઅથવા SMS / WhatsApp / UPI મેસેજ પેસ્ટ કરો\nનમૂનો અજમાવો (નકલી):\nનકલી KYC SMS\nUPI રિફંડ રિક્વેસ્ટ\nકુરિયર ફી WhatsApp\nલોટરી / ઇનામ\nસુરક્ષિત બેંક OTP\nપેસ્ટ / અપલોડ\nતપાસો\n✕\nસ્કેમ - જોખમ\nKYC ફ્રોડ\nસેવ કરેલ\n🔊\nસાંભળો\nશા માટે\nબેંક ક્યારેય SMS દ્વારા લિંક મોકલી KYC અપડેટ કરવાનું કહેતી નથી\nલિંક ટૂંકી (bit.ly) છે જે છેતરપિંડી માટે વપરાય છે\nગભરાટ પેદા કરીને તાત્કાલિક પગલાં લેવા માટે દબાણ કરવામાં આવે છે\nશું ક",
+     "metrics": {
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "bodyScrollWidth": 1280,
+      "hScroll": false,
+      "tapOffenders": [
+       {
+        "el": "button#clearImg",
+        "w": 88,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"નકલી KYC SMS\"",
+        "w": 125,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+        "w": 127,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+        "w": 153,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"લોટરી / ઇનામ\"",
+        "w": 106,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+        "w": 124,
+        "h": 44
+       },
+       {
+        "el": "a \"cybercrime.gov.in\"",
+        "w": 116,
+        "h": 19
+       }
+      ],
+      "overflowEls": [],
+      "contrastFails": [
+       {
+        "el": "h1 \"Thagi Pakdo\"",
+        "text": "Thagi Pakdo",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 21,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "p#tagline",
+        "text": "પૈસા ચૂકવતા કે ક્લિક કરતા પહેલ",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 13.5,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"हिन्दी\"",
+        "text": "हिन्दी",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"English\"",
+        "text": "English",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button#check",
+        "text": "તપાસો",
+        "ratio": 1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(255,255,255)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vlabel",
+        "text": "સ્કેમ - જોખમ",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 24,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vtype",
+        "text": "KYC ફ્રોડ",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 15,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#srcBadge",
+        "text": "સેવ કરેલ",
+        "ratio": 1.67,
+        "need": 4.5,
+        "fontPx": 12,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(199,200,206)",
+        "gradientBehind": true
+       },
+       {
+        "el": "a#call",
+        "text": "📞",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#callLbl",
+        "text": "1930 પર કૉલ કરો (સાયબર હેલ્પલા",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       }
+      ],
+      "tinyText": []
+     }
+    },
+    "hi": {
+     "latinLeftovers": [
+      "English",
+      "Phishing",
+      "bit",
+      "sbi-kyc-upd"
+     ],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_hi_result_desktop1280.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nपैसे देने या क्लिक करने से पहले संदिग्ध मैसेज जाँचें।\n\nગુજરાતી\nहिन्दी\nEnglish\nहटाएँ\nया SMS / WhatsApp / UPI मैसेज पेस्ट करें\nनमूना आज़माएँ (नकली):\nनकली KYC SMS\nUPI रिफंड रिक्वेस्ट\nकूरियर फ़ीस WhatsApp\nलॉटरी / इनाम\nसुरक्षित बैंक OTP\nपेस्ट / अपलोड\nजाँचें\n✕\nस्कैम - ख़तरा\nKYC धोखाधड़ी (Phishing)\nसेव किया गया\n🔊\nसुनें\nक्यों\nबैंक कभी भी SMS के माध्यम से लिंक भेजकर KYC अपडेट करने के लिए नहीं कहता है\nसंदेश में डर पैदा करने के लिए 'अकाउंट ब्लॉक' होने की धमकी दी गई है\nउपयोग किया गया लिंक (bit.",
+     "metrics": {
+      "vw": 1280,
+      "scrollWidth": 1280,
+      "bodyScrollWidth": 1280,
+      "hScroll": false,
+      "tapOffenders": [
+       {
+        "el": "button#clearImg",
+        "w": 62,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"नकली KYC SMS\"",
+        "w": 129,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+        "w": 133,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+        "w": 171,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"लॉटरी / इनाम\"",
+        "w": 105,
+        "h": 44
+       },
+       {
+        "el": "button.sample \"सुरक्षित बैंक OTP\"",
+        "w": 127,
+        "h": 44
+       },
+       {
+        "el": "a \"cybercrime.gov.in\"",
+        "w": 116,
+        "h": 19
+       }
+      ],
+      "overflowEls": [],
+      "contrastFails": [
+       {
+        "el": "h1 \"Thagi Pakdo\"",
+        "text": "Thagi Pakdo",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 21,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "p#tagline",
+        "text": "पैसे देने या क्लिक करने से पहल",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 13.5,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"ગુજરાતી\"",
+        "text": "ગુજરાતી",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button.lang \"English\"",
+        "text": "English",
+        "ratio": 1.08,
+        "need": 4.5,
+        "fontPx": 16,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(245,246,252)",
+        "gradientBehind": true
+       },
+       {
+        "el": "button#check",
+        "text": "जाँचें",
+        "ratio": 1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(255,255,255)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vlabel",
+        "text": "स्कैम - ख़तरा",
+        "ratio": 1.1,
+        "need": 3,
+        "fontPx": 24,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "div#vtype",
+        "text": "KYC धोखाधड़ी (Phishing)",
+        "ratio": 1.09,
+        "need": 4.5,
+        "fontPx": 15,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#srcBadge",
+        "text": "सेव किया गया",
+        "ratio": 1.67,
+        "need": 4.5,
+        "fontPx": 12,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(199,200,206)",
+        "gradientBehind": true
+       },
+       {
+        "el": "a#call",
+        "text": "📞",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       },
+       {
+        "el": "span#callLbl",
+        "text": "1930 पर कॉल करें (साइबर हेल्पल",
+        "ratio": 1.1,
+        "need": 4.5,
+        "fontPx": 17,
+        "fg": "rgb(255, 255, 255)",
+        "bg": "rgb(243,244,251)",
+        "gradientBehind": true
+       }
+      ],
+      "tinyText": []
+     }
+    },
+    "en": {
+     "latinLeftovers": [],
+     "fontFamilies": [
+      "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Noto Sans\", \"Noto Sans Gujarati\", \"Noto Sans Devanagari\", \"Nirmala UI\", sans-serif",
+      "Arial"
+     ],
+     "hScroll": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/04_lang_en_result_desktop1280.png",
+     "homeShot": null,
+     "textSample": "Thagi Pakdo\n\nCheck any suspicious message before you pay or click.\n\nગુજરાતી\nहिन्दी\nEnglish\nRemove\nOr paste the SMS / WhatsApp / UPI message\nTry a sample (fake):\nFake KYC SMS\nUPI refund request\nCourier fee WhatsApp\nLottery / prize\nSafe bank OTP\nPaste / Upload\nCheck now\n✕\nSCAM - DANGER\nPhishing/KYC Scam\nCached\n🔊\nRead aloud\nWhy\nUses urgent/threatening language to induce panic\nUses a suspicious shortened bit.ly link instead of an official bank domain\nBanks never ask for KYC updates via SMS links\nWha"
+    }
+   },
+   "readaloud": {
+    "en_label_after_click": "Read aloud",
+    "en": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      614,
+      48
+     ]
+    },
+    "hi_label_after_click": "सुनें",
+    "hi": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      614,
+      48
+     ]
+    },
+    "gu_label_after_click": "સાંભળો",
+    "gu": {
+     "buttonVisible": true,
+     "utterances": [],
+     "buttonSize": [
+      614,
+      48
+     ]
+    },
+    "novoice_apiPresent": true,
+    "novoice": {
+     "buttonVisible": false,
+     "jsErrors": []
+    },
+    "absent_apiPresent": false,
+    "absent": {
+     "buttonVisible": false,
+     "jsErrors": []
+    }
+   },
+   "complaint": {
+    "draftBtnSize": [
+     614,
+     56
+    ],
+    "sheetShot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_form_desktop1280.png",
+    "formLabels": [
+     "Your name",
+     "Your phone",
+     "Amount lost (Rs)",
+     "Paid via",
+     "What happened",
+     "",
+     ""
+    ],
+    "formIntro": "Draft a complaint\n✕\n\nReview before submitting. Do not include real Aadhaar, PIN or OTP.\n\nAll fields are optional. Skip anything you do not want to share.\n\nYour name\nYour phone\nAmount lost (Rs)\nPaid via \nSelect\nUPI\nCard\nNet banking\nCash\nOther\nWhat happened\nMore details\nGenerate",
+    "focusInSheet": "d_name",
+    "generateSec": "cached",
+    "subject": "Complaint regarding Phishing/KYC Scam via suspicious link",
+    "bodyHead": "To,\nThe Cyber Cell,\nNational Cybercrime Reporting Portal,\n\nI am writing to report a Phishing/KYC Scam that occurred on [Date and time of incident]. \n\nSummary of Incident:\n[Describe what happened in your words]\n\nScam Type: Phishing/KYC Scam\n\nSuspicious Details:\nURL: http://bit.ly/sbi-kyc-upd8\n\nRed Fl",
+    "missingNote": "Still to fill in: [Date and time of incident][Describe what happened in your words][Amount lost, if any][Payment method, e.g. UPI / card / bank transfer][Transaction ID / UTR, if any][Your name][Your phone number]",
+    "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_draft_desktop1280.png",
+    "shotFull": "/workspace/thagi-pakdo/docs/screens/qa/baseline/06_complaint_draft_full_desktop1280.png",
+    "copyLabelAfter": "Copied!",
+    "clipboardLen": 1084,
+    "download": "cyber-crime-complaint.txt",
+    "shareCalled": true,
+    "sheetClosed": true
+   },
+   "upload": {
+    "previewVisible": true,
+    "previewShot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_upload_preview_desktop1280.png",
+    "result": {
+     "ok": true,
+     "sec": 0.77,
+     "error": null
+    },
+    "verdict": "SCAM - DANGER",
+    "badge": "Cached",
+    "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_upload_result_desktop1280.png"
+   },
+   "states": {
+    "api_500": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_500_desktop1280.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "console.error: Error: HTTP 500 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "api_429": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_429_desktop1280.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "console.error: Error: HTTP 429 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "api_abort": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_abort_desktop1280.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: net::ERR_FAILED",
+      "console.error: TypeError: Failed to fetch\n    at check (https://thagi-pakdo.vercel.app/app.js:190:23)\n    at $.onclick (https://thagi-pakdo.vercel.app/app.js:119:28)"
+     ]
+    },
+    "api_html_502": {
+     "ok": false,
+     "sec": 0.05,
+     "error": "Could not check right now. Please try again.",
+     "errorVisible": true,
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_api_html_502_desktop1280.png",
+     "errorText": "Could not check right now. Please try again.",
+     "checkBtnEnabled": true,
+     "console": [
+      "console.error: Failed to load resource: the server responded with a status of 502 (Bad Gateway)",
+      "console.error: Error: HTTP 502 \n    at apiFail (https://thagi-pakdo.vercel.app/app.js:258:13)\n    at async check (https://thagi-pakdo.vercel.app/app.js:191:23)"
+     ]
+    },
+    "offline": {
+     "ok": false,
+     "sec": 0.06,
+     "error": "Could not check right now. Please try again.",
+     "errorText": "Could not check right now. Please try again.",
+     "loadingStuck": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_offline_desktop1280.png"
+    },
+    "offline_sample": {
+     "errorVisible": true,
+     "text": "Could not check right now. Please try again.",
+     "resultVisible": false
+    },
+    "empty_submit": {
+     "errorVisible": true,
+     "text": "Please add a screenshot or paste a message first.",
+     "loading": false,
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_empty_submit_desktop1280.png"
+    },
+    "oversized_image": {
+     "previewVisible": true,
+     "errorVisible": false,
+     "errorText": "Image too large. Please try a smaller screenshot.",
+     "ok": false,
+     "sec": 2.97,
+     "error": "Image too large. Please try a smaller screenshot.",
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_oversized_image_desktop1280.png"
+    },
+    "fake_image": {
+     "ok": false,
+     "sec": 0.45,
+     "error": "Could not check right now. Please try again.",
+     "shot": "/workspace/thagi-pakdo/docs/screens/qa/baseline/07_state_fake_image_desktop1280.png",
+     "errorText": "Could not check right now. Please try again."
+    }
+   },
+   "keyboard": [
+    {
+     "el": "button \"ગુજરાતી\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"हिन्दी\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"English\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "rgba(0, 0, 0, 0.2) 0px 2px 8px 0px",
+     "onScreen": true
+    },
+    {
+     "el": "div#drop \"Camera\nGallery\n\nTake\"",
+     "outline": "none 3px rgb(18, 23, 43)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "textarea#text \"Paste the message he\"",
+     "outline": "solid 2px rgb(79, 70, 229)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Fake KYC SMS\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"UPI refund request\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Courier fee WhatsApp\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Lottery / prize\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button \"Safe bank OTP\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button#pasteUp \"Paste / Upload\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "button#check \"Check now\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "rgba(79, 70, 229, 0.45) 0px 6px 18px 0px",
+     "onScreen": true
+    },
+    {
+     "el": "button#reset \"✕\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "outline": "auto 1px rgb(16, 16, 16)",
+     "shadow": "none",
+     "onScreen": true
+    }
+   ],
+   "console": [
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'."
+   ],
+   "firstViewport": "/workspace/thagi-pakdo/docs/screens/qa/baseline/01_first_viewport_desktop1280.png",
+   "firstViewportText": "Thagi Pakdo\n\nCheck any suspicious message before you pay or click.\n\nગુજરાતી\nहिन्दी\nEnglish\nCamera\nGallery\n\nTake a photo, pick a screenshot, or drop / paste one here.\n\nOr paste the SMS / WhatsApp / UPI message\nTry a sample (fake):\nFake KYC SMS\nUPI refund request\nCourier fee WhatsApp\nLottery / prize\nSafe bank OTP\nPaste / Upload\nCheck now\n✕\nReport cyber fraud: call 1930 or visit cybercrime.gov.in",
+   "metrics": {
+    "home": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_red": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_green": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "left": -236,
+       "right": -108
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "left": -100,
+       "right": 64
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_gu": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 88,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"નકલી KYC SMS\"",
+       "w": 125,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+       "w": 127,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+       "w": 153,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"લોટરી / ઇનામ\"",
+       "w": 106,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+       "w": 124,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "પૈસા ચૂકવતા કે ક્લિક કરતા પહેલ",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"English\"",
+       "text": "English",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "તપાસો",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "સ્કેમ - જોખમ",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "KYC ફ્રોડ",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "સેવ કરેલ",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "1930 પર કૉલ કરો (સાયબર હેલ્પલા",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "result_hi": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 62,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"नकली KYC SMS\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+       "w": 133,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+       "w": 171,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"लॉटरी / इनाम\"",
+       "w": 105,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"सुरक्षित बैंक OTP\"",
+       "w": 127,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "पैसे देने या क्लिक करने से पहल",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"English\"",
+       "text": "English",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "जाँचें",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "स्कैम - ख़तरा",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "KYC धोखाधड़ी (Phishing)",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "सेव किया गया",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "1930 पर कॉल करें (साइबर हेल्पल",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "complaint_sheet": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      },
+      {
+       "el": "button#sheetClose",
+       "w": 44,
+       "h": 44
+      },
+      {
+       "el": "summary \"More details\"",
+       "w": 444,
+       "h": 44
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#genLbl",
+       "text": "Generate",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "complaint_draft": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      },
+      {
+       "el": "button#sheetClose",
+       "w": 44,
+       "h": 44
+      },
+      {
+       "el": "summary \"More details\"",
+       "w": 444,
+       "h": 44
+      }
+     ],
+     "overflowEls": [
+      {
+       "el": "aside#sheet",
+       "left": 834,
+       "right": 1314
+      },
+      {
+       "el": "div.sheet-h \"Draft a complaint\n\"",
+       "left": 834,
+       "right": 1314
+      },
+      {
+       "el": "button#sheetClose",
+       "left": 1252,
+       "right": 1296
+      },
+      {
+       "el": "div.sheet-b \"Review before subm\"",
+       "left": 834,
+       "right": 1314
+      },
+      {
+       "el": "p.note \"Review before subm\"",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "form#dform",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "p.hint \"All fields are opt\"",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "label \"Your name\"",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "input#d_name",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "label \"Your phone\"",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "input#d_phone",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "div.two \"Amount lost (Rs)\nP\"",
+       "left": 852,
+       "right": 1296
+      },
+      {
+       "el": "label \"Paid via \nSelect\nU\"",
+       "left": 1079,
+       "right": 1296
+      },
+      {
+       "el": "select#d_method",
+       "left": 1079,
+       "right": 1296
+      },
+      {
+       "el": "label \"What happened\"",
+       "left": 852,
+       "right": 1296
+      }
+     ],
+     "contrastFails": [
+      {
+       "el": "h1 \"Thagi Pakdo\"",
+       "text": "Thagi Pakdo",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 21,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "p#tagline",
+       "text": "Check any suspicious message b",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 13.5,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"ગુજરાતી\"",
+       "text": "ગુજરાતી",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button.lang \"हिन्दी\"",
+       "text": "हिन्दी",
+       "ratio": 1.08,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(245,246,252)",
+       "gradientBehind": true
+      },
+      {
+       "el": "button#check",
+       "text": "Check now",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vlabel",
+       "text": "SCAM - DANGER",
+       "ratio": 1.1,
+       "need": 3,
+       "fontPx": 24,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#vtype",
+       "text": "Phishing/KYC Scam",
+       "ratio": 1.09,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#srcBadge",
+       "text": "Cached",
+       "ratio": 1.67,
+       "need": 4.5,
+       "fontPx": 12,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(199,200,206)",
+       "gradientBehind": true
+      },
+      {
+       "el": "a#call",
+       "text": "📞",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#callLbl",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1.1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(243,244,251)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#genLbl",
+       "text": "Generate again",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "div#c_mirror",
+       "text": "To,\nThe Cyber Cell,\nNational C",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Date and time of \"",
+       "text": "[Date and time of incident]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Describe what hap\"",
+       "text": "[Describe what happened in you",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Amount lost, if a\"",
+       "text": "[Amount lost, if any]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Payment method, e\"",
+       "text": "[Payment method, e.g. UPI / ca",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Transaction ID / \"",
+       "text": "[Transaction ID / UTR, if any]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Your name]\"",
+       "text": "[Your name]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "mark \"[Your phone number\"",
+       "text": "[Your phone number]",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgba(0, 0, 0, 0)",
+       "bg": "rgb(253,224,71)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a.btn.call \"📞\nCall 1930 (cybe\"",
+       "text": "📞",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span \"Call 1930 (cyber h\"",
+       "text": "Call 1930 (cyber helpline)",
+       "ratio": 1,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(255, 255, 255)",
+       "bg": "rgb(255,255,255)",
+       "gradientBehind": true
+      }
+     ],
+     "tinyText": []
+    },
+    "dark_home": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "span \"Camera\"",
+       "text": "Camera",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "span \"Gallery\"",
+       "text": "Gallery",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 16,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "span#pasteLbl",
+       "text": "Paste / Upload",
+       "ratio": 2.38,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(29,37,69)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "text": "cybercrime.gov.in",
+       "ratio": 3.01,
+       "need": 4.5,
+       "fontPx": 14,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": false
+      }
+     ],
+     "tinyText": []
+    },
+    "dark_result": {
+     "vw": 1280,
+     "scrollWidth": 1280,
+     "bodyScrollWidth": 1280,
+     "hScroll": false,
+     "tapOffenders": [
+      {
+       "el": "button#clearImg",
+       "w": 92,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Fake KYC SMS\"",
+       "w": 128,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"UPI refund request\"",
+       "w": 164,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Courier fee WhatsA\"",
+       "w": 184,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Lottery / prize\"",
+       "w": 129,
+       "h": 44
+      },
+      {
+       "el": "button.sample \"Safe bank OTP\"",
+       "w": 132,
+       "h": 44
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "w": 116,
+       "h": 19
+      }
+     ],
+     "overflowEls": [],
+     "contrastFails": [
+      {
+       "el": "span#pasteLbl",
+       "text": "Paste / Upload",
+       "ratio": 2.38,
+       "need": 4.5,
+       "fontPx": 15,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(29,37,69)",
+       "gradientBehind": false
+      },
+      {
+       "el": "button#draftBtn",
+       "text": "📝",
+       "ratio": 1.07,
+       "need": 4.5,
+       "fontPx": 18,
+       "fg": "rgb(42, 19, 0)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span \"Draft complaint\"",
+       "text": "Draft complaint",
+       "ratio": 1.07,
+       "need": 4.5,
+       "fontPx": 18,
+       "fg": "rgb(42, 19, 0)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": true
+      },
+      {
+       "el": "span#repLbl",
+       "text": "Report at cybercrime.gov.in",
+       "ratio": 2.7,
+       "need": 4.5,
+       "fontPx": 17,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(21,27,51)",
+       "gradientBehind": false
+      },
+      {
+       "el": "a \"cybercrime.gov.in\"",
+       "text": "cybercrime.gov.in",
+       "ratio": 3.01,
+       "need": 4.5,
+       "fontPx": 14,
+       "fg": "rgb(79, 70, 229)",
+       "bg": "rgb(11,16,32)",
+       "gradientBehind": false
+      }
+     ],
+     "tinyText": []
+    }
+   },
+   "title": "Thagi Pakdo - Scam Checker",
+   "htmlLang": "en",
+   "metaViewport": "width=device-width, initial-scale=1, viewport-fit=cover",
+   "sampleButtonCount": 5,
+   "keyboardNoIndicator": [
+    "div#drop \"Camera\nGallery\n\nTake\""
+   ],
+   "requestFailures": []
+  }
+ },
+ "notes": [],
+ "metricsSummary": {
+  "mobile390": {
+   "hScrollAnywhere": [],
+   "overflowEls": {
+    "home": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ],
+    "result_red": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ],
+    "result_green": [
+     {
+      "el": "button.sample \"Fake KYC SMS\"",
+      "left": -410,
+      "right": -282
+     },
+     {
+      "el": "button.sample \"UPI refund request\"",
+      "left": -274,
+      "right": -110
+     },
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": -102,
+      "right": 81
+     }
+    ],
+    "result_gu": [
+     {
+      "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+      "left": 297,
+      "right": 450
+     },
+     {
+      "el": "button.sample \"લોટરી / ઇનામ\"",
+      "left": 458,
+      "right": 564
+     },
+     {
+      "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+      "left": 572,
+      "right": 696
+     }
+    ],
+    "result_hi": [
+     {
+      "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+      "left": 308,
+      "right": 479
+     },
+     {
+      "el": "button.sample \"लॉटरी / इनाम\"",
+      "left": 487,
+      "right": 592
+     },
+     {
+      "el": "button.sample \"सुरक्षित बैंक OTP\"",
+      "left": 600,
+      "right": 727
+     }
+    ],
+    "complaint_sheet": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ],
+    "complaint_draft": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ],
+    "dark_home": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ],
+    "dark_result": [
+     {
+      "el": "button.sample \"Courier fee WhatsA\"",
+      "left": 337,
+      "right": 520
+     },
+     {
+      "el": "button.sample \"Lottery / prize\"",
+      "left": 528,
+      "right": 657
+     },
+     {
+      "el": "button.sample \"Safe bank OTP\"",
+      "left": 665,
+      "right": 798
+     }
+    ]
+   },
+   "tapOffenders": [
+    {
+     "el": "button.sample \"Fake KYC SMS\"",
+     "size": [
+      128,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI refund request\"",
+     "size": [
+      164,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Courier fee WhatsA\"",
+     "size": [
+      184,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Lottery / prize\"",
+     "size": [
+      129,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Safe bank OTP\"",
+     "size": [
+      132,
+      44
+     ]
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "size": [
+      116,
+      19
+     ]
+    },
+    {
+     "el": "button#clearImg",
+     "size": [
+      92,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"નકલી KYC SMS\"",
+     "size": [
+      125,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+     "size": [
+      127,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+     "size": [
+      153,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"લોટરી / ઇનામ\"",
+     "size": [
+      106,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+     "size": [
+      124,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"नकली KYC SMS\"",
+     "size": [
+      129,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+     "size": [
+      133,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+     "size": [
+      171,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"लॉटरी / इनाम\"",
+     "size": [
+      105,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"सुरक्षित बैंक OTP\"",
+     "size": [
+      127,
+      44
+     ]
+    },
+    {
+     "el": "button#sheetClose",
+     "size": [
+      44,
+      44
+     ]
+    },
+    {
+     "el": "summary \"More details\"",
+     "size": [
+      354,
+      44
+     ]
+    }
+   ],
+   "contrastFails": [
+    {
+     "el": "h1 \"Thagi Pakdo\"",
+     "text": "Thagi Pakdo",
+     "ratio": 1.1,
+     "need": 3,
+     "fontPx": 24,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "p#tagline",
+     "text": "Check any suspicious message b",
+     "ratio": 1.09,
+     "need": 4.5,
+     "fontPx": 13.5,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"ગુજરાતી\"",
+     "text": "ગુજરાતી",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"हिन्दी\"",
+     "text": "हिन्दी",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button#check",
+     "text": "Check now",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#vlabel",
+     "text": "SCAM - DANGER",
+     "ratio": 1.1,
+     "need": 3,
+     "fontPx": 30,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#vtype",
+     "text": "Phishing/KYC Scam",
+     "ratio": 1.09,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span#srcBadge",
+     "text": "Cached",
+     "ratio": 1.67,
+     "need": 4.5,
+     "fontPx": 12,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(199,200,206)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "a#call",
+     "text": "📞",
+     "ratio": 1.1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span#callLbl",
+     "text": "Call 1930 (cyber helpline)",
+     "ratio": 1.1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"English\"",
+     "text": "English",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "result_hi"
+    },
+    {
+     "el": "span#genLbl",
+     "text": "Generate again",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#c_mirror",
+     "text": "To,\nThe Cyber Cell,\nNational C",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Date and time of \"",
+     "text": "[Date and time of incident]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Transaction ID / \"",
+     "text": "[Transaction ID / UTR, if any]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Your phone number\"",
+     "text": "[Your phone number]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "a.btn.call \"📞\nCall 1930 (cybe\"",
+     "text": "📞",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span \"Call 1930 (cyber h\"",
+     "text": "Call 1930 (cyber helpline)",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span \"Camera\"",
+     "text": "Camera",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_home"
+    },
+    {
+     "el": "span \"Gallery\"",
+     "text": "Gallery",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_home"
+    },
+    {
+     "el": "span#pasteLbl",
+     "text": "Paste / Upload",
+     "ratio": 2.38,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(29,37,69)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "text": "cybercrime.gov.in",
+     "ratio": 3.01,
+     "need": 4.5,
+     "fontPx": 14,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    },
+    {
+     "el": "button#draftBtn",
+     "text": "📝",
+     "ratio": 1.07,
+     "need": 4.5,
+     "fontPx": 18,
+     "fg": "rgb(42, 19, 0)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": true,
+     "state": "dark_result"
+    },
+    {
+     "el": "span \"Draft complaint\"",
+     "text": "Draft complaint",
+     "ratio": 1.07,
+     "need": 4.5,
+     "fontPx": 18,
+     "fg": "rgb(42, 19, 0)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": true,
+     "state": "dark_result"
+    },
+    {
+     "el": "span#repLbl",
+     "text": "Report at cybercrime.gov.in",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    }
+   ],
+   "tiny": [],
+   "consoleErrors": [
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'."
+   ],
+   "requestFailures": [],
+   "keyboardNoIndicator": [
+    "div#drop \"Camera\nGallery\n\nTake\""
+   ]
+  },
+  "desktop1280": {
+   "hScrollAnywhere": [],
+   "overflowEls": {
+    "result_green": [
+     {
+      "el": "button.sample \"Fake KYC SMS\"",
+      "left": -236,
+      "right": -108
+     },
+     {
+      "el": "button.sample \"UPI refund request\"",
+      "left": -100,
+      "right": 64
+     }
+    ],
+    "complaint_draft": [
+     {
+      "el": "aside#sheet",
+      "left": 834,
+      "right": 1314
+     },
+     {
+      "el": "div.sheet-h \"Draft a complaint\n\"",
+      "left": 834,
+      "right": 1314
+     },
+     {
+      "el": "button#sheetClose",
+      "left": 1252,
+      "right": 1296
+     },
+     {
+      "el": "div.sheet-b \"Review before subm\"",
+      "left": 834,
+      "right": 1314
+     },
+     {
+      "el": "p.note \"Review before subm\"",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "form#dform",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "p.hint \"All fields are opt\"",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "label \"Your name\"",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "input#d_name",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "label \"Your phone\"",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "input#d_phone",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "div.two \"Amount lost (Rs)\nP\"",
+      "left": 852,
+      "right": 1296
+     },
+     {
+      "el": "label \"Paid via \nSelect\nU\"",
+      "left": 1079,
+      "right": 1296
+     },
+     {
+      "el": "select#d_method",
+      "left": 1079,
+      "right": 1296
+     },
+     {
+      "el": "label \"What happened\"",
+      "left": 852,
+      "right": 1296
+     }
+    ]
+   },
+   "tapOffenders": [
+    {
+     "el": "button.sample \"Fake KYC SMS\"",
+     "size": [
+      128,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI refund request\"",
+     "size": [
+      164,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Courier fee WhatsA\"",
+     "size": [
+      184,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Lottery / prize\"",
+     "size": [
+      129,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"Safe bank OTP\"",
+     "size": [
+      132,
+      44
+     ]
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "size": [
+      116,
+      19
+     ]
+    },
+    {
+     "el": "button#clearImg",
+     "size": [
+      92,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"નકલી KYC SMS\"",
+     "size": [
+      125,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI રિફંડ રિક્વેસ્\"",
+     "size": [
+      127,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"કુરિયર ફી WhatsApp\"",
+     "size": [
+      153,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"લોટરી / ઇનામ\"",
+     "size": [
+      106,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"સુરક્ષિત બેંક OTP\"",
+     "size": [
+      124,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"नकली KYC SMS\"",
+     "size": [
+      129,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"UPI रिफंड रिक्वेस्\"",
+     "size": [
+      133,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"कूरियर फ़ीस WhatsA\"",
+     "size": [
+      171,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"लॉटरी / इनाम\"",
+     "size": [
+      105,
+      44
+     ]
+    },
+    {
+     "el": "button.sample \"सुरक्षित बैंक OTP\"",
+     "size": [
+      127,
+      44
+     ]
+    },
+    {
+     "el": "button#sheetClose",
+     "size": [
+      44,
+      44
+     ]
+    },
+    {
+     "el": "summary \"More details\"",
+     "size": [
+      444,
+      44
+     ]
+    }
+   ],
+   "contrastFails": [
+    {
+     "el": "h1 \"Thagi Pakdo\"",
+     "text": "Thagi Pakdo",
+     "ratio": 1.1,
+     "need": 3,
+     "fontPx": 21,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "p#tagline",
+     "text": "Check any suspicious message b",
+     "ratio": 1.09,
+     "need": 4.5,
+     "fontPx": 13.5,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"ગુજરાતી\"",
+     "text": "ગુજરાતી",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"हिन्दी\"",
+     "text": "हिन्दी",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button#check",
+     "text": "Check now",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#vlabel",
+     "text": "SCAM - DANGER",
+     "ratio": 1.1,
+     "need": 3,
+     "fontPx": 24,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#vtype",
+     "text": "Phishing/KYC Scam",
+     "ratio": 1.09,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span#srcBadge",
+     "text": "Cached",
+     "ratio": 1.67,
+     "need": 4.5,
+     "fontPx": 12,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(199,200,206)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "a#call",
+     "text": "📞",
+     "ratio": 1.1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span#callLbl",
+     "text": "Call 1930 (cyber helpline)",
+     "ratio": 1.1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(243,244,251)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "button.lang \"English\"",
+     "text": "English",
+     "ratio": 1.08,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(245,246,252)",
+     "gradientBehind": true,
+     "state": "result_hi"
+    },
+    {
+     "el": "span#genLbl",
+     "text": "Generate again",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "div#c_mirror",
+     "text": "To,\nThe Cyber Cell,\nNational C",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Date and time of \"",
+     "text": "[Date and time of incident]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Describe what hap\"",
+     "text": "[Describe what happened in you",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Amount lost, if a\"",
+     "text": "[Amount lost, if any]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Payment method, e\"",
+     "text": "[Payment method, e.g. UPI / ca",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Transaction ID / \"",
+     "text": "[Transaction ID / UTR, if any]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Your name]\"",
+     "text": "[Your name]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "mark \"[Your phone number\"",
+     "text": "[Your phone number]",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgba(0, 0, 0, 0)",
+     "bg": "rgb(253,224,71)",
+     "gradientBehind": false,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "a.btn.call \"📞\nCall 1930 (cybe\"",
+     "text": "📞",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span \"Call 1930 (cyber h\"",
+     "text": "Call 1930 (cyber helpline)",
+     "ratio": 1,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(255, 255, 255)",
+     "bg": "rgb(255,255,255)",
+     "gradientBehind": true,
+     "state": "complaint_draft"
+    },
+    {
+     "el": "span \"Camera\"",
+     "text": "Camera",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_home"
+    },
+    {
+     "el": "span \"Gallery\"",
+     "text": "Gallery",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 16,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_home"
+    },
+    {
+     "el": "span#pasteLbl",
+     "text": "Paste / Upload",
+     "ratio": 2.38,
+     "need": 4.5,
+     "fontPx": 15,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(29,37,69)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    },
+    {
+     "el": "a \"cybercrime.gov.in\"",
+     "text": "cybercrime.gov.in",
+     "ratio": 3.01,
+     "need": 4.5,
+     "fontPx": 14,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    },
+    {
+     "el": "button#draftBtn",
+     "text": "📝",
+     "ratio": 1.07,
+     "need": 4.5,
+     "fontPx": 18,
+     "fg": "rgb(42, 19, 0)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": true,
+     "state": "dark_result"
+    },
+    {
+     "el": "span \"Draft complaint\"",
+     "text": "Draft complaint",
+     "ratio": 1.07,
+     "need": 4.5,
+     "fontPx": 18,
+     "fg": "rgb(42, 19, 0)",
+     "bg": "rgb(11,16,32)",
+     "gradientBehind": true,
+     "state": "dark_result"
+    },
+    {
+     "el": "span#repLbl",
+     "text": "Report at cybercrime.gov.in",
+     "ratio": 2.7,
+     "need": 4.5,
+     "fontPx": 17,
+     "fg": "rgb(79, 70, 229)",
+     "bg": "rgb(21,27,51)",
+     "gradientBehind": false,
+     "state": "dark_result"
+    }
+   ],
+   "tiny": [],
+   "consoleErrors": [
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'.",
+    "pageerror: Failed to set the 'voice' property on 'SpeechSynthesisUtterance': Failed to convert value to 'SpeechSynthesisVoice'."
+   ],
+   "requestFailures": [],
+   "keyboardNoIndicator": [
+    "div#drop \"Camera\nGallery\n\nTake\""
+   ]
+  }
+ }
+}

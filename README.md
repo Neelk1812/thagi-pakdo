@@ -30,7 +30,7 @@ More screenshots (phone, tablet, laptop) are in [`docs/screens/`](docs/screens/)
 
 ## Run it
 
-Developed and tested with Python 3.13 (other versions untested).
+Python 3.12+ (developed and tested on 3.13; CI runs 3.12 and 3.13).
 
 ```bash
 git clone https://github.com/Neelk1812/thagi-pakdo && cd thagi-pakdo

@@ -32,8 +32,9 @@ def test_ai_green_overridden_and_cached(monkeypatch, tmp_path):
 
 def test_validation():
     assert c.post("/api/check", data={"lang": "en"}).status_code == 400
-    big = ("a.png", b"\x89PNG\r\n\x1a\n" + b"0" * (9 * 1024 * 1024), "image/png")
-    assert c.post("/api/check", files={"image": big}).status_code == 400
+    big = ("a.png", b"\x89PNG\r\n\x1a\n" + b"0" * (5 * 1024 * 1024), "image/png")
+    r = c.post("/api/check", files={"image": big})
+    assert r.status_code == 413 and r.json()["error"] == "too_large" and r.json()["message"]
     assert c.get("/api/health").json()["ok"]
 
 
@@ -97,10 +98,10 @@ def test_scam_type_empty_for_green_and_none(monkeypatch, tmp_path):
     monkeypatch.setattr(llm, "check", lambda *a, **k: (dict(AI_GREEN), "gemini"))
     r = c.post("/api/check", data={"text": "Your OTP is 123456. Do not share it.", "lang": "en"}).json()
     assert r["verdict"] == "green" and r["scam_type"] == ""
-    # code-only green fallback too
+    # AI down + code found nothing -> fail-open AMBER (not green); scam_type is the localized "suspicious" label
     monkeypatch.setattr(llm, "check", _down)
     r = c.post("/api/check", data={"text": "Hello, lunch at 1?", "lang": "hi"}).json()
-    assert r["verdict"] == "green" and r["scam_type"] == ""
+    assert r["verdict"] == "amber" and r["scam_type"] == appmod.TYPE["amber"]["hi"]
     for junk in ("none", "None", "N/A", " "):
         monkeypatch.setattr(llm, "check", lambda *a, _j=junk, **k: ({**AI_GREEN, "verdict": "red", "scam_type": _j}, "gemini"))
         r = c.post("/api/check", data={"text": "x " + junk, "lang": "en"}).json()
@@ -183,6 +184,11 @@ NEW_FLAG_MESSAGES = {  # representative message per new checks.py flag
     "safe_acct": "Transfer Rs 50,000 to the RBI safe account immediately.",
     "verify_tx": "Send money for investigation to this account, it will be returned after the investigation.",
     "card": "Please share your ATM PIN and CVV to verify your account.",
+    "job_task": "Earn Rs 50 per YouTube like. Join our Telegram group for daily tasks. Pay Rs 1000 deposit to unlock your earnings.",
+    "loan_threat": "Repay your loan immediately or we will send your photos and contacts to your family and defame you.",
+    "sextortion": "I have your private video. Pay Rs 20000 or I will send it to all your contacts.",
+    "officer_pay": "Officer Sharma here. Stay on Skype and send Rs 40000 to this account.",
+    "case_pay": "A case is registered against your SIM. Pay Rs 5000 to close the case, else warrant and arrest.",
 }
 
 
@@ -208,3 +214,133 @@ def test_every_keys_category_has_all_languages_and_old_flags_unchanged():
                       ("KYC update request", "kyc"), ("URL shortener hides the real link (bit.ly)", "shortener"),
                       ("Courier/parcel fee scam pattern", "courier"), ("Fake prize / lottery pattern", "prize")]:
         assert appmod.code_reasons([flag], "en") == [appmod.R[cat]["en"]], flag
+
+
+# ---------------- F8: fail-open, rate limit, size limit ----------------
+def _cache_files(d):
+    return [p for p in d.rglob("*.json")] if d.exists() else []
+
+
+def test_fail_open_amber_localized_and_never_cached(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    for lang in ("en", "hi", "gu"):
+        r = c.post("/api/check", data={"text": "Hello, lunch at 1?", "lang": lang}).json()
+        assert r["verdict"] == "amber" and r["ai_unavailable"] and r["source"] == "code"
+        assert r["reasons"] == [appmod.UNCHECKED[lang]] and r["scam_type"] == appmod.TYPE["amber"][lang]
+        assert any("1930" in a for a in r["advice"]), lang
+    assert "couldn't fully check" in appmod.UNCHECKED["en"] and "1930" in " ".join(appmod.ADV["unchecked"]["en"])
+    assert appmod.UNCHECKED["hi"] != appmod.UNCHECKED["en"] != appmod.UNCHECKED["gu"]
+    assert _cache_files(tmp_path) == []  # fallback results are never written to the cache
+    # and it is not served from cache once the AI is back and says green
+    monkeypatch.setattr(llm, "check", lambda *a, **k: (dict(AI_GREEN), "gemini"))
+    assert c.post("/api/check", data={"text": "Hello, lunch at 1?", "lang": "en"}).json()["verdict"] == "green"
+
+
+def test_fail_open_image_only_same_wording(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    r = c.post("/api/check", files={"image": ("a.png", _png(37), "image/png")}, data={"lang": "gu"}).json()
+    assert r["verdict"] == "amber" and r["reasons"] == [appmod.UNCHECKED["gu"]] and _cache_files(tmp_path) == []
+
+
+def test_fail_open_keeps_code_red_and_ai_green_valid(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    assert c.post("/api/check", data={"text": KYC}).json()["verdict"] == "red"
+    monkeypatch.setattr(llm, "check", lambda *a, **k: (dict(AI_GREEN), "gemini"))
+    r = c.post("/api/check", data={"text": "See you at lunch", "lang": "en"}).json()
+    assert r["verdict"] == "green" and r["source"] == "gemini"
+
+
+def test_fail_open_user_key_transient_failure(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(appmod.auth, "enabled", lambda: True)
+    monkeypatch.setattr(appmod.auth, "require_user_key", lambda h: "k" * 20)
+    monkeypatch.setattr(llm, "check", _down)  # transient failure on the user-key path
+    r = c.post("/api/check", data={"text": "See you at lunch", "lang": "en"}).json()
+    assert r["verdict"] == "amber" and r["reasons"] == [appmod.UNCHECKED["en"]] and _cache_files(tmp_path) == []
+
+
+def test_cached_sample_green_stays_green_and_unlimited(monkeypatch, tmp_path):
+    monkeypatch.setenv("RATE_LIMIT_CHECK", "1")
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    import json
+    key = appmod._cache_path(b"", "cached green msg", "en")
+    key.parent.mkdir(parents=True, exist_ok=True)
+    key.write_text(json.dumps({**AI_GREEN, "scam_type": ""}))
+    for _ in range(5):  # cache hits never count towards / hit the limit
+        r = c.post("/api/check", data={"text": "cached green msg", "lang": "en"})
+        assert r.status_code == 200 and r.json()["verdict"] == "green" and r.json()["source"] == "cache"
+
+
+def test_rate_limit_check_429_localized(monkeypatch, tmp_path):
+    monkeypatch.setenv("RATE_LIMIT_CHECK", "3")
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    h = {"X-Forwarded-For": "203.0.113.7, 10.0.0.1"}
+    for i in range(3):
+        assert c.post("/api/check", data={"text": f"msg {i}"}, headers=h).status_code == 200
+    r = c.post("/api/check", data={"text": "msg 9", "lang": "hi"}, headers=h)
+    j = r.json()
+    assert r.status_code == 429 and j["error"] == "rate_limited" and isinstance(j["retry_after"], int) and 1 <= j["retry_after"] <= 61
+    assert r.headers["Retry-After"] == str(j["retry_after"]) and str(j["retry_after"]) in j["message"]
+    assert "सेकंड" in j["message"]
+    assert "સેકન્ડ" in c.post("/api/check", data={"text": "msg 10", "lang": "gu"}, headers=h).json()["message"]
+    assert "seconds" in c.post("/api/check", data={"text": "msg 11", "lang": "zz"}, headers=h).json()["message"]
+    # another IP (first X-Forwarded-For entry) is unaffected; static/health/config never limited
+    assert c.post("/api/check", data={"text": "msg 0"}, headers={"X-Forwarded-For": "198.51.100.9"}).status_code == 200
+    for _ in range(10):
+        assert c.get("/api/health", headers=h).status_code == 200 and c.get("/api/config", headers=h).status_code == 200
+
+
+def test_rate_limit_falls_back_to_client_host_and_complaint_bucket(monkeypatch, tmp_path):
+    monkeypatch.setenv("RATE_LIMIT_CHECK", "1")
+    monkeypatch.setenv("RATE_LIMIT_COMPLAINT", "2")
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    monkeypatch.setattr(appmod.cmp.llm, "draft_text", lambda *a, **k: (_ for _ in ()).throw(llm.LLMUnavailable("x")))
+    assert c.post("/api/check", data={"text": "a"}).status_code == 200
+    assert c.post("/api/check", data={"text": "b"}).status_code == 429  # no XFF -> request.client.host
+    body = {"result": {"verdict": "red", "scam_type": "x", "reasons": [], "red_flags_found": [], "advice": [],
+                       "extracted": {"urls": [], "phones": [], "upi_ids": [], "amounts": []}}, "lang": "gu"}
+    assert [c.post("/api/complaint", json=body).status_code for _ in range(3)] == [200, 200, 429]
+    r = c.post("/api/complaint", json=body)
+    assert r.json()["error"] == "rate_limited" and "સેકન્ડ" in r.json()["message"] and "Retry-After" in r.headers
+
+
+def test_rate_limiter_sliding_window_and_bounded_memory():
+    lim = appmod.RateLimiter(window=0.2, max_keys=50)
+    assert [lim.hit("check", "1.1.1.1", 2) for _ in range(2)] == [0, 0] and lim.hit("check", "1.1.1.1", 2) >= 1
+    import time; time.sleep(0.25)
+    assert lim.hit("check", "1.1.1.1", 2) == 0  # window slid
+    assert lim.hit("check", "9.9.9.9", 0) == 0  # limit <= 0 disables
+    for i in range(500):
+        lim.hit("check", f"10.0.{i // 250}.{i % 250}", 5)
+    assert len(lim.hits) <= 200
+
+
+def test_body_too_large_content_length_413(monkeypatch):
+    monkeypatch.setattr(appmod, "MAX_BODY", 1000)
+    r = c.post("/api/check", data={"text": "x" * 5000}, headers={"Origin": "https://example.org"})
+    assert r.status_code == 413 and r.json()["error"] == "too_large" and r.json()["message"]
+    assert r.headers.get("access-control-allow-origin") == "*"  # 413 still carries CORS headers
+    r = c.post("/api/complaint", content=b"{" + b" " * 5000 + b"}", headers={"content-type": "application/json"})
+    assert r.status_code == 413 and r.json()["error"] == "too_large"
+    assert c.get("/api/health").status_code == 200  # GET never size-checked
+
+
+def test_body_too_large_chunked_upload_enforced_while_reading(monkeypatch):
+    monkeypatch.setattr(appmod, "MAX_BODY", 1000)
+    def gen():
+        yield b"text=" + b"a" * 600
+        yield b"b" * 600
+    r = c.post("/api/check", content=gen(), headers={"content-type": "application/x-www-form-urlencoded"})
+    assert r.status_code == 413 and r.json()["error"] == "too_large"
+
+
+def test_normal_sized_requests_unaffected_by_size_limit(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    assert appmod.MAX_BODY == appmod.MAX_IMG == 4 * 1024 * 1024
+    assert c.post("/api/check", data={"text": "hi"}, files={"image": ("a.png", _png(40), "image/png")}).status_code == 200

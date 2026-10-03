@@ -25,8 +25,10 @@ URGENCY = re.compile(r"urgent|immediately|right now|within\s+\d+\s*(?:hours?|hrs
 KYC = re.compile(r"\bkyc\b|केवाईसी|કેવાયસી|pan\s*(?:card)?\s*(?:update|verif)|aadhaar\s*(?:update|verif)", re.I)
 KYC_ACT = re.compile(r"update|verif|pending|expire|complete|submit|suspend|block|अपडेट|અપડેટ", re.I)
 OTP_WORD = re.compile(r"\botp\b|\bpin\b|\bcvv\b|ओटीपी|ઓટીપી|password", re.I)
-OTP_ASK = re.compile(r"\b(?:share|send|forward|tell|give|provide|read out|reply|confirm|enter|submit|batao|bhejo)\b|बताएं|भेजें|बताओ|શેર|મોકલો", re.I)
-NEGATION = re.compile(r"\b(?:do not|don'?t|dont|never|not to|do NOT|avoid|beware|mat|nahi|nahin|kabhi)\b|मत|न करें|ન કરો|નહીં|ના કરો", re.I)
+OTP_ASK = re.compile(r"\b(?:share|send|forward|tell|give|provide|read out|reply|confirm|enter|submit|batao|bhejo)\b|बताएं|बताइए|बताइये|भेजें|बताओ|साझा|शेयर|શેર|મોકલો|જણાવો", re.I)
+NEGATION = re.compile(r"\b(?:do not|don'?t|dont|never|not to|do NOT|avoid|beware|mat|nahi|nahin|kabhi)\b|मत|न करें|ન કરો|નહીં|ના કરો|"
+                      r"(?<![\u0900-\u097F])न\s+(?:बताएं|बताइए|बताइये|बताओ|दें|भेजें|शेयर|साझा|करना|कीजिए)|साझा\s*न|शेयर\s*न|"
+                      r"(?<![\u0A80-\u0AFF])(?:ન|ના)\s*(?:આપો|જણાવો|કહો|મોકલો|કરશો|આપશો)|કોઈને", re.I)
 COLLECT = re.compile(r"collect\s*request|payment\s*request|request(?:ed)?\s*(?:money|payment)|approve\s+(?:the\s+)?request|"
                      r"accept\s+(?:the\s+)?request|enter\s+(?:your\s+)?(?:upi\s*)?pin\s+to\s+(?:receive|get|credit|claim)|"
                      r"(?:upi\s*)?pin\s+(?:is\s+)?(?:required|needed)\s+to\s+(?:receive|get|credit)|scan\s+(?:this\s+)?qr.{0,30}(?:receive|get|refund)", re.I)
@@ -42,7 +44,9 @@ FEE_ASK = re.compile(r"(?:processing|registration|advance|release|clearance|cust
 ADDRESSES_YOU = re.compile(r"\b(?:you|your|yours|aap|aapke|aapki|aapka|tum|tumhare|tumhari)\b|आप|तुम|तुम्हारे|તમારા|તમારી|તમારું|તમને|તમે", re.I)
 _SENT = re.compile(r"[.!?\n।]+")
 # awareness / warning sentences ("Beware: digital arrest is a scam", "TRAI never calls...") must not trigger the strong phrases
-WARN_CUE = re.compile(r"\b(?:scams?|beware|aware(?:ness)?|never|fake calls?|ignore such|report such)\b|सावधान|जागरूक|ठगी से|ક્યારેય|સાવધ|જાગૃત|कभी", re.I)
+WARN_CUE = re.compile(r"\b(?:scams?|beware|aware(?:ness)?|never|fake calls?|ignore such|report such|is\s+a\s+(?:fraud|scam)|(?:scam|fraud|cyber)\s+alert|scam\s+(?:hai|h)|stay\s+alert)\b|"
+                      r"सावधान|जागरूक|सतर्क|ठगी\s*(?:से|है)|धोखाधड़ी\s*है|स्कैम\s*है|कभी\s*नहीं|कभी|"
+                      r"સાવધ\w*|જાગૃત|સતર્ક|ક્યારેય|છેતરપિંડી\s*છે|ઠગાઈ\s*છે|ધોખાધડી\s*છે|સ્કેમ\s*છે", re.I)
 
 _DA = (r"digital\s*arrest|arrest\s*warrant|money\s*laundering|डिजिटल\s*(?:अरेस्ट|गिरफ्तार\w*)|गिरफ्तारी\s*वारंट|मनी\s*लॉन्ड्रिंग|"
        r"ડિજિટલ\s*(?:અરેસ્ટ|ધરપકડ)|ધરપકડ\s*વોરંટ|મની\s*લોન્ડરિંગ")
@@ -65,7 +69,7 @@ AUTHORITY = re.compile(r"\bcbi\b|\bncb\b|narcotics|cyber\s*crime\s*(?:branch|cel
 LEGAL_THREAT = re.compile(r"arrest|\bcase\b|\bfir\b|illegal|money\s*laundering|\bdrugs?\b|narcotic|contraband|legal\s+action|disconnect(?:ed)?|"
                           r"involved\s+in|under\s+investigation|summons|गिरफ्तार|मामला|केस|अवैध|ड्रग|ધરપકડ|કેસ|ગેરકાયદે|ડ્રગ", re.I)
 COERCE = re.compile(
-    r"do\s*n[o']?t\s+(?:disconnect|cut|hang\s*up|end)\s+(?:the\s+|this\s+)?(?:video\s+)?call|stay\s+(?:on|connected\s+(?:on|to))\s+(?:the\s+|this\s+)?(?:video\s+)?(?:call|line)|"
+    r"do\s*n[o']?t\s+(?:disconnect|cut|hang\s*up|end)\s+(?:the\s+|this\s+)?(?:video\s+)?call|stay\s+(?:on|connected\s+(?:on|to))\s+(?:the\s+|this\s+)?(?:video\s+)?(?:call|line|skype|zoom|google\s*meet|whatsapp)|"
     r"keep\s+(?:the\s+|this\s+)?(?:video\s+)?call\s+(?:on|connected)|(?:skype|whatsapp\s+video|video)\s+call.{0,50}(?:officer|police|cbi|court|verification|interrogation|statement|investigation)|"
     r"(?:officer|police|cbi|court|investigation).{0,50}(?:skype|whatsapp\s+video|video)\s+call|"
     r"call\s+(?:mat\s+|na\s+)(?:kaat\w*|katna|disconnect\w*)|call\s+disconnect\s+(?:mat|na)\b|video\s+call\s+(?:par|pe)\s+(?:rahiye|rahein|bane\s+rahe\w*|aaiye|aayiye)|"
@@ -102,7 +106,7 @@ def _warned(sent):
 def _digital_arrest(text):
     for sent in _SENT.split(text):
         m = DIGITAL_ARREST.search(sent)
-        if m and not _warned(sent) and not _NEG_ITEM.search(m.group(0)):
+        if m and not _NEG_ITEM.search(m.group(0)):
             return True
     return False
 
@@ -121,6 +125,90 @@ def _card_ask(text):
             continue
         return True
     return False
+
+
+# ---- F8: awareness over the whole message, plus task/loan-app/sextortion/UPI-PIN/officer-pay/case-pay scams ----
+_ASK_VERB = re.compile(r"\b(?:pay|send|transfer|deposit|click|tap|download|install|remit|bhejo|bhej\w*)\b|भेजें|भेजो|ट्रांसफर|जमा\s*करें|मोકલો|મોકલો|ટ્રાન્સફર|જમા\s*કરો", re.I)
+_URGENT_NOW = re.compile(r"\bnow\b|immediately|today|within|तुरंत|अभी|આજે|તરત|હમણાં", re.I)
+
+
+def real_ask(text):
+    """A sentence that really asks for action (pay/send/click + a link, amount, UPI id or phone), not itself a warning."""
+    for sent in _SENT.split(text):
+        if not sent.strip() or WARN_CUE.search(sent) or NEGATION.search(sent) or not _ASK_VERB.search(sent):
+            continue
+        ex = extract(sent)
+        if ex["urls"] or ex["amounts"] or ex["upi_ids"] or ex["phones"]:
+            return True
+    return False
+
+
+def _sent_hit(rx, text, guard=True):
+    """rx matches inside a sentence that does not itself negate/warn (e.g. 'never enter your PIN to receive money')."""
+    for sent in _SENT.split(text):
+        m = rx.search(sent)
+        if m and not (guard and (NEG_IN.search(sent) or NEG_EN_BEFORE.search(sent[:m.start() + 1]) or _warned(sent))):
+            return True
+    return False
+
+
+UPI_PIN_TRICK = re.compile(
+    r"(?:upi\s*)?pin\s+(?:daal\w*|dal\w*|dalo|enter\s+kar\w*|bhar\w*|nakho)\b.{0,50}\b(?:paisa|paise|money|refund|cashback|credit|aayega|ayega|aa\s*jayega|milega|mil\s*jayega)|"
+    r"\b(?:paisa|paise|money|refund|cashback)\b.{0,50}\b(?:upi\s*)?pin\s+(?:daal\w*|dal\w*|dalo|enter\s+kar\w*|bhar\w*|nakho)|"
+    r"पिन\s*(?:डालें|डालिए|डालिये|डालो|दर्ज\s*करें|एंटर\s*करें).{0,50}(?:पैसे|रुपये|रुपए|रिफंड|कैशबैक|आएंगे|आएगा|मिलेंगे|मिलेगा)|"
+    r"(?:पैसे|रुपये|रुपए|रिफंड|कैशबैक).{0,50}पिन\s*(?:डालें|डालिए|डालिये|डालो|दर्ज\s*करें|एंटर\s*करें)|"
+    r"(?:પૈસા|રિફંડ|કેશબેક|રૂપિયા).{0,50}પિન\s*(?:નાખો|નાખજો|દાખલ\s*કરો|એન્ટર\s*કરો)|"
+    r"પિન\s*(?:નાખો|નાખજો|દાખલ\s*કરો|એન્ટર\s*કરો).{0,50}(?:પૈસા|રિફંડ|કેશબેક|આવશે|મળશે)", re.I)
+
+_PLAT = r"(?:youtube\s+|instagram\s+|google\s+maps\s+|facebook\s+)?"
+_UNIT = r"(?:like|video|task|review|rating|click|follow|subscribe|लाइक|वीडियो|टास्क|रिव्यू|રિવ્યૂ|લાઈક|લાઇક|વીડિયો|ટાસ્ક)s?"
+JOB_PER = re.compile(
+    r"(?:earn\w*|income|paid|pay(?:ment)?|get|milega|milenge|kamao|kamaye|कमाएं|कमाओ|कमाएँ|કમાઓ|કમાવો)\b.{0,50}\b(?:per|each|every|for\s+each|for\s+every|har|prati|हर|प्रति|દરેક|પ્રતિ)\s*" + _PLAT + _UNIT + r"|"
+    r"(?:har|every|each|हर|દરેક)\s+" + _PLAT + _UNIT + r"\s*(?:par|pe|पर|के\s*लिए|માટે|પર)?\s*(?:rs\.?|₹|rupay\w*|rupee\w*|रुपये|રૂપિયા)?\s*\d+|"
+    r"(?:rs\.?|₹)\s*\d[\d,]*\s*(?:per|/|for\s+each|for\s+every)\s*" + _PLAT + r"(?:like|video|task|review)|"
+    r"like\s+(?:and|&|\+)\s+subscribe.{0,40}(?:earn|rs|₹|paid)", re.I)
+TELEGRAM_TASK = re.compile(r"(?:telegram|whatsapp)\s+(?:group|channel).{0,60}(?:task|like|video|earn|work|job)|(?:task|earn\w*|part[- ]?time).{0,60}(?:telegram|whatsapp)\s+(?:group|channel)|"
+                           r"टेलीग्राम.{0,40}(?:टास्क|ग्रुप)|ટેલિગ્રામ.{0,40}(?:ટાસ્ક|ગ્રુપ)", re.I)
+PREPAY = re.compile(r"(?:deposit|invest|prepaid?|pay|recharge|registration|activation|security)\b.{0,50}(?:unlock|withdraw|tasks?\b|earnings?|commission|profit)|unlock\w*.{0,40}(?:earnings?|tasks?|withdraw|commission)|"
+                    r"(?:prepaid|prepay)\s+tasks?|(?:पैसे|रुपये|रुपए)\s*जमा.{0,40}(?:टास्क|कमीशन|कमाई)|પૈસા\s*જમા.{0,40}(?:ટાસ્ક|કમિશન|કમાણી)|ડિપોઝિટ.{0,40}(?:કમાણી|કમિશન|ટાસ્ક)", re.I)
+JOB_CTX = re.compile(r"\bjob\b|\btasks?\b|\bearn\w*|income|commission|part[- ]?time|work\s+from\s+home|\blikes?\b|youtube|telegram|नौकरी|टास्क|कमाई|कमाएं|નોકરી|ટાસ્ક|કમાણી", re.I)
+PART_TIME = re.compile(r"part[- ]?time\s+jobs?|work\s+from\s+home|घर\s*बैठे|पार्ट\s*टाइम|પાર્ટ\s*ટાઇમ|ઘરે\s*બેઠા", re.I)
+EARN_W = re.compile(r"\bearn\w*|daily\s+income|per\s+day|/\s*day|कमाएं|कमाई|कमाओ|દરરોજ|કમાણી|કમાઓ", re.I)
+
+_GRP_EN = r"(?:contacts?|contact\s*list|family|friends?|relatives?|parents|wife|husband|whatsapp|facebook|social\s*media|rishtedar\w*|ghar\s*walo\w*)"
+SHARE_TO_CONTACTS = re.compile(
+    r"(?:send|share|post|upload|circulate|forward|leak|viral|bhej\w*|dikha\w*)\b.{0,70}\b(?:all\s+)?(?:your|ur|tumhare|tumhari|aapke|aapki)\s+" + _GRP_EN + r"|"
+    r"(?:your|ur|tumhare|aapke)\s+" + _GRP_EN + r"\s+(?:ko|to)\b.{0,50}(?:send|share|bhej\w*|viral|photo|video|message|call)|"
+    r"(?:आपके|तुम्हारे)\s+(?:परिवार|रिश्तेदार\w*|दोस्त\w*|कॉन्टैक्ट\w*|संपर्क\w*|घरवाल\w*).{0,50}(?:भेज|वायरल|शेयर|दिखा)\w*|"
+    r"(?:भेज|वायरल|शेयर)\w*.{0,50}(?:आपके|तुम्हारे)\s+(?:परिवार|रिश्तेदार\w*|दोस्त\w*|कॉन्टैक्ट\w*|संपर्क\w*)|"
+    r"તમારા\s+(?:પરિવાર|સંબંધી\w*|મિત્ર\w*|કોન્ટેક્ટ\w*|સંપર્ક\w*|ઘરના\w*).{0,50}(?:મોકલ|વાયરલ|શેર|બતાવ)\w*|"
+    r"(?:મોકલ|વાયરલ|શેર)\w*.{0,50}તમારા\s+(?:પરિવાર|સંબંધી\w*|મિત્ર\w*|કોન્ટેક્ટ\w*|સંપર્ક\w*)", re.I)
+DEFAME = re.compile(r"defam\w*|badnaam\w*|bad\s*name|expose\s+you|humiliat\w*|insult\s+you|बदनाम\w*|બદનામ\w*", re.I)
+LOAN_CTX = re.compile(r"\bloans?\b|\bemi\b|repay\w*|recovery|लोन|कर्ज़?|उधार|લોન|ઉધાર|ચૂકવ", re.I)
+SEXT_HAVE = re.compile(
+    r"(?:i|we)\s+(?:have|got|recorded|captured|saved)\s+(?:your\s+)?(?:nude|naked|private|obscene|intimate|objectionable|screen\s*record\w*|video|videos|photos?|pictures?|pics?|recording|chat)|"
+    r"your\s+(?:nude|naked|private|obscene|intimate|objectionable)\s+(?:video|videos|photos?|pictures?|pics?|recording)|"
+    r"(?:tumhari|aapki|teri)\s+(?:nude|private|gandi|vulgar|obscene)?\s*(?:video|videos|photo|photos|pics?)\w*\s+(?:mere|hamare|meri)\s+paas|"
+    r"(?:तुम्हारी|आपकी|तेरी)\s+(?:न्यूड|नग्न|प्राइवेट|अश्लील)?\s*(?:वीडियो|फोटो|तस्वीर)\w*.{0,30}(?:मेरे|हमारे)\s*पास|"
+    r"(?:તમારો|તમારી|તારો|તારી)\s+(?:ન્યૂડ|પ્રાઇવેટ|અશ્લીલ)?\s*(?:વીડિયો|ફોટો|ફોટા)\w*.{0,30}(?:મારી|અમારી)\s*પાસે", re.I)
+LEAK_W = re.compile(r"viral|leak|upload|\bpost\b|share|send\s+(?:it|them|this)|वायरल|लीक|शेयर|भेज|વાયરલ|લીક|શેર|મોકલ", re.I)
+MONEY_W = re.compile(r"\bpay\b|paise|paisa|money|rs\.?\s*\d|₹|rupees|transfer|पैसे|रुपये|रुपए|भुगतान|पैसा|પૈસા|રૂપિયા|ચૂકવ", re.I)
+OFFICER = re.compile(r"\bofficer\b|\binspector\b|\bsir\b.{0,10}\bcbi\b|अधिकारी|इंस्पेक्टर|અધિકારી|ઇન્સ્પેક્ટર", re.I)
+VIDEO_PLAT = re.compile(r"skype|zoom|google\s*meet|whatsapp\s+video|video\s+call|वीडियो\s*कॉल|સ્કાઇપ|स्काइप|વીડિયો\s*કૉલ|વિડિયો\s*કૉલ", re.I)
+SEND_MONEY = re.compile(r"\b(?:send|transfer|deposit|pay)\b.{0,40}(?:rs\.?|₹|inr)?\s*\d[\d,]{2,}|(?:rs\.?|₹)\s*\d[\d,]{2,}.{0,30}\b(?:send|transfer|deposit|pay)\b|"
+                        r"(?:भेजें|ट्रांसफर|जमा).{0,30}\d[\d,]{3,}|\d[\d,]{3,}.{0,30}(?:भेजें|ट्रांसफर|जमा)|(?:મોકલો|ટ્રાન્સફર|જમા).{0,30}\d[\d,]{3,}|\d[\d,]{3,}.{0,30}(?:મોકલો|ટ્રાન્સફર|જમા)", re.I)
+CASE_AGAINST_SIM = re.compile(
+    r"(?:case|fir|complaint)\b.{0,50}\b(?:against|on|under)\b.{0,25}\b(?:your|you)\b.{0,25}\b(?:sim|mobile|number|aadhaar|aadhar|bank\s*account)|"
+    r"\b(?:sim|mobile\s*number|aadhaar)\b.{0,40}\b(?:case|fir)\b.{0,30}(?:registered|filed|lodged)|"
+    r"(?:aapke|tumhare)\s+(?:sim|number|aadhaar)\s+(?:ke\s+naam\s+par|par)\s+(?:case|fir)|"
+    r"(?:आपके|तुम्हारे)\s*(?:सिम|नंबर|आधार).{0,30}(?:केस|एफआईआर)|(?:सिम|नंबर|आधार).{0,30}(?:पर|के\s*खिलाफ|के\s*नाम\s*पर).{0,20}(?:केस|एफआईआर)|"
+    r"(?:તમારા)\s*(?:સિમ|નંબર|આધાર).{0,30}(?:કેસ|ફરિયાદ)|(?:સિમ|નંબર|આધાર).{0,30}(?:સામે|પર|ના\s*નામે).{0,20}(?:કેસ|ફરિયાદ)", re.I)
+CLOSE_CASE_PAY = re.compile(
+    r"(?:pay|payment|fine|fee|deposit|transfer|send)\b.{0,60}\b(?:close|settle|clear|quash|cancel|withdraw|dismiss)\w*\s+(?:the\s+|this\s+|your\s+)?(?:case|fir|complaint)|"
+    r"(?:close|settle|clear|quash|cancel|dismiss)\w*\s+(?:the\s+|this\s+|your\s+)?(?:case|fir)\b.{0,60}\b(?:pay|payment|fine|fee|deposit|transfer|send)|"
+    r"case\s+(?:close|band|khatam)\s+kar\w*.{0,40}(?:paise|pay|rs|₹|fine|jama)|(?:paise|pay|rs|₹|fine|jama)\w*.{0,40}case\s+(?:close|band|khatam)|"
+    r"(?:केस|एफआईआर)\s*(?:बंद|खत्म|रद्द)\s*(?:करने|कराने)?.{0,50}(?:पैसे|रुपये|रुपए|जुर्माना|भुगतान|जमा)|(?:पैसे|रुपये|रुपए|जुर्माना|भुगतान|जमा).{0,50}(?:केस|एफआईआर)\s*(?:बंद|खत्म|रद्द)|"
+    r"(?:કેસ|ફરિયાદ)\s*(?:બંધ|રદ)\s*(?:કરવા|કરાવવા)?.{0,50}(?:પૈસા|રૂપિયા|દંડ|ચૂકવ|જમા)|(?:પૈસા|રૂપિયા|દંડ|ચૂકવ|જમા).{0,50}(?:કેસ|ફરિયાદ)\s*(?:બંધ|રદ)", re.I)
 
 
 def _reg_domain(host):
@@ -181,6 +269,9 @@ def analyze(text):
     def add(w, label):
         flags.append((w, label))
 
+    aware = bool(WARN_CUE.search(text))
+    mute = aware and not real_ask(text)  # awareness anywhere in the message (neighbouring sentences) unless it also makes a real ask
+
     for u in ex["urls"]:
         host = _host(u)
         if not host:
@@ -211,9 +302,10 @@ def analyze(text):
         add(2, "KYC update request")
         if ex["urls"]:
             add(3, "KYC update with a link (classic bank-KYC scam)")
-    if _otp_request(text) and not COLLECT.search(text):
+    if _otp_request(text) and not mute and not (COLLECT.search(text) and not mute):
         add(3, "Asks you to share/enter OTP, PIN or password")
-    if COLLECT.search(text):
+    collect = bool(COLLECT.search(text)) and _sent_hit(COLLECT, text) and not mute
+    if collect or (_sent_hit(UPI_PIN_TRICK, text) and not mute):
         add(3, "UPI collect request / 'enter PIN to receive money' trick")
     if PRIZE.search(text):
         add(3, "Fake prize / lottery pattern")
@@ -224,28 +316,48 @@ def analyze(text):
     if REMOTE.search(text):
         add(3, "Asks to install a remote-access app")
     # --- authority impersonation / digital arrest / safe-account / card-detail scams ---
-    da = _digital_arrest(text)
+    da = _digital_arrest(text) and not mute
     if da:
         add(3, "Fake police/CBI/customs/TRAI 'digital arrest' scare (classic scam)")
-    auth_threat = bool(AUTHORITY.search(text) and LEGAL_THREAT.search(text) and ADDRESSES_YOU.search(text)) and not WARN_CUE.search(text)
+    auth_threat = bool(AUTHORITY.search(text) and LEGAL_THREAT.search(text) and ADDRESSES_YOU.search(text)) and not mute
     if auth_threat and not da:
         add(2, "Claims to be police/CBI/customs/court and threatens arrest or a case")
-    coerce = bool(COERCE.search(text)) and not WARN_CUE.search(text)
+    coerce = bool(COERCE.search(text)) and not mute
     if coerce:
         add(2, "Pressures you to stay on a (video) call")
-    if SECRECY.search(text) and (auth_threat or da or coerce) and not WARN_CUE.search(text):  # "don't tell anyone" alone is normal (surprise party)
+    if SECRECY.search(text) and (auth_threat or da or coerce) and not mute:  # "don't tell anyone" alone is normal (surprise party)
         add(2, "Tells you to keep it secret")
-    if not WARN_CUE.search(text):
+    if not mute:
         if SAFE_ACCT.search(text) and re.search(_MOVE, text, re.I):
             add(3, "Asks you to move money to a 'safe'/RBI account")
         elif VERIFY_TRANSFER.search(text):
             add(3, "Asks you to transfer money 'for verification/investigation' (refund promise)")
     if _card_ask(text):
         add(3, "Asks you to share your ATM PIN, CVV or card details (OTP/PIN request)")
+    # --- F8 scam families ---
+    if not mute:
+        if JOB_PER.search(text) or TELEGRAM_TASK.search(text) or (PREPAY.search(text) and JOB_CTX.search(text)):
+            add(3, "Task/job scam: pay-to-earn per like/video/task (fake job)")
+        elif PART_TIME.search(text) and EARN_W.search(text):
+            add(2, "Task/job scam: pay-to-earn per like/video/task (fake job)")
+        shares = bool(SHARE_TO_CONTACTS.search(text))
+        sext = bool(SEXT_HAVE.search(text)) and (shares or LEAK_W.search(text)) and MONEY_W.search(text)
+        if sext or (shares and re.search(r"\b(?:video|photos?|pics?|pictures?)\b|वीडियो|फोटो|વીડિયો|ફોટો", text, re.I) and MONEY_W.search(text) and not LOAN_CTX.search(text)):
+            add(3, "Blackmail threat to leak your private video/photos unless you pay")
+        elif LOAN_CTX.search(text) and (shares or DEFAME.search(text)):
+            add(3, "Loan-app style threat to shame you / send your photos or contacts")
+        if (AUTHORITY.search(text) or OFFICER.search(text)) and VIDEO_PLAT.search(text) and SEND_MONEY.search(text):
+            add(3, "Officer on a video call/Skype asks you to send money")
+        case_sim, case_pay = bool(CASE_AGAINST_SIM.search(text)), bool(CLOSE_CASE_PAY.search(text))
+        if case_pay and (case_sim or LEGAL_THREAT.search(text)):
+            add(3, "Says a case is registered against you and asks payment to close it")
+        elif case_sim and not da and not auth_threat:
+            add(2, "Claims to be police/CBI/customs/court and threatens arrest or a case")
     if REFUND.search(text) and (ex["upi_ids"] or ex["urls"] or ex["phones"]):
         add(1, "Refund/cashback bait with a contact or link")
     if ex["upi_ids"] and re.search(r"\b(?:pay|send|transfer)\b", text, re.I) and ex["amounts"]:
-        add(1, "Asks for payment to a personal UPI ID")
+        # awareness wording must not launder a real payment request to a UPI id
+        add(3 if (aware and real_ask(text)) else 1, "Asks for payment to a personal UPI ID")
 
     seen, labels = set(), []
     for w, l in flags:

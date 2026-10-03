@@ -11,3 +11,7 @@ def _isolate(monkeypatch, tmp_path):
     for k in ("GEMINI_API_KEY", "GOOGLE_API_KEY"):
         monkeypatch.delenv(k, raising=False)
     monkeypatch.setenv("LOCAL_BASE_URL", "http://127.0.0.1:1/v1")
+    # rate limiting is exercised by its own tests; everything else must never hit it
+    monkeypatch.setenv("RATE_LIMIT_CHECK", "100000")
+    monkeypatch.setenv("RATE_LIMIT_COMPLAINT", "100000")
+    appmod.LIMITER.hits.clear()

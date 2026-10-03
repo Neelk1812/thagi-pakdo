@@ -56,12 +56,103 @@ logging.setLogRecordFactory(_scrubbing_factory)
 WEB = ROOT / "web"
 CACHE = Path(os.environ.get("CACHE_DIR") or ROOT / "sample_cache")
 SAMPLES = ROOT / "samples"
-MAX_IMG = 8 * 1024 * 1024
+MAX_IMG = 4 * 1024 * 1024
+MAX_BODY = 4 * 1024 * 1024  # whole request; also keeps us under Vercel's ~4.5 MB function body limit
 MAX_TEXT = 5000
 LANGS = ("gu", "hi", "en")
 
+import collections, threading, time
+
+TOO_LARGE = {"en": "This is too big to check. Please use a smaller screenshot (under 4 MB) or paste the text.",
+             "hi": "यह जाँच के लिए बहुत बड़ा है। कृपया 4 MB से छोटा स्क्रीनशॉट इस्तेमाल करें या टेक्स्ट पेस्ट करें।",
+             "gu": "આ તપાસ માટે ખૂબ મોટું છે. કૃપા કરીને 4 MB થી નાનો સ્ક્રીનશૉટ વાપરો અથવા ટેક્સ્ટ પેસ્ટ કરો."}
+RATE_MSG = {"en": "You're checking too fast. Please wait {s} seconds and try again.",
+            "hi": "आप बहुत तेज़ी से जाँच रहे हैं। कृपया {s} सेकंड रुककर फिर कोशिश करें।",
+            "gu": "તમે બહુ ઝડપથી તપાસ કરી રહ્યા છો. કૃપા કરીને {s} સેકન્ડ રાહ જુઓ અને ફરી પ્રયત્ન કરો."}
+
+
+class TooLarge(HTTPException):
+    def __init__(self, lang="en"):
+        super().__init__(413, TOO_LARGE.get(lang, TOO_LARGE["en"]))
+
+
+class BodyLimit:
+    """Pure-ASGI guard: 413 as soon as Content-Length (or the streamed body) exceeds MAX_BODY. Only POST /api/*."""
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope["method"] not in ("POST", "PUT", "PATCH") or not scope["path"].startswith("/api/"):
+            return await self.app(scope, receive, send)
+        cl = dict(scope["headers"]).get(b"content-length", b"")
+        if cl.isdigit() and int(cl) > MAX_BODY:
+            return await JSONResponse({"error": "too_large", "message": TOO_LARGE["en"]}, status_code=413)(scope, receive, send)
+        got = 0
+
+        async def limited():
+            nonlocal got
+            msg = await receive()
+            if msg["type"] == "http.request":
+                got += len(msg.get("body", b""))
+                if got > MAX_BODY:
+                    raise TooLarge()
+            return msg
+        await self.app(scope, limited, send)
+
+
+class RateLimiter:
+    """Per-IP sliding window, in memory, bounded (idle IPs are pruned)."""
+    def __init__(self, window=60.0, max_keys=5000):
+        self.window, self.max_keys, self.hits, self.lock, self.n = window, max_keys, {}, threading.Lock(), 0
+
+    def hit(self, bucket, ip, limit):
+        """Record a request; return 0 if allowed, else seconds until the oldest hit expires."""
+        if limit <= 0:
+            return 0
+        now, key = time.monotonic(), (bucket, ip)
+        with self.lock:
+            self.n += 1
+            if self.n % 200 == 0 or len(self.hits) > self.max_keys:
+                for k in [k for k, d in self.hits.items() if not d or now - d[-1] > self.window]:
+                    del self.hits[k]
+                if len(self.hits) > self.max_keys:  # still huge: drop the oldest-active half
+                    for k in sorted(self.hits, key=lambda k: self.hits[k][-1])[: len(self.hits) // 2]:
+                        del self.hits[k]
+            d = self.hits.setdefault(key, collections.deque())
+            while d and now - d[0] >= self.window:
+                d.popleft()
+            if len(d) >= limit:
+                return max(1, int(self.window - (now - d[0])) + 1)
+            d.append(now)
+            return 0
+
+
+LIMITER = RateLimiter()
+
+
+def client_ip(request):
+    xff = request.headers.get("x-forwarded-for", "")
+    return (xff.split(",")[0].strip() if xff else "") or (request.client.host if request.client else "unknown")
+
+
+def rate_limited(request, bucket, lang):
+    """JSONResponse(429) if this IP is over the limit for `bucket`, else None. Call only AFTER the cache lookup."""
+    limit = int(os.environ.get("RATE_LIMIT_CHECK" if bucket == "check" else "RATE_LIMIT_COMPLAINT", "20" if bucket == "check" else "10"))
+    wait = LIMITER.hit(bucket, client_ip(request), limit)
+    if not wait:
+        return None
+    return JSONResponse({"error": "rate_limited", "message": RATE_MSG.get(lang, RATE_MSG["en"]).format(s=wait), "retry_after": wait},
+                        status_code=429, headers={"Retry-After": str(wait)})
+
+
 app = FastAPI(title="Thagi Pakdo")
+app.add_middleware(BodyLimit)  # added before CORS => inside it, so 413s still carry CORS headers
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])  # incl. Authorization, X-Gemini-Key
+
+
+@app.exception_handler(TooLarge)
+async def _too_large(request, exc):
+    return JSONResponse({"error": "too_large", "message": exc.detail}, status_code=413)
 
 
 @app.exception_handler(auth.AuthError)
@@ -138,11 +229,27 @@ R = {  # category -> {lang: reason}
     "card": {"en": "It asks for your ATM PIN, CVV or card details - a real bank never does.",
              "hi": "यह आपका ATM पिन, CVV या कार्ड की जानकारी मांगता है - असली बैंक कभी नहीं मांगता।",
              "gu": "તે તમારો ATM પિન, CVV કે કાર્ડની વિગતો માંગે છે - અસલી બેંક ક્યારેય માંગતી નથી."},
+    "job_task": {"en": "Fake job/task scam: real employers never pay per YouTube like or task, or ask you to deposit money to unlock earnings.",
+                 "hi": "नकली जॉब/टास्क ठगी: असली कंपनी लाइक या टास्क के पैसे नहीं देती और कमाई अनलॉक करने के लिए पैसे जमा नहीं करवाती।",
+                 "gu": "નકલી જૉબ/ટાસ્ક છેતરપિંડી: અસલી કંપની લાઈક કે ટાસ્કના પૈસા આપતી નથી અને કમાણી અનલૉક કરવા પૈસા જમા કરાવતી નથી."},
+    "loan_threat": {"en": "Loan-app style blackmail: they threaten to send your photos or contacts to family and shame you. Do not pay under threat; report it.",
+                    "hi": "लोन ऐप जैसी धमकी: वे आपकी फोटो या कॉन्टैक्ट परिवार को भेजकर बदनाम करने की धमकी देते हैं। धमकी में आकर पैसे न दें; रिपोर्ट करें।",
+                    "gu": "લોન ઍપ જેવી ધમકી: તેઓ તમારા ફોટા કે કોન્ટેક્ટ પરિવારને મોકલી બદનામ કરવાની ધમકી આપે છે. ધમકીથી પૈસા ન આપો; રિપોર્ટ કરો."},
+    "sextortion": {"en": "Blackmail: they threaten to leak your private video/photos unless you pay. Do not pay; stop replying, keep the evidence and report at 1930.",
+                   "hi": "ब्लैकमेल: वे पैसे न देने पर आपकी निजी वीडियो/फोटो लीक करने की धमकी देते हैं। पैसे न दें; जवाब देना बंद करें, सबूत रखें और 1930 पर रिपोर्ट करें।",
+                   "gu": "બ્લૅકમેલ: પૈસા ન આપો તો તમારો ખાનગી વીડિયો/ફોટા લીક કરવાની ધમકી આપે છે. પૈસા ન આપો; જવાબ આપવાનું બંધ કરો, પુરાવા રાખો અને 1930 પર રિપોર્ટ કરો."},
+    "officer_pay": {"en": "A so-called officer on a video call/Skype asks you to send money - no real officer ever does this.",
+                    "hi": "वीडियो कॉल/Skype पर कथित अधिकारी पैसे भेजने को कह रहा है - असली अधिकारी कभी ऐसा नहीं करता।",
+                    "gu": "વીડિયો કૉલ/Skype પર કહેવાતા અધિકારી પૈસા મોકલવા કહે છે - અસલી અધિકારી ક્યારેય આવું કરતા નથી."},
+    "case_pay": {"en": "They say a case is registered against you or your SIM and ask for money to close it. Police never settle cases by phone payment.",
+                 "hi": "वे कहते हैं कि आपके या आपके सिम के खिलाफ केस दर्ज है और केस बंद करने के लिए पैसे मांगते हैं। पुलिस फ़ोन पर पैसे लेकर केस बंद नहीं करती।",
+                 "gu": "તેઓ કહે છે કે તમારા કે તમારા સિમ સામે કેસ નોંધાયો છે અને કેસ બંધ કરવા પૈસા માંગે છે. પોલીસ ફોન પર પૈસા લઈને કેસ બંધ કરતી નથી."},
     "upi_pay": {"en": "It asks you to pay money to a personal UPI ID.",
                 "hi": "यह किसी निजी UPI ID पर पैसे भेजने को कहता है।",
                 "gu": "તે કોઈ અંગત UPI ID પર પૈસા મોકલવા કહે છે."},
 }
-KEYS = [("digital arrest", "digital_arrest"), ("threatens arrest", "impersonation"), ("stay on a", "coerce"),
+KEYS = [("pay-to-earn", "job_task"), ("Loan-app", "loan_threat"), ("Blackmail threat", "sextortion"), ("Officer on a video", "officer_pay"),
+        ("registered against you and asks payment", "case_pay"), ("digital arrest", "digital_arrest"), ("threatens arrest", "impersonation"), ("stay on a", "coerce"),
         ("keep it secret", "secret"), ("safe'/RBI", "safe_acct"), ("for verification/investigation", "verify_tx"),
         ("ATM PIN, CVV", "card"),  # new flags first: their labels also contain old keys (e.g. "Refund", "OTP")
         ("shortener", "shortener"), ("Punycode", "lookalike"), ("Lookalike", "lookalike"), ("Suspicious domain", "tld"),
@@ -166,6 +273,15 @@ ADV = {
            "gu": ["ઠગાઈના સ્પષ્ટ સંકેત મળ્યા નથી, છતાં OTP કે PIN કોઈને ન આપો.",
                   "શંકા હોય તો કાર્ડ પર છાપેલા નંબર પર બેંકને કૉલ કરો. હેલ્પલાઇન: 1930."]},
 }
+UNCHECKED = {"en": "We couldn't fully check this message. Be careful: don't click links, pay, or share OTP/PIN until you verify with the sender or your bank.",
+             "hi": "हम इस संदेश की पूरी जाँच नहीं कर पाए। सावधान रहें: भेजने वाले या अपने बैंक से पुष्टि होने तक लिंक पर क्लिक न करें, पैसे न दें और OTP/PIN साझा न करें।",
+             "gu": "અમે આ સંદેશની પૂરી તપાસ કરી શક્યા નથી. સાવચેત રહો: મોકલનાર કે તમારી બેંક સાથે ખાતરી કર્યા વિના લિંક પર ક્લિક ન કરો, પૈસા ન આપો અને OTP/PIN શેર ન કરો."}
+ADV["unchecked"] = {"en": ["Do not click links, pay or share OTP/PIN until you verify with the sender or your bank.",
+                          "If unsure, call your bank on the number printed on your card. Report scams: helpline 1930 or cybercrime.gov.in."],
+                    "hi": ["भेजने वाले या अपने बैंक से पुष्टि होने तक लिंक पर क्लिक न करें, पैसे न दें और OTP/PIN साझा न करें।",
+                           "संदेह हो तो कार्ड पर छपे नंबर पर बैंक को कॉल करें। ठगी की रिपोर्ट: हेल्पलाइन 1930 या cybercrime.gov.in।"],
+                    "gu": ["મોકલનાર કે તમારી બેંક સાથે ખાતરી કર્યા વિના લિંક પર ક્લિક ન કરો, પૈસા ન આપો અને OTP/PIN શેર ન કરો.",
+                           "શંકા હોય તો કાર્ડ પર છાપેલા નંબર પર બેંકને કૉલ કરો. છેતરપિંડીની જાણ: હેલ્પલાઇન 1930 અથવા cybercrime.gov.in."]}
 OK_REASON = {"en": "No suspicious link, payment request or OTP request was found.",
              "hi": "कोई संदिग्ध लिंक, भुगतान या OTP की मांग नहीं मिली।",
              "gu": "કોઈ શંકાસ્પદ લિંક, ચુકવણી કે OTP ની માંગ મળી નથી."}
@@ -257,7 +373,7 @@ def check(request: Request, image: UploadFile | None = File(None), text: str = F
     if not img and not text:
         raise HTTPException(400, "Provide text or an image")
     if len(img) > MAX_IMG:
-        raise HTTPException(400, "Image too large (max 8MB)")
+        raise TooLarge(lang)
     mime = ""
     if img:
         ct = (image.content_type or "").lower()
@@ -288,6 +404,9 @@ def check(request: Request, image: UploadFile | None = File(None), text: str = F
         except Exception:
             pass
 
+    limited = rate_limited(request, "check", lang)  # after the cache lookup: cached/sample hits are never limited or counted
+    if limited:
+        return limited
     # cache missed -> a LIVE model call is needed. Auth mode: caller must be signed in and bring their own Gemini key.
     user_key = auth.require_user_key(request.headers) if auth.enabled() else None
 
@@ -304,13 +423,8 @@ def check(request: Request, image: UploadFile | None = File(None), text: str = F
 
     if res is None:
         out = code_only(ca, lang)
-        if not text and img:  # image only, nothing analysed -> be honest, never "green"
-            out["verdict"] = "amber"
-            out["scam_type"] = TYPE["amber"][lang]
-            out["advice"] = ADV["bad"][lang]
-            out["reasons"] = [{"en": "AI is unavailable, so this screenshot could not be read. Treat it with caution.",
-                               "hi": "AI उपलब्ध नहीं है, इसलिए यह स्क्रीनशॉट पढ़ा नहीं जा सका। सावधानी रखें।",
-                               "gu": "AI ઉપલબ્ધ નથી, તેથી આ સ્ક્રીનશૉટ વાંચી શકાયો નથી. સાવચેત રહો."}[lang]]
+        if ca["severity"] == "green":  # AI did not run AND the code rules found nothing: fail open to AMBER, never "looks safe"
+            out.update(verdict="amber", scam_type=TYPE["amber"][lang], reasons=[UNCHECKED[lang]], advice=ADV["unchecked"][lang])
     else:
         final = checks.combine(ca["severity"], res["verdict"])
         out = dict(res)
@@ -359,6 +473,9 @@ def complaint_endpoint(req: ComplaintReq, request: Request):
             return json.loads(cp.read_text(encoding="utf-8"))
         except Exception:
             pass
+    limited = rate_limited(request, "complaint", req.lang)
+    if limited:
+        return limited
     user_key = auth.require_user_key(request.headers) if auth.enabled() else None  # live draft needed
     out = cmp.build(req.result, req.lang, details, api_key=user_key)
     log.info("complaint lang=%s source=%s has_details=%s", req.lang, out["source"], bool(details))

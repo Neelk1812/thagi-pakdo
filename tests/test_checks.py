@@ -183,3 +183,90 @@ def test_warnings_about_not_sharing_stay_green(t):
 ])
 def test_benign_stays_green(t):
     assert sev(t) == "green", analyze(t)["flags"]
+
+
+# ---------------- F8: whole-message awareness + new scam families ----------------
+F8_CASES = {
+ "gu awareness": ("GREEN","સાવધાન! ડિજિટલ અરેસ્ટ એક છેતરપિંડી છે. પોલીસ ક્યારેય વીડિયો કૉલ પર ધરપકડ કરતી નથી."),
+ "hi otp 1": ("GREEN","ओटीपी किसी को न बताएं"),
+ "hi otp 2": ("GREEN","अपना OTP किसी से साझा न करें।"),
+ "hi otp 3": ("GREEN","OTP मत बताइए, बैंक कभी नहीं मांगता"),
+ "hi otp 4": ("GREEN","ओटीपी शेयर न करें"),
+ "hi digital arrest aware": ("GREEN","सावधान! डिजिटल अरेस्ट ठगी है। पुलिस कभी वीडियो कॉल पर गिरफ्तार नहीं करती।"),
+ "aware+real ask": ("RED","Beware of scams! But to claim your refund send Rs 500 to refund@okaxis now."),
+ "aware wrapper + link pay": ("RED","सावधान! Digital arrest warrant issued against you. Pay Rs 20000 now at http://pay-court.xyz/p to avoid arrest."),
+ "a en": ("RED","Earn Rs 50 per YouTube like! Join our Telegram group for daily tasks."),
+ "a hinglish": ("RED","Har like par 50 rupay kamao. Part time job, ghar baithe kamai. Telegram group join karo."),
+ "a hi": ("RED","हर वीडियो लाइक पर 50 रुपये कमाएं! टेलीग्राम ग्रुप जॉइन करें।"),
+ "a gu": ("RED","દરેક લાઈક પર 50 રૂપિયા કમાઓ! ટેલિગ્રામ ગ્રુપ જોડાઓ."),
+ "a prepay": ("RED","Part-time job: complete tasks and earn commission. Deposit Rs 1000 to unlock your earnings and withdraw."),
+ "b en": ("RED","Your loan is overdue. Repay immediately or we will send your photos to all your contacts and family and defame you."),
+ "b hinglish": ("RED","Loan chukao warna tumhare contacts aur family ko tumhari photo bhejenge, badnaam kar denge."),
+ "b hi": ("RED","लोन चुकाओ वरना आपके परिवार और दोस्तों को आपकी फोटो भेजकर बदनाम कर देंगे।"),
+ "b gu": ("RED","લોન ચૂકવો નહીંતર તમારા પરિવાર અને મિત્રોને તમારા ફોટા મોકલીને બદનામ કરીશું."),
+ "c en": ("RED","I have your private video. Pay Rs 20000 or I will send it to all your contacts and family."),
+ "c hinglish": ("RED","Tumhari video mere paas hai. Paise bhejo warna viral kar dunga, tumhare family ko bhej dunga."),
+ "c hi": ("RED","आपकी प्राइवेट वीडियो मेरे पास है। 20000 रुपये भेजो वरना वायरल कर दूंगा।"),
+ "c gu": ("RED","તમારો પ્રાઇવેટ વીડિયો મારી પાસે છે. 20000 રૂપિયા ચૂકવો નહીંતર વાયરલ કરીશ."),
+ "d hinglish": ("RED","Refund ke liye UPI PIN enter karein, PIN daalo paisa aayega."),
+ "d hi": ("RED","रिफंड पाने के लिए UPI पिन डालें, पैसे आपके खाते में आ जाएंगे।"),
+ "d gu": ("RED","પૈસા મેળવવા UPI પિન નાખો."),
+ "e": ("RED","This is CBI officer. Stay on Skype and do not disconnect. Send Rs 40000 to this account for verification."),
+ "e2": ("RED","Officer from cyber crime here. Join Skype video call and transfer Rs 40000 immediately."),
+ "f en": ("RED","A case is registered against your SIM. Pay Rs 8000 to close the case, else arrest warrant will be issued."),
+ "f hinglish": ("RED","Aapke SIM ke naam par case hai. Case close karne ke liye paise bhejo warna warrant nikalega."),
+ "f hi": ("RED","आपके सिम पर केस दर्ज है। केस बंद करने के लिए 8000 रुपये जमा करें वरना गिरफ्तारी वारंट जारी होगा।"),
+ "f gu": ("RED","તમારા સિમ પર કેસ નોંધાયો છે. કેસ બંધ કરવા 8000 રૂપિયા જમા કરો નહીંતર ધરપકડ વોરંટ નીકળશે."),
+ # benign
+ "job offer": ("GREEN","Dear Rahul, we are pleased to offer you the position of Software Engineer at Acme Pvt Ltd, CTC 8 LPA, joining 1 Nov. Please sign and return the attached letter. We never charge any fee."),
+ "upi pin aware": ("GREEN","Dear customer, never enter your UPI PIN to receive money. PIN is only needed to send money. Stay safe."),
+ "upi pin aware hi": ("GREEN","सावधान! पैसे पाने के लिए UPI पिन डालने की ज़रूरत नहीं होती। पिन किसी को न बताएं।"),
+ "upi pin aware hinglish": ("GREEN","UPI PIN daalne ki zaroorat paise lene ke liye nahi hoti. Kisi ko PIN mat batao."),
+ "friend video": ("GREEN","Bhai party ka video bhej do please, aur photos bhi."),
+ "friend video en": ("GREEN","Can you send me the video from yesterday and share the photos with my family?"),
+ "emi": ("GREEN","Dear customer, your EMI of Rs 5,000 for Loan A/c 12345 is due on 5 Oct. Please maintain sufficient balance. Ignore if already paid."),
+ "hdfc": ("GREEN","HDFC Bank: Your a/c XX1234 is credited with Rs 25,000 on 03-Oct. View statement at https://www.hdfcbank.com/statement. Never share OTP/PIN."),
+ "otp": ("GREEN","Your OTP is 482913. Do not share with anyone."),
+ "sbi alert scam": ("RED","SBI Alert: share your ATM PIN and CVV now to keep your card active."),
+ "traffic": ("GREEN","Traffic police e-challan paid, thanks"),
+}
+
+
+F8_RED = {k: v[1] for k, v in F8_CASES.items() if v[0] == "RED"}
+F8_GREEN = {k: v[1] for k, v in F8_CASES.items() if v[0] == "GREEN"}
+
+
+@pytest.mark.parametrize("name", sorted(F8_RED))
+def test_f8_scams_red(name):
+    r = analyze(F8_RED[name])
+    assert r["severity"] == "red", r["flags"]
+
+
+@pytest.mark.parametrize("name", sorted(F8_GREEN))
+def test_f8_awareness_and_benign_green(name):
+    r = analyze(F8_GREEN[name])
+    assert r["severity"] == "green", r["flags"]
+
+
+def test_f8_awareness_with_real_ask_still_red():
+    assert sev("Beware of scams! But to claim your refund send Rs 500 to refund@okaxis now.") == "red"
+    assert sev("सावधान! Digital arrest warrant issued against you. Pay Rs 20000 now at http://pay-court.xyz/p to avoid arrest.") == "red"
+    assert sev("Alert: never share your OTP. Pay Rs 999 at http://kyc-bank.top/u now or card blocked.") == "red"
+
+
+@pytest.mark.parametrize("t", ["ओटीपी किसी को न बताएं", "अपना OTP किसी से साझा न करें।", "OTP मत बताइए", "ओटीपी शेयर न करें", "ओटीपी किसी को मत बताइए।"])
+def test_f8_hindi_otp_warnings_green(t):
+    assert sev(t) == "green"
+
+
+def test_f8_hindi_otp_requests_still_red():
+    assert sev("अपना ओटीपी बताइए तुरंत") == "red"
+    assert sev("Sir apna OTP batao warna account band") == "red"
+
+
+def test_f8_samples_unchanged():
+    import glob
+    expect = {"courier_fee": "red", "kyc_sms": "red", "lottery": "red", "upi_refund": "red", "safe_otp": "green"}
+    for f in glob.glob(os.path.join(os.path.dirname(__file__), "..", "samples", "*.txt")):
+        name = os.path.basename(f)[:-4]
+        assert sev(open(f, encoding="utf-8").read()) == expect[name], name
