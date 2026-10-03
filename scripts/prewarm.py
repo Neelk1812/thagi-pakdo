@@ -2,7 +2,7 @@
 """Fill sample_cache/ by running every samples/<name>.png + <name>.txt in en/hi/gu through /api/check.
 Usage: python scripts/prewarm.py [--url http://localhost:8000/api/check | --inproc] [--langs en,hi,gu]
 Exit 1 if any result is ai_unavailable (not cached) or any request fails; exit 2 if samples are missing."""
-import argparse, sys
+import argparse, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,17 +41,22 @@ def main():
         img = (SAMPLES / f"{n}.png").read_bytes()
         text = (SAMPLES / f"{n}.txt").read_text(encoding="utf-8").strip()
         for lang in langs:
+            t0 = time.time()
             try:
                 r = post(files={"image": (f"{n}.png", img, "image/png")}, data={"text": text, "lang": lang})
                 r.raise_for_status(); j = r.json()
                 ok = not j.get("ai_unavailable")
-                rows.append((n, lang, j.get("verdict"), j.get("source"), "ok" if ok else "AI_UNAVAILABLE"))
+                want = "green" if n.startswith("safe") else "red/amber"
+                good = (j.get("verdict") == "green") if want == "green" else (j.get("verdict") in ("red", "amber"))
+                st = ("ok" if ok else "AI_UNAVAILABLE") + ("" if good else f" WRONG_VERDICT(want {want})")
+                ok = ok and good
+                rows.append((n, lang, j.get("verdict"), j.get("source"), f"{time.time() - t0:5.1f}s  {st}"))
             except Exception as e:
-                ok = False; rows.append((n, lang, "-", "-", f"ERROR {type(e).__name__}: {str(e)[:80]}"))
+                ok = False; rows.append((n, lang, "-", "-", f"{time.time() - t0:5.1f}s  ERROR {type(e).__name__}: {str(e)[:80]}"))
             bad += (not ok)
     print(f"{'sample':<14}{'lang':<6}{'verdict':<9}{'source':<9}status")
     for r in rows: print(f"{r[0]:<14}{r[1]:<6}{str(r[2]):<9}{str(r[3]):<9}{r[4]}")
-    print(f"\n{len(rows) - bad}/{len(rows)} cached OK" + (f", {bad} FAILED (ai unavailable/errors; not cached)" if bad else ""))
+    print(f"\n{len(rows) - bad}/{len(rows)} OK" + (f", {bad} FAILED (ai unavailable/errors; not cached)" if bad else ""))
     return 1 if bad else 0
 
 

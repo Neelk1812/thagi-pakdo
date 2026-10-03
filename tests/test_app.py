@@ -69,3 +69,14 @@ def test_image_plus_text_cache_key(monkeypatch, tmp_path):
     assert (tmp_path / f"{key}.json").exists()
     c.post("/api/check", files={"image": ("a.png", png + b"9", "image/png")}, data=d("en"))
     assert len(calls) == 3  # different image bytes misses
+
+
+def test_load_dotenv_does_not_override(monkeypatch, tmp_path):
+    f = tmp_path / ".env"
+    f.write_text('# c\nFOO_A=1\nexport FOO_B="two words"\nFOO_C=x # note\nFOO_D=keep_me_not\nbad line\n')
+    monkeypatch.delenv("FOO_A", raising=False); monkeypatch.delenv("FOO_B", raising=False)
+    monkeypatch.delenv("FOO_C", raising=False); monkeypatch.setenv("FOO_D", "orig")
+    appmod.load_dotenv(f)
+    import os
+    assert (os.environ["FOO_A"], os.environ["FOO_B"], os.environ["FOO_C"], os.environ["FOO_D"]) == ("1", "two words", "x", "orig")
+    for k in ("FOO_A", "FOO_B", "FOO_C"): os.environ.pop(k, None)

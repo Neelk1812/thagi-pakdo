@@ -7,9 +7,32 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-import checks, llm
-
 ROOT = Path(__file__).parent
+
+
+def load_dotenv(path=ROOT / ".env"):
+    """Tiny .env parser (KEY=VALUE, # comments, optional quotes / 'export '). Never overrides vars already set."""
+    try:
+        lines = Path(path).read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k, v = k.strip().removeprefix("export ").strip(), v.strip()
+        if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+            v = v[1:-1]
+        elif " #" in v:
+            v = v.split(" #", 1)[0].strip()
+        if k and k not in os.environ:
+            os.environ[k] = v
+
+
+load_dotenv()  # must run before llm reads env
+
+import checks, llm
 WEB = ROOT / "web"
 CACHE = ROOT / "sample_cache"
 SAMPLES = ROOT / "samples"

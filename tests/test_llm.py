@@ -51,3 +51,22 @@ def test_failover_to_local(monkeypatch):
     monkeypatch.setitem(llm.BACKENDS, "local", lambda *a: BASE)
     d, src = llm.check("x")
     assert src == "local" and d["verdict"] == "red"
+
+
+def test_shrink_image_downscales_to_jpeg():
+    import io
+    from PIL import Image
+    buf = io.BytesIO(); Image.new("RGBA", (720, 2000), (255, 0, 0, 255)).save(buf, "PNG")
+    data, mime = llm.shrink_image(buf.getvalue(), "image/png")
+    im = Image.open(io.BytesIO(data))
+    assert mime == "image/jpeg" and max(im.size) <= 1024 and im.size[1] == 1024
+
+
+def test_shrink_image_bad_bytes_passthrough():
+    assert llm.shrink_image(b"not an image", "image/png") == (b"not an image", "image/png")
+
+
+def test_transient_detection():
+    assert llm._is_transient(Exception("429 RESOURCE_EXHAUSTED"))
+    assert llm._is_transient(Exception("The read operation timed out"))
+    assert not llm._is_transient(Exception("400 INVALID_ARGUMENT bad image"))

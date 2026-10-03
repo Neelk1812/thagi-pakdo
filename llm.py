@@ -9,13 +9,12 @@ class LLMUnavailable(Exception):
     """Raised when every configured backend failed."""
 
 
-PROMPT = """You are a scam-detection assistant protecting ordinary people in India (SMS, WhatsApp, UPI, calls, emails).
-Examine the {what} and decide if it is a scam. Reply with ONLY one strict JSON object, no markdown, no commentary:
-{{"verdict": "red|amber|green", "scam_type": "short label, e.g. fake KYC, UPI collect request, courier fee, lottery, phishing, safe", "reasons": ["2-4 short plain reasons"], "red_flags_found": ["specific suspicious things seen"], "extracted": {{"urls": [], "phones": [], "upi_ids": [], "amounts": []}}, "advice": ["2-4 short 'what to do' steps"]}}
-Rules: red = almost certainly a scam; amber = suspicious/unsure; green = looks genuine (e.g. a bank OTP alert with no link and no ask).
-A message that only says "do not share OTP" is genuine. Real banks never ask for OTP/PIN/CVV, never send collect requests to give money, never ask for fees to release prizes or parcels.
-Write verdict as exactly red, amber or green (English). Write scam_type, reasons, red_flags_found and advice in {language}.
-Advice should include relevant steps like: do not pay, do not click, block the sender, call cybercrime helpline 1930 / report at cybercrime.gov.in.
+PROMPT = """You are a scam detector for ordinary people in India (SMS, WhatsApp, UPI, calls, emails).
+Check the {what}. Reply with ONLY one JSON object, no markdown:
+{{"verdict":"red|amber|green","scam_type":"short label","reasons":["2-3 short reasons"],"red_flags_found":["specific suspicious things"],"extracted":{{"urls":[],"phones":[],"upi_ids":[],"amounts":[]}},"advice":["2-3 short steps"]}}
+red = almost certainly a scam; amber = suspicious/unsure; green = genuine (e.g. a bank OTP alert with no link and no ask; "do not share OTP" is genuine).
+Real banks never ask for OTP/PIN/CVV, never send collect requests to give money, never ask fees to release prizes or parcels.
+verdict must be exactly red, amber or green. Write ALL text (scam_type, reasons, red_flags_found, advice) in {language}, even scam_type; only the verdict stays English. Advice may include: do not pay/click, block sender, report to 1930 or cybercrime.gov.in.
 {text_part}"""
 
 
@@ -97,28 +96,70 @@ def parse_json(raw):
 
 
 # ---------------- backends ----------------
+MAX_SIDE = int(os.environ.get("IMG_MAX_SIDE", "1024"))
+
+
+def shrink_image(image, mime):
+    """Downscale so the long side <= MAX_SIDE and re-encode as JPEG q85 (smaller/faster upload + fewer image tokens).
+    Returns (bytes, mime). On any problem returns the original untouched."""
+    try:
+        from PIL import Image
+        im = Image.open(io.BytesIO(image))
+        im.load()
+        if max(im.size) > MAX_SIDE:
+            im.thumbnail((MAX_SIDE, MAX_SIDE), Image.LANCZOS)
+        if im.mode != "RGB":
+            bg = Image.new("RGB", im.size, (255, 255, 255))
+            rgba = im.convert("RGBA")
+            bg.paste(rgba, mask=rgba.split()[-1])
+            im = bg
+        out = io.BytesIO()
+        im.save(out, "JPEG", quality=85)
+        data = out.getvalue()
+        return data, "image/jpeg"
+    except Exception:
+        return image, mime
+
+
+def _is_transient(e):
+    s = str(e)
+    return any(k in s for k in ("429", "RESOURCE_EXHAUSTED", "Timeout", "timed out", "504", "503", "DEADLINE")) or type(e).__name__ in ("ReadTimeout", "ConnectTimeout", "TimeoutException")
+
+
 def _gemini(text, image, mime, lang):
     key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not key:
         raise RuntimeError("GEMINI_API_KEY not set")
     from google import genai
     from google.genai import types
-    client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=int(os.environ.get("GEMINI_TIMEOUT_MS", "30000"))))
+    client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=int(os.environ.get("GEMINI_TIMEOUT_MS", "25000"))))
     prompt = build_prompt(text, lang, bool(image))
-    contents = []
-    if image:
+    # gemma-4-26b-a4b-it: thinking_level=MINIMAL works (~4s vs ~20-60s); thinking_budget and LOW are rejected (400).
+    cfg_kw = dict(max_output_tokens=int(os.environ.get("GEMINI_MAX_TOKENS", "1000")), temperature=0.1)
+    levels = os.environ.get("GEMINI_THINKING", "MINIMAL")
+    if levels.lower() != "default":
+        cfg_kw["thinking_config"] = types.ThinkingConfig(thinking_level=levels.upper())
+    cfg = types.GenerateContentConfig(**cfg_kw)
+
+    def gen(contents):
         try:
-            contents = [types.Part.from_bytes(data=image, mime_type=mime), prompt]  # image BEFORE text
-            resp = client.models.generate_content(model=MODEL, contents=contents)
-            return resp.text
+            return client.models.generate_content(model=MODEL, contents=contents, config=cfg).text
         except Exception as e:
-            if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-                raise
-            f = client.files.upload(file=io.BytesIO(image), config=types.UploadFileConfig(mime_type=mime))
-            resp = client.models.generate_content(model=MODEL, contents=[f, prompt])
-            return resp.text
-    resp = client.models.generate_content(model=MODEL, contents=[prompt])
-    return resp.text
+            if "thinking" in str(e).lower() and "not supported" in str(e).lower():  # model rejects thinking cfg -> retry plain
+                plain = types.GenerateContentConfig(max_output_tokens=cfg_kw["max_output_tokens"], temperature=0.1)
+                return client.models.generate_content(model=MODEL, contents=contents, config=plain).text
+            raise
+
+    if not image:
+        return gen([prompt])
+    img, m = shrink_image(image, mime)
+    try:
+        return gen([types.Part.from_bytes(data=img, mime_type=m), prompt])  # image BEFORE text
+    except Exception as e:
+        if _is_transient(e):  # don't burn another 25s on the Files API; fail over fast
+            raise
+        f = client.files.upload(file=io.BytesIO(img), config=types.UploadFileConfig(mime_type=m))
+        return gen([f, prompt])
 
 
 def _local(text, image, mime, lang):
