@@ -48,7 +48,37 @@ Without a Gemini key the app still runs: cached samples are served from `sample_
 
 ### Live demo
 
-If the team shares a hosted link, it is **temporary** and may be offline or rate-limited. The repo is meant to be run locally, and the committed sample cache makes the five sample buttons work even with no key or internet.
+**https://thagi-pakdo.vercel.app** - a hosted copy of this repo. It uses a **shared free-tier Gemini key**, so heavy use may be rate limited (a limited call falls back to the rules-only verdict, marked "AI unavailable"). The 5 sample buttons are **instant from the committed cache** and don't use the key at all. Expect roughly 2.5 to 8 s for a new (uncached) check and 7 to 14 s for a live complaint draft; cached answers are instant. The team saw no 429 rate-limit errors with 12 concurrent requests **[load test run by the Backend agent, not re-run by QA]**.
+
+The privacy note applies to the hosted demo: with the free Gemini tier, inputs may be used by Google to improve its products, so try only the fake samples or made-up messages. The repo is meant to be run locally for real messages (`LLM_BACKEND=local`), and the live link may go offline at any time.
+
+## Deploy
+
+### Deploy to Vercel
+
+`scripts/make_vercel.sh` builds a deployable copy of the app in `/workspace/vercel_build` (pass another folder as the first argument). It does not deploy anything. The copy contains the Python backend as a Vercel function (`api/index.py` wrapping `app.py`, renamed `thagi_app.py`), the `web/` files as static `public/`, the `samples/`, only the cache entries for the 5 fake samples plus the complaint drafts, a slimmed `requirements.txt` (no pytest/uvicorn), `vercel.json` (60 s max duration) and `.python-version` 3.13.
+
+```bash
+npm i -g vercel                      # once
+scripts/make_vercel.sh               # builds /workspace/vercel_build (or give your own path)
+cd /workspace/vercel_build           # or the path you gave
+vercel link                          # once, to pick the project
+vercel env add GEMINI_API_KEY        # set it as a Vercel environment variable, never in a file
+vercel deploy --prod
+```
+
+Optionally also set `GOOGLE_CLIENT_ID` to turn on [sign-in](AUTH.md). On Vercel the filesystem is read-only, so new results are simply not cached (a warning is logged and the answer is still returned).
+
+### Docker
+
+The `Dockerfile` (Python 3.13 slim, runs as a non-root user, listens on `$PORT`, default 7860) installs the runtime dependencies and copies the app, `web/`, `samples/`, `sample_cache/` and `skills/`. No `.env` goes into the image; pass the key at run time:
+
+```bash
+docker build -t thagi-pakdo .
+docker run --rm -p 7860:7860 -e GEMINI_API_KEY=your-key thagi-pakdo
+```
+
+Then open http://localhost:7860. **[The Docker image was not built or run by QA - unverified.]** `scripts/make_space.sh` assembles the same files for a Docker-based Hugging Face Space; that path is also unverified.
 
 ### Configuration (environment variables / `.env`)
 
@@ -98,7 +128,7 @@ Off by default. If you set `GOOGLE_CLIENT_ID` (a Google OAuth *web* client ID), 
 
 ## Speed and test status
 
-Re-measured on 3 Oct 2026 from a clean clone of this repo (server and client on the same machine; hosted Gemma over the internet):
+Re-measured on 3 Oct 2026 from a clean clone running locally of this repo (server and client on the same machine; hosted Gemma over the internet):
 
 | Case | Time |
 |---|---|
@@ -148,7 +178,9 @@ web/              Static front end (index.html, app.js, style.css, manifest, ico
 samples/          Fake sample messages (.txt) and screenshots (.png)
 scripts/prewarm.py  Fills sample_cache/ by running every sample (en/hi/gu) through /api/check
 sample_cache/     Cached results keyed by input hash (fake samples only are committed)
-docs/screens/     UI screenshots used in this README
+docs/screens/     UI screenshots used in this README (plus dark-mode / keyboard / 360 px QA shots)
+Dockerfile        Container image (see Deploy)
+scripts/make_vercel.sh, scripts/make_space.sh  Build deployable copies for Vercel / a Docker Space
 .env.example      Template for configuration (copy to .env)
 skills/scam-check/  Agent Skill (SKILL.md + scripts/check.py)
 tests/            pytest tests

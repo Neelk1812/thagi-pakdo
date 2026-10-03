@@ -7,6 +7,7 @@ Everything uses **fake samples only**. Tested from a clean clone on 3 Oct 2026: 
 - `GEMINI_API_KEY` in `.env`. The **Try-sample buttons** hit `sample_cache/` and answer in about 10 ms, even with no Wi-Fi or a rate limit. Anything new (your own pasted text or screenshot) is a live call, about 2 to 4 s (screenshots up to about 5 s), and the complaint draft takes about 8 s, so keep talking while the spinner runs.
 - Do a dry run of your **live paste** text once beforehand so that, if the network dies on stage, it is cached. Suggested text: `Dear Customer, your ICICI account will be BLOCKED today due to pending KYC. Update now: http://bit.ly/icici-kyc-55` (all fake).
 - Browser has a Gujarati/Hindi voice for Read-aloud **[unverified on the demo laptop]**; test the volume. The button hides itself if there is no voice.
+- **Backup if the laptop or Wi-Fi misbehaves:** the live copy at https://thagi-pakdo.vercel.app (open it in a second tab before you start). It uses a shared free-tier Gemini key, so a new paste may be slow or rate limited (about 2.5 to 8 s normally), but the 5 sample buttons are instant from cache. Its availability on the day is **[unverified until you open it]**.
 - Google sign-in is **off** by default; do not set `GOOGLE_CLIENT_ID` for the demo.
 - Optional backup: local Gemma server (Ollama) with `LLM_BACKEND=local` **[unverified with a real Gemma E4B]**.
 
