@@ -2,60 +2,144 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🛡️%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Thagi Pakdo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Thagi Pakdo - Scam Checker</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top">
-  <div class="brand"><span class="logo">🛡️</span><div><h1>Thagi Pakdo</h1><p id="tagline" class="sub">Check any suspicious message before you pay or click.</p></div></div>
-  <div class="langs" role="group" aria-label="Language">
-    <button class="lang active" data-lang="en">English</button>
-    <button class="lang" data-lang="hi">हिन्दी</button>
-    <button class="lang" data-lang="gu">ગુજરાતી</button>
+  <div class="top-in">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient></defs><path d="M32 4 55 12v18c0 15-9.5 25.5-23 30C18.500 55.500 9 45 9 30V12z" fill="url(#lg)"/><path d="m22 32 7 7 14-15" fill="none" stroke="#4f46e5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h1>Thagi Pakdo</h1><p id="tagline" class="sub"></p></div>
+    </div>
+    <div class="seg" role="group" aria-label="Language">
+      <button class="lang" data-lang="gu" type="button">ગુજરાતી</button>
+      <button class="lang" data-lang="hi" type="button">हिन्दी</button>
+      <button class="lang" data-lang="en" type="button">English</button>
+    </div>
   </div>
 </header>
 
 <main>
-  <section class="card input">
-    <div id="drop" class="drop" tabindex="0">
-      <input id="file" type="file" accept="image/*" hidden>
-      <div id="dropText"><strong>Drop a screenshot here</strong>, click to choose, or paste (Ctrl+V)</div>
-      <div id="preview" class="preview" hidden><img id="previewImg" alt="Screenshot preview"><button id="clearImg" class="link" type="button">Remove</button></div>
+  <section class="col-in">
+    <div id="acct" class="card acct" hidden>
+      <div id="acctOut">
+        <h2 data-i18n="aTitle"></h2>
+        <p class="hint" data-i18n="aWhy"></p>
+        <div id="gsiBtn" class="gsi"></div>
+      </div>
+      <div id="acctIn" class="acct-in" hidden>
+        <img id="acctPic" class="avatar" alt="" referrerpolicy="no-referrer"><div class="who"><b id="acctName"></b><span id="acctMail"></span></div>
+        <button id="signOut" class="link" type="button" data-i18n="aOut"></button>
+      </div>
+      <div class="keybox">
+        <label for="gkey" class="lbl" data-i18n="aKeyLbl"></label>
+        <div class="keyrow"><input id="gkey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="AIza..."><button id="keyToggle" class="btn sec" type="button" data-i18n="aShow"></button></div>
+        <div class="keylinks"><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" data-i18n="aGet"></a><button id="keyRemove" class="link" type="button" data-i18n="aRemove" hidden></button></div>
+        <p class="privacy" data-i18n="aPriv"></p>
+      </div>
     </div>
-    <label for="text" id="textLabel" class="lbl">Or paste the SMS / WhatsApp / UPI message</label>
-    <textarea id="text" rows="5" placeholder="Paste the message here..."></textarea>
-    <div class="row">
-      <button id="check" class="primary" type="button">Check now</button>
-      <button id="reset" class="ghost" type="button">Clear</button>
+    <div class="card input">
+      <div id="drop" class="drop" tabindex="0">
+        <div id="dropEmpty">
+          <div class="pick">
+            <label class="tile" for="fileCam"><svg viewBox="0 0 24 24"><path d="M9 4 7.500 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2.500L15 4zm3 4.500a4.500 4.500 0 1 1 0 9 4.500 4.500 0 0 1 0-9zm0 2a2.500 2.500 0 1 0 0 5 2.500 2.500 0 0 0 0-5z"/></svg><span data-i18n="camera">Camera</span></label>
+            <label class="tile" for="file"><svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.500 7.500a1.500 1.500 0 1 1 0 3 1.500 1.500 0 0 1 0-3zM5 18l4-5 3 3.500 2.500-3L19 18z"/></svg><span data-i18n="gallery">Gallery</span></label>
+          </div>
+          <p id="dropText" class="hint"></p>
+        </div>
+        <div id="preview" class="preview" hidden><img id="previewImg" alt="Screenshot preview"><button id="clearImg" class="link" type="button">Remove</button></div>
+        <input id="file" type="file" accept="image/*" hidden>
+        <input id="fileCam" type="file" accept="image/*" capture="environment" hidden>
+      </div>
+      <label for="text" id="textLabel" class="lbl"></label>
+      <textarea id="text" rows="4"></textarea>
+      <div class="chips-wrap"><span id="samplesLabel" class="lbl"></span><div id="sampleBtns" class="chips-row"></div></div>
+      <div class="bar" id="bar">
+        <button id="pasteUp" class="btn sec" type="button"><svg viewBox="0 0 24 24"><path d="M19 3h-4.200A3 3 0 0 0 12 1a3 3 0 0 0-2.800 2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><span id="pasteLbl"></span></button>
+        <button id="check" class="btn pri" type="button"></button>
+        <button id="reset" class="btn ghost" type="button" aria-label="Clear">✕</button>
+      </div>
+      <p id="privacy" class="privacy"></p>
     </div>
-    <div class="samples">
-      <span id="samplesLabel" class="lbl">Try a sample (fake):</span>
-      <div id="sampleBtns"></div>
-    </div>
-    <p id="privacy" class="privacy">Privacy: with the free Gemini tier, inputs may be used by Google to improve its products. Use only fake samples in the demo. For real messages, run locally with <code>LLM_BACKEND=local</code> (nothing leaves your computer).</p>
   </section>
 
-  <section id="result" class="result" hidden aria-live="polite">
-    <div id="verdict" class="verdict">
-      <div class="vicon" id="vicon"></div>
-      <div><div id="vlabel" class="vlabel"></div><div id="vtype" class="vtype"></div></div>
-      <button id="speak" class="speak" type="button" hidden>🔊 <span id="speakLbl">Read aloud</span></button>
+  <section class="col-out">
+    <div id="loading" class="loading card" hidden><div class="spin"></div><span id="loadTxt"></span></div>
+    <div id="error" class="error" hidden></div>
+    <div id="result" class="result" hidden aria-live="polite">
+      <div id="verdict" class="verdict">
+        <div class="vcircle" id="vcircle"><span id="vicon"></span></div>
+        <div id="vlabel" class="vlabel"></div>
+        <div id="vtype" class="vtype"></div>
+        <span id="srcBadge" class="badge" hidden></span>
+      </div>
+      <div id="greenNote" class="greennote" hidden></div>
+      <div id="aiWarn" class="warn" hidden></div>
+      <button id="speak" class="btn speak" type="button" hidden>🔊 <span id="speakLbl"></span></button>
+      <div class="card"><h2 id="whyH"></h2><ul id="reasons"></ul></div>
+      <div class="card"><h2 id="doH"></h2><ol id="advice" class="steps"></ol></div>
+      <button id="draftBtn" class="btn draft" type="button" hidden>📝 <span data-i18n="draft"></span></button>
+      <div class="card" id="extractedCard" hidden><h2 id="foundH"></h2><div id="extracted" class="chips"></div></div>
+      <div class="help">
+        <a id="call" class="btn call" href="tel:1930">📞 <span id="callLbl"></span></a>
+        <a id="report" class="btn rep" href="https://cybercrime.gov.in" target="_blank" rel="noopener"><span id="repLbl"></span></a>
+      </div>
     </div>
-    <div class="meta"><span id="srcBadge" class="badge" hidden></span></div>
-    <div id="greenNote" class="greennote" hidden></div>
-    <div id="aiWarn" class="warn" hidden></div>
-    <div class="cols">
-      <div class="card"><h2 id="whyH">Why</h2><ul id="reasons"></ul></div>
-      <div class="card"><h2 id="doH">What to do</h2><ol id="advice"></ol></div>
-    </div>
-    <div class="card" id="extractedCard" hidden><h2 id="foundH">Found in the message</h2><div id="extracted" class="chips"></div></div>
   </section>
-  <div id="loading" class="loading" hidden><div class="spin"></div><span id="loadTxt">Checking...</span></div>
-  <div id="error" class="error" hidden></div>
 </main>
-<footer>Report cyber fraud: call <b>1930</b> or visit <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></footer>
+<footer></footer>
+<div id="backdrop" class="backdrop" hidden></div>
+<aside id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="grab" aria-hidden="true"></div>
+  <div class="sheet-h"><h2 id="sheetTitle" data-i18n="dTitle"></h2><button id="sheetClose" class="x" type="button" aria-label="Close">✕</button></div>
+  <div class="sheet-b">
+    <p class="note" data-i18n="note"></p>
+    <form id="dform" class="dform" autocomplete="off">
+      <p class="hint" data-i18n="dIntro"></p>
+      <label><span data-i18n="fName"></span><input id="d_name" type="text" autocomplete="off"></label>
+      <label><span data-i18n="fPhone"></span><input id="d_phone" type="tel" inputmode="tel" autocomplete="off"></label>
+      <div class="two">
+        <label><span data-i18n="fAmount"></span><input id="d_amount" type="text" inputmode="decimal" placeholder="0"></label>
+        <label><span data-i18n="fMethod"></span>
+          <select id="d_method"><option value="" data-i18n="mNone"></option><option value="UPI" data-i18n="mUpi"></option><option value="Card" data-i18n="mCard"></option><option value="Net banking" data-i18n="mNet"></option><option value="Cash" data-i18n="mCash"></option><option value="Other" data-i18n="mOther"></option></select></label>
+      </div>
+      <label><span data-i18n="fWhat"></span><textarea id="d_what" rows="3"></textarea></label>
+      <details><summary data-i18n="more"></summary>
+        <label><span data-i18n="fDate"></span><input id="d_date" type="text"></label>
+        <label><span data-i18n="fTxn"></span><input id="d_txn" type="text" autocomplete="off"></label>
+      </details>
+      <button id="genBtn" class="btn pri wide" type="submit"><span id="genLbl"></span></button>
+    </form>
+    <div id="dErr" class="error" hidden></div>
+    <div id="dout" hidden>
+      <label class="lbl" for="c_subject" data-i18n="subject"></label>
+      <input id="c_subject" class="subj" type="text">
+      <label class="lbl" for="c_body" data-i18n="body"></label>
+      <div class="hl"><div id="c_mirror" class="mirror" aria-hidden="true"></div><textarea id="c_body" rows="12" spellcheck="false"></textarea></div>
+      <div id="c_missing" class="missing" hidden></div>
+      <div class="acts">
+        <button id="c_copy" class="btn sec" type="button">📋 <span id="c_copyLbl"></span></button>
+        <button id="c_share" class="btn sec" type="button">↗ <span data-i18n="share"></span></button>
+        <button id="c_dl" class="btn sec" type="button">⬇ <span data-i18n="dl"></span></button>
+      </div>
+      <a class="btn rep wide" href="https://cybercrime.gov.in" target="_blank" rel="noopener">🌐 <span data-i18n="openPortal"></span></a>
+      <a class="btn call wide" href="tel:1930">📞 <span data-i18n="call"></span></a>
+      <p class="note" data-i18n="note"></p>
+    </div>
+  </div>
+</aside>
+
 <script src="app.js"></script>
 </body>
 </html>
