@@ -1,5 +1,7 @@
 """LLM backends: Gemini (google-genai) with failover to a local OpenAI-compatible server."""
-import base64, io, json, os, re
+import base64, io, json, logging, os, re, threading, time
+
+log = logging.getLogger("thagi.llm")
 
 MODEL = os.environ.get("GEMINI_MODEL", "gemma-4-26b-a4b-it")
 LANG_NAME = {"gu": "Gujarati (ગુજરાતી)", "hi": "Hindi (हिन्दी)", "en": "English"}
@@ -126,16 +128,17 @@ def _is_transient(e):
     return any(k in s for k in ("429", "RESOURCE_EXHAUSTED", "Timeout", "timed out", "504", "503", "DEADLINE")) or type(e).__name__ in ("ReadTimeout", "ConnectTimeout", "TimeoutException")
 
 
-def _gemini(text, image, mime, lang):
-    key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+def _gemini(text, image, mime, lang, timeout_s=None, prompt=None, max_tokens=None, api_key=None):
+    # api_key = the caller's own key (auth mode): used for this request only, fresh client, server key never read
+    key = api_key or (None if api_key is not None else (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")))
     if not key:
         raise RuntimeError("GEMINI_API_KEY not set")
     from google import genai
     from google.genai import types
-    client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=int(os.environ.get("GEMINI_TIMEOUT_MS", "25000"))))
-    prompt = build_prompt(text, lang, bool(image))
+    client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=int((timeout_s or 25) * 1000)))
+    prompt = prompt or build_prompt(text, lang, bool(image))
     # gemma-4-26b-a4b-it: thinking_level=MINIMAL works (~4s vs ~20-60s); thinking_budget and LOW are rejected (400).
-    cfg_kw = dict(max_output_tokens=int(os.environ.get("GEMINI_MAX_TOKENS", "1000")), temperature=0.1)
+    cfg_kw = dict(max_output_tokens=max_tokens or int(os.environ.get("GEMINI_MAX_TOKENS", "1000")), temperature=0.1)
     levels = os.environ.get("GEMINI_THINKING", "MINIMAL")
     if levels.lower() != "default":
         cfg_kw["thinking_config"] = types.ThinkingConfig(thinking_level=levels.upper())
@@ -162,14 +165,14 @@ def _gemini(text, image, mime, lang):
         return gen([f, prompt])
 
 
-def _local(text, image, mime, lang):
+def _local(text, image, mime, lang, timeout_s=None, prompt=None, max_tokens=None):
     import httpx
     base = os.environ.get("LOCAL_BASE_URL", "http://localhost:11434/v1").rstrip("/")
     model = os.environ.get("LOCAL_MODEL", "gemma4:e4b")
     content = []
     if image:
         content.append({"type": "image_url", "image_url": {"url": f"data:{mime};base64,{base64.b64encode(image).decode()}"}})
-    content.append({"type": "text", "text": build_prompt(text, lang, bool(image))})
+    content.append({"type": "text", "text": prompt or build_prompt(text, lang, bool(image))})
     r = httpx.post(f"{base}/chat/completions", timeout=float(os.environ.get("LOCAL_TIMEOUT", "120")),
                    headers={"Authorization": "Bearer " + os.environ.get("LOCAL_API_KEY", "local")},
                    json={"model": model, "messages": [{"role": "user", "content": content}], "temperature": 0.1})
@@ -180,13 +183,134 @@ def _local(text, image, mime, lang):
 BACKENDS = {"gemini": _gemini, "local": _local}
 
 
-def check(text="", image=None, mime="image/png", lang="en"):
-    """Returns (result_dict, source). Tries gemini->local (or just local). Raises LLMUnavailable if all fail."""
+_SEM = threading.BoundedSemaphore(int(os.environ.get("LLM_CONCURRENCY", "4")))
+TOTAL_BUDGET = float(os.environ.get("LLM_BUDGET_S", "28"))
+
+
+_SECRET = [(re.compile(r"AIza[0-9A-Za-z_\-]{20,}"), "<key>"),
+           (re.compile(r"(?i)bearer\s+[A-Za-z0-9._~+/=\-]{8,}"), "Bearer <token>"),
+           (re.compile(r"eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]*"), "<jwt>"),
+           (re.compile(r"(?i)(x-gemini-key|x-goog-api-key|api[_-]?key)(\W{1,4})[A-Za-z0-9._\-]{8,}"), r"\1\2<key>")]
+
+
+def scrub(s):
+    """Redact API keys / bearer tokens / JWTs from any string before it is logged."""
+    for rx, rep in _SECRET:
+        s = rx.sub(rep, s)
+    return s
+
+
+class UserKeyError(Exception):
+    """The caller's own Gemini key was rejected / rate limited (auth mode). Mapped to a JSON error, never a silent fallback."""
+    def __init__(self, code, status, message):
+        super().__init__(message)
+        self.code, self.status, self.message = code, status, message
+
+
+def _classify(e):
+    """'key' = the API key itself is bad, 'rate' = quota/429, else None."""
+    s, code = str(e), getattr(e, "code", None)
+    if code == 429 or "429" in s or "RESOURCE_EXHAUSTED" in s:
+        return "rate"
+    if code in (401, 403) or any(k in s for k in ("API key not valid", "API_KEY_INVALID", "PERMISSION_DENIED", "UNAUTHENTICATED", "API key expired")):
+        return "key"
+    return None
+
+
+KEY_ERR = UserKeyError("gemini_key_invalid", 400, "Your Gemini API key was rejected by Google. Check it at aistudio.google.com/apikey and try again.")
+RATE_ERR = UserKeyError("gemini_rate_limited", 429, "Your Gemini API key hit its rate limit or quota. Wait a minute and try again.")
+
+
+def _user_error(e):
+    c = _classify(e)
+    return KEY_ERR if c == "key" else RATE_ERR if c == "rate" else None
+
+
+def _describe(e):
+    """Exception class + short message, with anything key-like scrubbed."""
+    return f"{type(e).__name__}: {scrub(str(e)).replace(chr(10), ' ')[:200]}"
+
+
+def _gemini_with_retry(text, image, mime, lang, deadline, api_key=None):
+    """Gemini call + parse; ONE quick retry (<=1s pause) on parse failure or transient error, inside the deadline."""
+    last = None
+    for attempt in (1, 2):
+        left = deadline - time.time()
+        if left < 4:
+            break
+        t0 = time.time()
+        try:
+            with _SEM:
+                t_s = min(float(os.environ.get("GEMINI_TIMEOUT_MS", "15000")) / 1000, left)
+                raw = BACKENDS["gemini"](text, image, mime, lang, t_s) if api_key is None else \
+                    BACKENDS["gemini"](text, image, mime, lang, t_s, api_key=api_key)
+            res = parse_json(raw)
+            log.info("gemini ok attempt=%d %.1fs lang=%s", attempt, time.time() - t0, lang)
+            return res
+        except Exception as e:
+            last = e
+            if api_key is not None and _user_error(e) is KEY_ERR:
+                raise KEY_ERR
+            kind = "parse" if isinstance(e, ValueError) else ("transient" if _is_transient(e) else "error")
+            log.warning("gemini fail attempt=%d %.1fs lang=%s kind=%s %s", attempt, time.time() - t0, lang, kind, _describe(e))
+            if kind == "error":
+                break
+            time.sleep(0.5 if kind == "transient" else 0)
+    if api_key is not None and last is not None and _user_error(last) is RATE_ERR:
+        raise RATE_ERR
+    raise last or RuntimeError("no time left for gemini")
+
+
+def check(text="", image=None, mime="image/png", lang="en", api_key=None):
+    """Returns (result_dict, source). Tries gemini->local (or just local). Raises LLMUnavailable if all fail.
+    With api_key (auth mode): ONLY Gemini with that key - no local, no server key; a bad key / rate limit raises UserKeyError."""
     order = ["local"] if os.environ.get("LLM_BACKEND", "gemini").lower() == "local" else ["gemini", "local"]
-    errors = []
+    if api_key is not None:
+        order = ["gemini"]
+    errors, deadline = [], time.time() + TOTAL_BUDGET
     for name in order:
         try:
+            if name == "gemini":
+                return _gemini_with_retry(text, image, mime, lang, deadline, api_key), name
             return parse_json(BACKENDS[name](text, image, mime, lang)), name
+        except UserKeyError:
+            raise
         except Exception as e:  # 429 / network / API / parse error -> next backend
-            errors.append(f"{name}: {type(e).__name__}: {str(e)[:200]}")
+            errors.append(f"{name}: {_describe(e)}")
+            log.warning("backend %s failed: %s", name, _describe(e))
     raise LLMUnavailable("; ".join(errors))
+
+
+def draft_text(prompt, validate, max_tokens=2000, api_key=None):
+    """Text-only generation for the complaint drafter. Gemini (<=15s, one quick retry on parse/transient error)
+    -> local -> raises LLMUnavailable. `validate(raw)` must return the parsed value or raise ValueError.
+    Logs exception class only (never the prompt, response or personal details). Returns (value, source)."""
+    order = ["local"] if os.environ.get("LLM_BACKEND", "gemini").lower() == "local" else ["gemini", "local"]
+    if api_key is not None:  # auth mode: caller's own key only, no local / server fallback
+        order = ["gemini"]
+    deadline, errors, last = time.time() + TOTAL_BUDGET, [], None
+    for name in order:
+        for attempt in (1, 2):
+            left = deadline - time.time()
+            if left < 4:
+                break
+            try:
+                fn = _gemini if name == "gemini" else _local
+                with _SEM:
+                    kw = {"api_key": api_key} if api_key is not None else {}
+                    raw = fn("", None, "", "en", timeout_s=min(float(os.environ.get("GEMINI_TIMEOUT_MS", "15000")) / 1000, left),
+                             prompt=prompt, max_tokens=max_tokens, **kw)
+                return validate(raw), name
+            except Exception as e:
+                last = e
+                if api_key is not None and _user_error(e) is KEY_ERR:
+                    raise KEY_ERR
+                kind = "parse" if isinstance(e, ValueError) else ("transient" if _is_transient(e) else "error")
+                errors.append(f"{name}:{type(e).__name__}")
+                log.warning("draft_text %s attempt=%d failed kind=%s %s", name, attempt, kind, type(e).__name__)
+                if kind == "error" or name == "local":
+                    break
+                time.sleep(0.5 if kind == "transient" else 0)
+    if api_key is not None and last is not None and _user_error(last) is RATE_ERR:
+        raise RATE_ERR
+    raise LLMUnavailable("; ".join(errors) or "no time left")

@@ -14,6 +14,8 @@ def main():
     ap.add_argument("--url", default="http://localhost:8000/api/check")
     ap.add_argument("--inproc", action="store_true", help="call the app in-process (needs GEMINI_API_KEY in env)")
     ap.add_argument("--langs", default="en,hi,gu")
+    ap.add_argument("--complaints", action="store_true", help="also prewarm POST /api/complaint (no personal details) for the scam samples")
+    ap.add_argument("--complaints-only", action="store_true", help="only complaints (uses cached /api/check results)")
     ap.add_argument("--expect", type=int, default=5)
     a = ap.parse_args()
     langs = [x.strip() for x in a.langs.split(",") if x.strip()]
@@ -35,9 +37,31 @@ def main():
     else:
         import httpx
         post = lambda **kw: httpx.post(a.url, timeout=180, **kw)
+        cpost = lambda **kw: httpx.post(a.url.replace("/api/check", "/api/complaint"), timeout=180, **kw)
+    if a.inproc:
+        cpost = lambda **kw: client.post("/api/complaint", **kw)
 
     rows, bad = [], 0
-    for n in ready:
+    if a.complaints or a.complaints_only:
+        cbad = 0
+        for n in ready:
+            if n.startswith("safe"): continue
+            img = (SAMPLES / f"{n}.png").read_bytes()
+            text = (SAMPLES / f"{n}.txt").read_text(encoding="utf-8").strip()
+            for lang in langs:
+                t0 = time.time()
+                try:
+                    res = post(files={"image": (f"{n}.png", img, "image/png")}, data={"text": text, "lang": lang}).json()
+                    r = cpost(json={"result": res, "lang": lang}); r.raise_for_status(); j = r.json()
+                    good = j.get("source") in ("gemini", "local")
+                    print(f"complaint {n:<12}{lang:<4}{j.get('source'):<9}{time.time() - t0:5.1f}s  missing={len(j.get('missing_fields', []))}" + ("" if good else "  NOT_AI (not cached)"))
+                    cbad += (not good)
+                except Exception as e:
+                    cbad += 1; print(f"complaint {n} {lang} ERROR {type(e).__name__}: {str(e)[:80]}")
+        print(f"complaints: {'all OK' if not cbad else str(cbad) + ' FAILED'}")
+        if a.complaints_only: return 1 if cbad else 0
+        bad += cbad
+
         img = (SAMPLES / f"{n}.png").read_bytes()
         text = (SAMPLES / f"{n}.txt").read_text(encoding="utf-8").strip()
         for lang in langs:

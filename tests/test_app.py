@@ -45,6 +45,12 @@ def test_samples_static():
     assert c.get("/").status_code in (200, 404)
 
 
+def _png(n):
+    import io
+    from PIL import Image
+    b = io.BytesIO(); Image.new("RGB", (n, n), (n, 0, 0)).save(b, "PNG"); return b.getvalue()
+
+
 def test_image_plus_text_cache_key(monkeypatch, tmp_path):
     import hashlib
     monkeypatch.setattr(appmod, "CACHE", tmp_path)
@@ -56,7 +62,7 @@ def test_image_plus_text_cache_key(monkeypatch, tmp_path):
         calls.append((text, image, lang))
         return ai, "gemini"
     monkeypatch.setattr(llm, "check", fake)
-    png = b"\x89PNG\r\n\x1a\n" + b"1234"
+    png = _png(2)
     f = lambda: {"image": ("a.png", png, "image/png")}
     d = lambda lang: {"text": KYC, "lang": lang}
     r1 = c.post("/api/check", files=f(), data=d("en")).json()
@@ -67,7 +73,7 @@ def test_image_plus_text_cache_key(monkeypatch, tmp_path):
     assert r3["source"] == "gemini" and len(calls) == 2  # different lang misses
     key = hashlib.sha256(png + b"\0" + KYC.encode() + b"\0" + b"en").hexdigest()
     assert (tmp_path / f"{key}.json").exists()
-    c.post("/api/check", files={"image": ("a.png", png + b"9", "image/png")}, data=d("en"))
+    c.post("/api/check", files={"image": ("a.png", _png(3), "image/png")}, data=d("en"))
     assert len(calls) == 3  # different image bytes misses
 
 
@@ -80,3 +86,70 @@ def test_load_dotenv_does_not_override(monkeypatch, tmp_path):
     import os
     assert (os.environ["FOO_A"], os.environ["FOO_B"], os.environ["FOO_C"], os.environ["FOO_D"]) == ("1", "two words", "x", "orig")
     for k in ("FOO_A", "FOO_B", "FOO_C"): os.environ.pop(k, None)
+
+
+AI_GREEN = {"verdict": "green", "scam_type": "Genuine bank message", "reasons": ["ok"], "red_flags_found": [], "advice": ["a"],
+            "extracted": {"urls": [], "phones": [], "upi_ids": [], "amounts": []}}
+
+
+def test_scam_type_empty_for_green_and_none(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", lambda *a, **k: (dict(AI_GREEN), "gemini"))
+    r = c.post("/api/check", data={"text": "Your OTP is 123456. Do not share it.", "lang": "en"}).json()
+    assert r["verdict"] == "green" and r["scam_type"] == ""
+    # code-only green fallback too
+    monkeypatch.setattr(llm, "check", _down)
+    r = c.post("/api/check", data={"text": "Hello, lunch at 1?", "lang": "hi"}).json()
+    assert r["verdict"] == "green" and r["scam_type"] == ""
+    for junk in ("none", "None", "N/A", " "):
+        monkeypatch.setattr(llm, "check", lambda *a, _j=junk, **k: ({**AI_GREEN, "verdict": "red", "scam_type": _j}, "gemini"))
+        r = c.post("/api/check", data={"text": "x " + junk, "lang": "en"}).json()
+        assert r["scam_type"] == ""
+    monkeypatch.setattr(llm, "check", lambda *a, **k: ({**AI_GREEN, "verdict": "red", "scam_type": "Lottery scam"}, "gemini"))
+    assert c.post("/api/check", data={"text": "y", "lang": "en"}).json()["scam_type"] == "Lottery scam"
+
+
+def test_old_cached_green_none_is_normalized(monkeypatch, tmp_path):
+    import json
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    monkeypatch.setattr(llm, "check", _down)
+    appmod._cache_path(b"", "hello there", "en").write_text(json.dumps({**AI_GREEN, "scam_type": "none", "lang": "en"}))
+    r = c.post("/api/check", data={"text": "hello there"}).json()
+    assert r["source"] == "cache" and r["scam_type"] == ""
+
+
+def test_cache_key_whitespace_insensitive_and_sample_fallback(monkeypatch, tmp_path):
+    monkeypatch.setattr(appmod, "CACHE", tmp_path)
+    calls = []
+    def fake(*a):
+        calls.append(a); return dict(AI_GREEN, verdict="red", scam_type="s"), "gemini"
+    monkeypatch.setattr(llm, "check", fake)
+    c.post("/api/check", data={"text": "line one\nline two  ", "lang": "en"})
+    r = c.post("/api/check", data={"text": "  line one\r\nline   two", "lang": "en"}).json()  # browser CRLF
+    assert r["source"] == "cache" and len(calls) == 1
+    # sample png sent image-only (or with edited text) resolves to samples/<n>.txt key
+    png = (appmod.SAMPLES / "kyc_sms.png").read_bytes(); txt = (appmod.SAMPLES / "kyc_sms.txt").read_text(encoding="utf-8")
+    c.post("/api/check", files={"image": ("k.png", png, "image/png")}, data={"text": txt, "lang": "en"})
+    n = len(calls)
+    for t in ("", "something else"):
+        r = c.post("/api/check", files={"image": ("k.png", png, "image/png")}, data={"text": t, "lang": "en"}).json()
+        assert r["source"] == "cache" and len(calls) == n
+
+
+def test_bad_uploads_400(monkeypatch):
+    monkeypatch.setattr(llm, "check", _down)
+    assert c.post("/api/check", data={"text": "  \n ", "lang": "en"}).status_code == 400
+    assert c.post("/api/check").status_code == 400
+    assert c.post("/api/check", files={"image": ("a.png", b"hello text", "image/png")}).status_code == 400
+    assert c.post("/api/check", files={"image": ("a.png", _noisy()[:300], "image/png")}).status_code == 400  # truncated
+
+
+def test_endpoint_is_threadpool_sync():
+    import inspect
+    assert not inspect.iscoroutinefunction(appmod.check)
+
+
+def _noisy():
+    import io, os
+    from PIL import Image
+    b = io.BytesIO(); Image.frombytes("RGB", (60, 60), os.urandom(60 * 60 * 3)).save(b, "PNG"); return b.getvalue()

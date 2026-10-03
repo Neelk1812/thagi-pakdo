@@ -1,13 +1,28 @@
 """Thagi Pakdo - scam checker backend. Run: uvicorn app:app"""
-import hashlib, json, os
+import hashlib, io, json, logging, os
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, field_validator
+from typing import Literal
 
 ROOT = Path(__file__).parent
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+log = logging.getLogger("thagi.app")
+
+_orig_factory = logging.getLogRecordFactory()
+
+
+def _scrubbing_factory(*args, **kw):  # every log line passes through llm.scrub: no API keys / bearer tokens / JWTs, ever
+    rec = _orig_factory(*args, **kw)
+    try:
+        rec.msg, rec.args = llm.scrub(rec.getMessage()), ()
+    except Exception:
+        pass
+    return rec
 
 
 def load_dotenv(path=ROOT / ".env"):
@@ -32,15 +47,27 @@ def load_dotenv(path=ROOT / ".env"):
 
 load_dotenv()  # must run before llm reads env
 
-import checks, llm
+import auth, checks, complaint as cmp, llm
+logging.setLogRecordFactory(_scrubbing_factory)
 WEB = ROOT / "web"
-CACHE = ROOT / "sample_cache"
+CACHE = Path(os.environ.get("CACHE_DIR") or ROOT / "sample_cache")
 SAMPLES = ROOT / "samples"
 MAX_IMG = 8 * 1024 * 1024
+MAX_TEXT = 5000
 LANGS = ("gu", "hi", "en")
 
 app = FastAPI(title="Thagi Pakdo")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])  # incl. Authorization, X-Gemini-Key
+
+
+@app.exception_handler(auth.AuthError)
+async def _auth_error(request, exc):
+    return JSONResponse({"error": exc.code, "message": exc.message}, status_code=exc.status)
+
+
+@app.exception_handler(llm.UserKeyError)
+async def _user_key_error(request, exc):
+    return JSONResponse({"error": exc.code, "message": exc.message}, status_code=exc.status)
 
 # ---- localized code-only fallback text ----
 R = {  # category -> {lang: reason}
@@ -147,9 +174,43 @@ def _mime(data, declared):
     return declared if declared and declared.startswith("image/") else "image/png"
 
 
+def _norm_text(text):
+    """Whitespace-insensitive: browsers send FormData newlines as CRLF, users add trailing spaces, etc."""
+    return " ".join((text or "").split())
+
+
 def _cache_path(img, text, lang):
-    h = hashlib.sha256(img + b"\0" + text.encode() + b"\0" + lang.encode()).hexdigest()
+    h = hashlib.sha256(img + b"\0" + _norm_text(text).encode() + b"\0" + lang.encode()).hexdigest()
     return CACHE / f"{h}.json"
+
+
+_SAMPLE_BY_IMG = {}
+
+
+def _sample_text_for(img):
+    """If img is byte-identical to samples/<n>.png return samples/<n>.txt (so an image-only or text-edited sample click still hits cache)."""
+    if not _SAMPLE_BY_IMG and SAMPLES.is_dir():
+        for p in SAMPLES.glob("*.png"):
+            t = p.with_suffix(".txt")
+            if t.is_file():
+                _SAMPLE_BY_IMG[hashlib.sha256(p.read_bytes()).hexdigest()] = t.read_text(encoding="utf-8")
+    return _SAMPLE_BY_IMG.get(hashlib.sha256(img).hexdigest())
+
+
+NO_TYPE = {"", "none", "n/a", "na", "null", "nil", "no scam", "not a scam", "-", "safe"}
+
+
+def _clean_type(out):
+    """Green verdicts (or an LLM 'none'/'n/a') carry no scam type: always the empty string."""
+    t = str(out.get("scam_type") or "").strip()
+    out["scam_type"] = "" if out.get("verdict") == "green" or t.lower().strip(" .") in NO_TYPE else t
+    return out
+
+
+@app.get("/api/config")
+def config():
+    cid = auth.client_id()
+    return {"auth_required": cid is not None, "google_client_id": cid}
 
 
 @app.get("/api/health")
@@ -159,34 +220,59 @@ def health():
 
 
 @app.post("/api/check")
-async def check(image: UploadFile | None = File(None), text: str = Form(""), lang: str = Form("en")):
+def check(request: Request, image: UploadFile | None = File(None), text: str = Form(""), lang: str = Form("en")):  # sync def -> runs in threadpool, blocking LLM call never stalls the event loop
     lang = lang if lang in LANGS else "en"
-    text = (text or "").strip()
+    text = (text or "").strip()[:MAX_TEXT]  # huge pastes: only the first part is analysed
     img = b""
     if image is not None and image.filename:
-        img = await image.read()
+        img = image.file.read(MAX_IMG + 1)
     if not img and not text:
         raise HTTPException(400, "Provide text or an image")
     if len(img) > MAX_IMG:
         raise HTTPException(400, "Image too large (max 8MB)")
-    mime = _mime(img, image.content_type if image else None) if img else ""
-    if img and not (image.content_type or "").startswith("image/") and mime == "image/png" and img[:4] != b"\x89PNG":
-        raise HTTPException(400, "File must be an image")
+    mime = ""
+    if img:
+        ct = (image.content_type or "").lower()
+        mime = _mime(img, ct)
+        known = img[:8] == b"\x89PNG\r\n\x1a\n" or img[:3] in (b"\xff\xd8\xff", b"GIF") or (img[:4] == b"RIFF" and img[8:12] == b"WEBP")
+        if known:
+            try:  # truncated / corrupt images would only waste a model call and fail upstream
+                from PIL import Image
+                Image.open(io.BytesIO(img)).load()
+            except ImportError:
+                pass
+            except Exception:
+                raise HTTPException(400, "Could not read this image (corrupt or truncated)")
+        elif ct not in ("image/heic", "image/heif"):
+            raise HTTPException(400, "File must be a PNG, JPEG, WebP or GIF image")
 
     cp = _cache_path(img, text, lang)
-    if cp.exists():
+    probes = [cp]
+    if img:
+        st = _sample_text_for(img)
+        if st is not None:
+            probes.append(_cache_path(img, st, lang))
+    for p in probes:  # cache is read FIRST, before any analysis or LLM call
         try:
-            return {**json.loads(cp.read_text()), "source": "cache"}
+            if p.exists():
+                log.info("cache hit lang=%s img=%s", lang, bool(img))
+                return _clean_type({**json.loads(p.read_text()), "source": "cache"})
         except Exception:
             pass
 
+    # cache missed -> a LIVE model call is needed. Auth mode: caller must be signed in and bring their own Gemini key.
+    user_key = auth.require_user_key(request.headers) if auth.enabled() else None
+
     ca = checks.analyze(text)
     try:
-        res, source = llm.check(text, img or None, mime or "image/png", lang)
+        if user_key is None:
+            res, source = llm.check(text, img or None, mime or "image/png", lang)
+        else:
+            res, source = llm.check(text, img or None, mime or "image/png", lang, api_key=user_key)
         ai_unavailable = False
     except llm.LLMUnavailable as e:
         res, source, ai_unavailable = None, "code", True
-        print("LLM unavailable:", e)
+        log.warning("LLM unavailable, serving code-only result lang=%s img=%s: %s", lang, bool(img), e)
 
     if res is None:
         out = code_only(ca, lang)
@@ -210,11 +296,48 @@ async def check(image: UploadFile | None = File(None), text: str = Form(""), lan
             out["scam_type"] = out["scam_type"] if res["verdict"] != "green" else c["scam_type"]
         if not out["reasons"]:
             out["reasons"] = code_reasons(ca["flags"], lang)[:4]
+    _clean_type(out)
     out.update(lang=lang, ai_unavailable=ai_unavailable, source=source, code_flags=ca["flags"], code_score=ca["score"])
     if not ai_unavailable:
         try:
             CACHE.mkdir(exist_ok=True)
             cp.write_text(json.dumps(out, ensure_ascii=False))
+        except OSError:
+            pass
+    return out
+
+
+class ComplaintReq(BaseModel):
+    result: dict
+    lang: Literal["gu", "hi", "en"] = "en"
+    details: dict | None = None
+
+    @field_validator("result")
+    @classmethod
+    def _has_verdict(cls, v):
+        if v.get("verdict") not in ("red", "amber", "green"):
+            raise ValueError("result must be an /api/check result (verdict red|amber|green)")
+        return v
+
+
+@app.post("/api/complaint")
+def complaint_endpoint(req: ComplaintReq, request: Request):
+    """Draft a cybercrime-portal complaint. Stateless: with personal details present nothing is cached or logged."""
+    details = cmp.clean_details(req.details)
+    cdir = CACHE / "complaints"
+    cp = cdir / f"{cmp.cache_key(req.result, req.lang)}.json"
+    if not details and cp.exists():
+        try:
+            return json.loads(cp.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    user_key = auth.require_user_key(request.headers) if auth.enabled() else None  # live draft needed
+    out = cmp.build(req.result, req.lang, details, api_key=user_key)
+    log.info("complaint lang=%s source=%s has_details=%s", req.lang, out["source"], bool(details))
+    if not details and out["source"] != "template":
+        try:
+            cdir.mkdir(parents=True, exist_ok=True)
+            cp.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
         except OSError:
             pass
     return out

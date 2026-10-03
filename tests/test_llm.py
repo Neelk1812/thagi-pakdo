@@ -70,3 +70,32 @@ def test_transient_detection():
     assert llm._is_transient(Exception("429 RESOURCE_EXHAUSTED"))
     assert llm._is_transient(Exception("The read operation timed out"))
     assert not llm._is_transient(Exception("400 INVALID_ARGUMENT bad image"))
+
+
+def test_retry_once_on_parse_failure(monkeypatch):
+    seq = iter(["not json at all", BASE]); calls = []
+    monkeypatch.setitem(llm.BACKENDS, "gemini", lambda *a: (calls.append(a), next(seq))[1])
+    d, src = llm.check("x")
+    assert src == "gemini" and d["verdict"] == "red" and len(calls) == 2
+
+
+def test_retry_on_transient_then_failover_total_bounded(monkeypatch):
+    import time
+    n = []
+    def boom(*a): n.append(1); raise RuntimeError("429 RESOURCE_EXHAUSTED")
+    monkeypatch.setitem(llm.BACKENDS, "gemini", boom)
+    monkeypatch.setitem(llm.BACKENDS, "local", lambda *a: BASE)
+    t = time.time(); d, src = llm.check("x")
+    assert src == "local" and len(n) == 2 and time.time() - t < 3
+
+
+def test_non_transient_error_no_retry(monkeypatch):
+    n = []
+    def boom(*a): n.append(1); raise RuntimeError("400 INVALID_ARGUMENT")
+    monkeypatch.setitem(llm.BACKENDS, "gemini", boom)
+    monkeypatch.setitem(llm.BACKENDS, "local", lambda *a: BASE)
+    llm.check("x"); assert len(n) == 1
+
+
+def test_describe_scrubs_key():
+    assert "AIza" not in llm._describe(RuntimeError("bad key AIzaSyA1234567890abcdefghijKLMN"))
