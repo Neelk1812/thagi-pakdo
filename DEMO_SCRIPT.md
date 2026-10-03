@@ -1,10 +1,10 @@
 # Thagi Pakdo - 2-minute live demo script
 
-Everything uses **fake samples only**. Status of items marked [unverified]: not yet rehearsed end to end; Gemini key and live Gemma run were pending when this was drafted.
+Everything uses **fake samples only**. Tested from a clean clone on 3 Oct 2026: all 5 samples give the right verdict in en/hi/gu. Items marked [unverified] have not been tried.
 
 **Before going on stage (checklist)**
 - `uvicorn app:app` running; page open at http://127.0.0.1:8000 in a full-screen browser, language = English.
-- `GEMINI_API_KEY` set **[unverified]**; every sample already run once so `sample_cache/` makes them instant even if Wi-Fi or rate limits fail.
+- `GEMINI_API_KEY` in `.env`. Use the "Try sample" buttons (screenshot + text): they hit `sample_cache/` and answer in about 2 ms even if Wi-Fi or rate limits fail. Anything new (your own screenshot or edited text) is a live call, about 3 to 5 s, so talk while the spinner runs.
 - Browser has a Gujarati/Hindi voice for Read-aloud **[unverified on the demo laptop]**; test the speaker volume.
 - Optional: local Gemma server (Ollama) up as backup **[unverified]**.
 - Sample screenshots ready: `samples/courier_fee.png`.
@@ -20,8 +20,8 @@ Everything uses **fake samples only**. Status of items marked [unverified]: not 
 | 1:50-2:00 | Wrap-up, show privacy note / repo. | "If Gemini is rate-limited or offline it falls back to local Gemma 4 E4B, so real messages can stay on your phone or laptop. Open source, Apache-2.0, an Agent Skill included. Thagi Pakdo - thank you." |
 
 **Backup moves**
-- If the network or Gemini fails: samples are cached, so they still respond; the card shows a "Cached" / "Rules only" badge. Say: "It still works offline - that's the failover."
-- If local fallback is asked about: say it is configured with `LLM_BACKEND=local` and tested by unit tests; the live Gemma E4B run is **[unverified]** unless proven before the demo.
+- If the network or Gemini fails: sample buttons are cached, so they still respond; the card shows a "Cached" / "Rules only" badge. Say: "It still works offline - that's the failover."
+- If local fallback is asked about: say `LLM_BACKEND=local` points the app at a local OpenAI-compatible server; failover was tested with a stub server, but a real Gemma E4B run is **[unverified]** unless proven before the demo.
 - If a Gujarati/Hindi translation looks off, say the AI writes it fresh for every check and move on.
 
 **Likely judge questions**

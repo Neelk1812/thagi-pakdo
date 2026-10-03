@@ -15,19 +15,23 @@ Built for Hack Day Surat. "Thagi Pakdo" means "catch the con".
 
 ## Run it
 
-Requires Python 3.13 (older 3.10+ should also work **[unverified]**).
+Developed and tested with Python 3.13 (other versions untested).
 
 ```bash
+git clone https://github.com/Neelk1812/thagi-pakdo && cd thagi-pakdo
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-export GEMINI_API_KEY=your-key      # optional: without it, rules-only / local fallback is used
+cp .env.example .env                # then put your GEMINI_API_KEY in .env
 uvicorn app:app
 ```
+
+Without a key the app still runs: cached samples are served from `sample_cache/`, and anything else falls back to a local Gemma server (if configured) or to the rules-only verdict marked "AI unavailable".
 
 Open http://127.0.0.1:8000. Check http://127.0.0.1:8000/api/health to see which backend is configured.
 
 ### Configuration (environment variables / `.env`)
 
-Copy `.env.example` to `.env` and fill it in (`.env` is git-ignored; never commit keys). `app.py` does **not** load `.env` by itself (no python-dotenv); it reads real environment variables. Load it into your shell first (Linux/macOS: `set -a; source .env; set +a; uvicorn app:app`), or export the variables yourself. (`uvicorn --env-file .env` only works if you also `pip install python-dotenv`, which is not in `requirements.txt`.)
+Copy `.env.example` to `.env` and fill it in (`.env` is git-ignored; never commit keys). `app.py` has a small built-in `.env` loader (no python-dotenv needed) that runs at startup. Variables already set in your real environment take priority over `.env`. Lines are `KEY=VALUE`; `#` comments are allowed.
 
 | Variable | Default | Meaning |
 |---|---|---|
@@ -51,7 +55,22 @@ ollama pull gemma4:e4b          # [unverified] check the exact model tag on your
 LLM_BACKEND=local LOCAL_BASE_URL=http://localhost:11434/v1 LOCAL_MODEL=gemma4:e4b uvicorn app:app
 ```
 
-Local mode is selected with `LLM_BACKEND=local`. It has **not yet been tested with a real Gemma 4 E4B server [unverified]**; the failover code is covered by unit tests only.
+Local mode is selected with `LLM_BACKEND=local`. It has **not been tested with a real Gemma 4 E4B model [unverified]**; the local code path was only checked against a stub OpenAI-compatible server and unit tests.
+
+## Speed and test status
+
+Measured on 3 Oct 2026 from a clean clone (server and client on the same machine, hosted Gemma over the internet):
+
+| Case | Time |
+|---|---|
+| Cached result (same image + text + language) | about 2 ms |
+| Live Gemma call, text only | about 2.4 to 5 s |
+| Live Gemma call, screenshot (with or without text) | about 4.5 to 5 s |
+| Gemini unreachable/bad key, rules-only answer | under 0.5 s |
+
+The cache key is the exact image bytes + text + language, so a different screenshot or even edited text is a live call. The committed `sample_cache/` covers the 5 fake samples sent as screenshot + text in en, hi and gu.
+
+Verified: all 5 samples (4 scams red, the safe OTP green) in en, hi and gu; image upload; a bad Gemini key falls back to the rules-only verdict ("AI unavailable"); failover to a local OpenAI-compatible endpoint works (tested against a stub server). **Not verified:** a real Gemma 4 E4B local model, and read-aloud voices on other machines. Run `pytest` for the unit tests.
 
 ## Privacy
 
